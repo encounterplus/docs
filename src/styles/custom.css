@@ -1,0 +1,49 @@
+:root {
+  /* make sure icons in markdown content are sized correctly */
+  .sl-markdown-content img[src*="icons"] {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0;
+  }
+}
+
+:root {
+	--purple-hsl: 224, 50%, 50%;
+	--overlay-blurple: hsla(var(--purple-hsl), 0.2);
+}
+
+:root[data-theme='light'] {
+	--purple-hsl: 255, 85%, 65%;
+}
+
+[data-has-hero] .page {
+	background:
+		linear-gradient(215deg, var(--overlay-blurple), transparent 40%),
+		radial-gradient(var(--overlay-blurple), transparent 40%) no-repeat -60vw -40vh / 105vw 200vh,
+		radial-gradient(var(--overlay-blurple), transparent 65%) no-repeat 50% calc(100% + 20rem) /
+			60rem 30rem;
+}
+
+[data-has-hero] header {
+	border-bottom: 1px solid transparent;
+	background-color: transparent;
+	-webkit-backdrop-filter: blur(16px);
+	backdrop-filter: blur(16px);
+}
+
+[data-has-hero] .hero > img {
+	filter: drop-shadow(0 0 3rem var(--overlay-blurple));
+  width: min(70%, 20rem);
+}
+
+[data-has-hero] .hero h1 {
+  font-weight: 700;
+  font-width: 90%;
+}
+
+@media (max-width: 768px) {
+	[data-has-hero] .hero > img {
+		width: min(20%, 10rem);
+	}
+}

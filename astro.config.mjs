@@ -6,19 +6,41 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: 'My Docs',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+			title: 'Encounter+ Docs',
+			logo: {
+       	light: './src/assets/logo-light.webp',
+    		dark: './src/assets/logo-dark.webp',
+				replacesTitle: true,
+      },
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/encounterplus/docs' }],
+			customCss: [
+        // Relative path to your custom CSS file
+        './src/styles/custom.css',
+      ],
 			sidebar: [
 				{
-					label: 'Guides',
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', slug: 'guides/example' },
-					],
-				},
+          label: "About",
+          items: [
+            { label: "Introduction", link: "/about/intro" },
+            { label: "FAQ", link: "/about/faq/" },
+          ],
+        },
+				{
+          label: "Guides",
+          items: [
+            { label: "Quick start", link: "/guides/quick-start/" },
+            { label: "Battle maps", link: "/guides/battle-map/" },
+						{
+              label: "Battle Maps",
+              items: [
+                { label: "Line of Sight", link: "/guides/battle-maps/line-of-sight/" },
+              ],
+            },
+          ],
+        },
 				{
 					label: 'Reference',
-					autogenerate: { directory: 'reference' },
+					items: [{ autogenerate: { directory: 'reference' } }],
 				},
 			],
 		}),
