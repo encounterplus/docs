@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Module.schema.json",
+  "title": "Module",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "system": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "descr": {
+      "type": "string"
+    },
+    "shortDescr": {
+      "type": "string"
+    },
+    "acronym": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "repository": {
+      "type": "string"
+    },
+    "package": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "banner": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "attributes": {
+      "type": [
+        "string",
+        "number",
+        "boolean"
+      ]
+    },
+    "systemVersion": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "system",
+    "name",
+    "slug",
+    "version",
+    "descr",
+    "shortDescr",
+    "acronym",
+    "author",
+    "category",
+    "website",
+    "repository",
+    "package",
+    "image",
+    "banner",
+    "tags",
+    "data",
+    "attributes",
+    "systemVersion"
+  ],
+  "additionalProperties": false
+}

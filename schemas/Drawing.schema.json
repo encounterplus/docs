@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Drawing.schema.json",
+  "title": "Drawing",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "shape": {
+      "$ref": "#/$defs/Shape"
+    },
+    "layer": {
+      "$ref": "BattleMapLayer.schema.json"
+    },
+    "strokeWidth": {
+      "type": "number"
+    },
+    "strokeColor": {
+      "type": "string"
+    },
+    "fillColor": {
+      "type": "string"
+    },
+    "opacity": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "id",
+    "data"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Shape": {
+      "title": "Shape",
+      "type": "string",
+      "enum": [
+        "polygon",
+        "ellipse",
+        "rectangle"
+      ]
+    }
+  }
+}

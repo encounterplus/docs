@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Map.schema.json",
+  "title": "Map",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "descr": {
+      "type": "string"
+    },
+    "gridSize": {
+      "type": "integer"
+    },
+    "gridOffsetX": {
+      "type": "integer"
+    },
+    "gridOffsetY": {
+      "type": "integer"
+    },
+    "gridColor": {
+      "type": "string"
+    },
+    "gridVisible": {
+      "type": "boolean"
+    },
+    "gridScale": {
+      "type": "number"
+    },
+    "gridUnits": {
+      "type": "string"
+    },
+    "gridType": {
+      "type": "string"
+    },
+    "gridStyle": {
+      "type": "string"
+    },
+    "gridOpacity": {
+      "type": "number"
+    },
+    "image": {
+      "type": "string"
+    },
+    "video": {
+      "type": "string"
+    },
+    "scale": {
+      "type": "number"
+    },
+    "x": {
+      "type": "integer"
+    },
+    "y": {
+      "type": "integer"
+    },
+    "zoom": {
+      "type": "number"
+    },
+    "width": {
+      "type": "integer"
+    },
+    "height": {
+      "type": "integer"
+    },
+    "canvas": {
+      "type": "string"
+    },
+    "snapshot": {
+      "type": "string"
+    },
+    "floor": {
+      "type": "string"
+    },
+    "fogOfWar": {
+      "type": "boolean"
+    },
+    "fogExploration": {
+      "type": "boolean"
+    },
+    "fog": {
+      "type": "string"
+    },
+    "lineOfSight": {
+      "type": "boolean"
+    },
+    "losDaylight": {
+      "type": "number"
+    },
+    "losVisionLimit": {
+      "type": "integer"
+    },
+    "weatherType": {
+      "type": "string"
+    },
+    "weatherIntensity": {
+      "type": "number"
+    },
+    "dmDarkness": {
+      "type": "number"
+    },
+    "dmMarkerStyle": {
+      "type": "string"
+    },
+    "parentId": {
+      "type": "string"
+    },
+    "rank": {
+      "type": "integer"
+    },
+    "version": {
+      "type": "integer"
+    },
+    "walls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "drawings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "markers": {
+      "$ref": "Marker.schema.json"
+    },
+    "tiles": {
+      "$ref": "Tile.schema.json"
+    },
+    "tokens": {
+      "$ref": "Token.schema.json"
+    },
+    "areaEffects": {
+      "$ref": "AreaEffect.schema.json"
+    },
+    "lights": {
+      "$ref": "Light.schema.json"
+    },
+    "measurements": {
+      "$ref": "Measurement.schema.json"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "slug",
+    "descr",
+    "gridSize",
+    "gridOffsetX",
+    "gridOffsetY",
+    "gridColor",
+    "gridVisible",
+    "gridScale",
+    "gridUnits",
+    "gridType",
+    "gridStyle",
+    "gridOpacity",
+    "image",
+    "video",
+    "scale",
+    "x",
+    "y",
+    "zoom",
+    "width",
+    "height",
+    "canvas",
+    "snapshot",
+    "floor",
+    "fogOfWar",
+    "fogExploration",
+    "fog",
+    "lineOfSight",
+    "losDaylight",
+    "losVisionLimit",
+    "weatherType",
+    "weatherIntensity",
+    "dmDarkness",
+    "dmMarkerStyle",
+    "parentId",
+    "rank",
+    "version",
+    "walls",
+    "drawings",
+    "markers",
+    "tiles",
+    "tokens",
+    "areaEffects",
+    "lights",
+    "measurements",
+    "data"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Reference.schema.json",
+  "title": "Reference",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "reference": {
+      "type": "string"
+    },
+    "parentId": {
+      "type": "string"
+    },
+    "rank": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "slug",
+    "reference",
+    "parentId",
+    "rank"
+  ],
+  "additionalProperties": false
+}

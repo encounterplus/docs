@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Pointer.schema.json",
+  "title": "Pointer",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "x": {
+      "type": "integer"
+    },
+    "y": {
+      "type": "integer"
+    },
+    "color": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "state": {
+      "$ref": "ControlState.schema.json"
+    }
+  },
+  "required": [
+    "id",
+    "x",
+    "y",
+    "color"
+  ],
+  "additionalProperties": false
+}

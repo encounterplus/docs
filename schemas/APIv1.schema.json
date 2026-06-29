@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "APIv1.schema.json",
+  "title": "APIv1",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "build": {
+      "type": "integer"
+    },
+    "game": {
+      "$ref": "Game.schema.json"
+    },
+    "map": {
+      "$ref": "Map.schema.json"
+    },
+    "screen": {
+      "$ref": "ExternalScreen.schema.json"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "$ref": "Message.schema.json"
+      }
+    },
+    "trackedObjects": {
+      "type": "array",
+      "items": {
+        "$ref": "TrackedObject.schema.json"
+      }
+    },
+    "paused": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "version",
+    "build",
+    "game",
+    "screen",
+    "messages",
+    "paused"
+  ],
+  "additionalProperties": false
+}

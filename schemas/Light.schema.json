@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Light.schema.json",
+  "title": "Light",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "radiusMin": {
+      "type": "integer"
+    },
+    "radiusMax": {
+      "type": "integer"
+    },
+    "color": {
+      "type": "string"
+    },
+    "opacity": {
+      "type": "number"
+    },
+    "alwaysVisible": {
+      "type": "boolean"
+    },
+    "x": {
+      "type": "integer"
+    },
+    "y": {
+      "type": "integer"
+    },
+    "sight": {}
+  },
+  "required": [
+    "id",
+    "enabled",
+    "radiusMin",
+    "radiusMax",
+    "color",
+    "opacity",
+    "alwaysVisible",
+    "x",
+    "y",
+    "sight"
+  ],
+  "additionalProperties": false
+}

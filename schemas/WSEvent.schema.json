@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "WSEvent.schema.json",
+  "title": "WSEvent",
+  "type": "object",
+  "properties": {
+    "name": {
+      "$ref": "#/$defs/Name"
+    },
+    "data": {},
+    "requestId": {
+      "type": "string"
+    },
+    "responseId": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Name": {
+      "title": "Name",
+      "type": "string",
+      "enum": [
+        "gameUpdated",
+        "mapUpdated",
+        "mapFrameUpdated",
+        "mapViewportUpdated",
+        "mapFitScreen",
+        "mapFocus",
+        "screenUpdated",
+        "combatantsUpdated",
+        "tokenUpdated",
+        "tokensUpdated",
+        "markerUpdated",
+        "markersUpdated",
+        "tileUpdated",
+        "tilesUpdated",
+        "lightUpdated",
+        "lightsUpdated",
+        "areaEffectUpdated",
+        "areaEffectsUpdated",
+        "mapMoved",
+        "tokenMoved",
+        "markerMoved",
+        "tileMoved",
+        "areaEffectMoved",
+        "fogUpdated",
+        "pointerUpdated",
+        "pointerMoved",
+        "mapLoaded",
+        "interactionUpdated",
+        "reload",
+        "clientConnected",
+        "clientDisconnected",
+        "clientUpdated",
+        "drawingsUpdated",
+        "lineOfSightUpdated",
+        "messageCreated",
+        "messagesUpdated",
+        "messageDeleted",
+        "createMessage",
+        "command",
+        "roll",
+        "mapVideoControlUpdated",
+        "trackedObjectCreated",
+        "trackedObjectUpdated",
+        "measurementUpdated",
+        "measurementsUpdated",
+        "trackedObjectDeleted",
+        "trackedObjectsUpdated",
+        "createEntity",
+        "updateEntity",
+        "deleteEntity",
+        "entityCreated",
+        "entityUpdated",
+        "entityDeleted",
+        "createCombatant",
+        "updateCombatant",
+        "deleteCombatant",
+        "combatantCreated",
+        "combatantUpdated",
+        "combatantDeleted",
+        "updateDoor",
+        "updateToken",
+        "systemPaused",
+        "getAttribute",
+        "setAttribute",
+        "app"
+      ]
+    },
+    "Source": {
+      "title": "Source",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "Movement": {
+      "title": "Movement",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        },
+        "state": {
+          "$ref": "ControlState.schema.json"
+        },
+        "polygon": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "path": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "distance": {
+          "type": "string"
+        },
+        "animated": {
+          "type": "boolean"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        }
+      },
+      "required": [
+        "id",
+        "x",
+        "y",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "Frame": {
+      "title": "Frame",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        },
+        "zoom": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "Image": {
+      "title": "Image",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "image"
+      ],
+      "additionalProperties": false
+    },
+    "VideoControl": {
+      "title": "VideoControl",
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "time": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "state",
+        "time"
+      ],
+      "additionalProperties": false
+    },
+    "Focus": {
+      "title": "Focus",
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        },
+        "color": {
+          "type": "string"
+        },
+        "effect": {
+          "type": "boolean"
+        },
+        "pan": {
+          "type": "boolean"
+        },
+        "zoom": {
+          "type": "boolean"
+        },
+        "reset": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "color",
+        "effect",
+        "pan",
+        "zoom",
+        "reset"
+      ],
+      "additionalProperties": false
+    },
+    "Door": {
+      "title": "Door",
+      "type": "object",
+      "properties": {
+        "mapId": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "Wall.schema.json#/$defs/DoorState"
+        }
+      },
+      "required": [
+        "mapId",
+        "id",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "Attribute": {
+      "title": "Attribute",
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "entityId"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

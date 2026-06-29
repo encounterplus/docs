@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Entity.schema.json",
+  "title": "Entity",
+  "type": "object",
+  "description": "A flexible, game-agnostic entity representation for tabletop RPG content.\n\n`Entity` serves as the core data model for representing various game elements such as characters,\nmonsters, items, spells and others across multiple game systems.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for this entity.\n\nA UUID string automatically generated when the entity is created. This serves as the\nprimary key in the Realm database."
+    },
+    "kind": {
+      "type": "string",
+      "description": "The category of this entity.\n\nRepresents the broad classification of what this entity is within the game system.\n\n## Examples\n- `\"Character\"` - Player characters\n- `\"Monster\"` - Creatures and adversaries"
+    },
+    "system": {
+      "type": "string",
+      "description": "The game system this entity belongs to.\n\nIdentifies which game system or ruleset this entity is designed for. Should be lowercased.\n\n## Examples\n- `\"dnd5e\"`\n- `\"pf2e\"`"
+    },
+    "name": {
+      "type": "string",
+      "description": "The display name of the entity.\n\nThe primary human-readable identifier shown in the user interface.\n\n## Examples\n- `\"Thorin Ironforge\"`"
+    },
+    "slug": {
+      "type": "string",
+      "description": "A URL-friendly identifier for the entity.\n\nA simplified, lowercase version of the name suitable for use in URLs, file paths,\nor as a readable unique identifier.\n\n## Examples\n- `\"thorin-ironforge\"`"
+    },
+    "type": {
+      "type": "string",
+      "description": "A subtype classification within the entity's kind.\n\nProvides additional categorization beyond the primary `kind` field.\nUsually better to use more generic `data` attribute\n\n## Examples\nFor `kind = \"Monster\"`:\n- `\"undead\"`, `\"dragon\"`, `\"humanoid\"`"
+    },
+    "descr": {
+      "type": "string",
+      "description": "The primary description or flavor text for the entity.\n\nContains the main descriptive content, lore, or mechanical description of the entity.\nThis is typically displayed in detail views or tooltips.\n\n## Usage\n- Monster descriptions"
+    },
+    "notes": {
+      "type": "string",
+      "description": "User-generated notes or GM notes for the entity.\n\nStores custom annotations, reminders, or campaign-specific information added by users or game masters.\n\n## Usage\n- Campaign-specific modifications\n- GM reminders"
+    },
+    "image": {
+      "type": "string",
+      "description": "The file path to the primary image representation.\n\nThe main visual asset for the entity, typically a full illustration or detailed artwork.\n\n- Note: Relative file paths are resolved agains the system/module container. Absolute file paths are resolved against the app's documents folder.\n\n## Examples\n- `\"monsters/thorin-ironforge.jpg\"`\n- `\"/modules/some-module-id/thorin-ironforge.jpg\"`"
+    },
+    "token": {
+      "type": "string",
+      "description": "The file path to a battle map token image.\n\nA small, typically top-down view image suitable for use on tactical battle maps.\nUsually circular or square format.\n\n## Typical Specifications\n- Square or circular format\n- 256x256 to 512x512 pixels\n- Transparent background recommended"
+    },
+    "icon": {
+      "type": "string",
+      "description": "The URL or file path to a small icon representation.\n\nA compact icon suitable for list items, status effects, and others.. Should be\nrecognizable at small sizes.\n\n## Typical Specifications\n- 32x32 to 128x128 pixels\n- Simple, clear design\n- Works at small sizes"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Flexible JSON storage for system-specific or arbitrary structured data.\n\nStores game mechanics, statistics, abilities, and other structured information\nthat doesn't fit into the standard schema. This enables support for diverse\ngame systems without schema modifications.\n\n## Usage Examples\n- Character ability scores and skills\n- Monster stat blocks\n- Item properties and effects\n- Spell components and mechanics\n\n- Note: The structure of this data varies by `system` and `kind`."
+    },
+    "attributes": {
+      "type": [
+        "string",
+        "number",
+        "boolean"
+      ],
+      "description": "Dynamic attribute storage supporting various data types.\n\nA flexible key-value store for attributes and properties that need to be\nqueryable or frequently accessed. Supports multiple data types through RealmAny.\n\n## Common Attributes\n- Custom fields."
+    },
+    "modifiers": {
+      "type": "array",
+      "items": {
+        "$ref": "Modifier.schema.json"
+      },
+      "description": "Active modifiers affecting this entity.\n\nA collection of temporary or permanent adjustments to the entity's statistics,\nabilities, or behavior.\n\n## Examples\n- Equipment bonuses (+2 to AC from armor)\n- Buff/debuff effects (+4 to Strength from spell)\n- Temporary penalties (-2 to attacks from condition)\n\n- SeeAlso: `Modifier`"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Custom tags for categorization and filtering.\n\nA flexible tagging system allowing users to organize entities with custom labels.\n\n## Example Tags\n- `\"boss\"`, `\"minion\"`, `\"elite\"`\n- `\"undead\"`, `\"fiend\"`, `\"celestial\"`"
+    },
+    "combatant": {
+      "$ref": "Combatant.schema.json",
+      "description": "Combat-specific data linking this entity to an active encounter.\n\nWhen this entity participates in combat, this object stores initiative order,\ncurrent position, combat state, and other encounter-specific information.\n\n- Note: This is typically `nil` when the entity is not in active combat.\n- SeeAlso: `Combatant`"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "Source.schema.json"
+      },
+      "description": "Source attributions for this entity.\n\nTracks which books, supplements, or homebrew collections this entity originated from.\n\n## Examples\n- Player's Handbook\n- Monster Manual\n- Custom Homebrew Collection\n- Third-party supplements\n\n- SeeAlso: `Source`"
+    },
+    "appVersion": {
+      "type": "string",
+      "description": "The application version when this entity was created or last modified.\n\nRecords the app version to support data migration, debugging, and\ncompatibility tracking across app updates.\n\n## Format\nTypically semantic versioning: `\"1.2.3\"`\n\n- Note: Useful for identifying entities created with older versions that may need migration."
+    },
+    "systemVersion": {
+      "type": "string",
+      "description": "The game system version or ruleset version this entity uses.\n\nRecords the system version to support data migration, debugging, and\ncompatibility tracking across game system updates.\n\n## Format\nTypically semantic versioning: `\"1.2.3\"`\n\n- Note: Useful for identifying entities created with older system versions that may need migration."
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time when this entity was created.\n\nAutomatically set to the current date and time when the entity is first instantiated."
+    },
+    "modified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time when this entity was last modified.\n\nAutomatically set to the current date and time when the entity is first instantiated."
+    },
+    "meta": {}
+  },
+  "required": [
+    "id",
+    "kind",
+    "system",
+    "name",
+    "slug",
+    "type",
+    "descr",
+    "notes",
+    "image",
+    "token",
+    "icon",
+    "data",
+    "attributes",
+    "modifiers",
+    "tags",
+    "combatant",
+    "sources",
+    "appVersion",
+    "systemVersion",
+    "created",
+    "modified",
+    "meta"
+  ],
+  "additionalProperties": false
+}

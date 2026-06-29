@@ -1,0 +1,666 @@
+#!/usr/bin/env python3
+"""Convert Swift symbol-graph JSON into JSON Schema (draft 2020-12).
+
+The Encounter+ app's import/export and configuration formats are defined as
+Swift `Codable` structs. Building the app with the compiler's symbol-graph
+export (`-emit-symbol-graph`) produces `*.symbols.json` describing every symbol,
+its doc comments, and its relationships. This script transforms that into one
+JSON Schema file per top-level Codable type, which becomes the version-controlled
+source of truth for the generated reference documentation.
+
+Emit the input from the app project with, e.g.:
+
+    swiftc ... -emit-symbol-graph -emit-symbol-graph-dir <dir> \\
+        -symbol-graph-minimum-access-level internal \\
+        -symbol-graph-pretty-print -symbol-graph-skip-synthesized-members
+
+`-symbol-graph-minimum-access-level internal` is required: the Codable structs
+are `internal`, and without it they are omitted from the graph.
+
+Usage:
+    symbolgraph-to-schema.py <symbols-dir-or-file> <out-dir> [--draft 2020-12]
+"""
+
+from __future__ import annotations
+
+import argparse
+import copy
+import json
+import re
+import sys
+from pathlib import Path
+from urllib.parse import unquote
+
+# Stable stdlib USRs for the conformances that mark a Codable type.
+USR_DECODABLE = "s:Se"
+USR_ENCODABLE = "s:SE"
+USR_RAW_REPRESENTABLE = "s:SY"
+
+# Swift type name -> JSON Schema fragment (for non-custom, non-collection types).
+SCALAR_TYPES: dict[str, dict] = {
+    "String": {"type": "string"},
+    "Bool": {"type": "boolean"},
+    "Int": {"type": "integer"},
+    "Int8": {"type": "integer"}, "Int16": {"type": "integer"},
+    "Int32": {"type": "integer"}, "Int64": {"type": "integer"},
+    "UInt": {"type": "integer"}, "UInt8": {"type": "integer"},
+    "UInt16": {"type": "integer"}, "UInt32": {"type": "integer"},
+    "UInt64": {"type": "integer"},
+    "Double": {"type": "number"}, "Float": {"type": "number"},
+    "CGFloat": {"type": "number"},
+    "URL": {"type": "string", "format": "uri"},
+    "Date": {"type": "string", "format": "date-time"},
+    "UUID": {"type": "string", "format": "uuid"},
+    "Data": {"type": "string", "contentEncoding": "base64"},
+    # RealmSwift free-form primitive: a string, number, or boolean.
+    "AnyRealmValue": {"type": ["string", "number", "boolean"]},
+}
+
+# App free-form JSON container types: mapped directly to their JSON Schema shape and
+# NOT emitted as their own schema files (their internal `value` storage is opaque).
+_FREEFORM_OBJECT = {"type": "object", "additionalProperties": True}
+JSON_CONTAINERS: dict[str, dict] = {
+    "JSONObject": _FREEFORM_OBJECT,
+    "JSONData": _FREEFORM_OBJECT,                         # freeform JSON object: {}
+    "JSONValue": {},                                     # any JSON value
+    "AnyCodable": {},
+    "JSONArrayData": {"type": "array", "items": _FREEFORM_OBJECT},
+    "JSONObjectArray": {"type": "array", "items": _FREEFORM_OBJECT},  # array of freeform objects
+}
+
+
+def warn(msg: str) -> None:
+    print(f"warning: {msg}", file=sys.stderr)
+
+
+# Dotted property paths (e.g. "ViewDefinition.id") to force-exclude / force-include,
+# populated from --exclude / --include. Resolves the ambiguous `{ get set }` cases.
+FORCE_EXCLUDE: set[str] = set()
+FORCE_INCLUDE: set[str] = set()
+
+
+# --- doc comments --------------------------------------------------------
+
+def doc_text(symbol: dict) -> str | None:
+    """Join a symbol's doc-comment lines into a description string.
+
+    Preserves paragraph breaks (blank lines) and normalizes DocC double-backtick
+    symbol links (``Foo``) to single-backtick code spans for Markdown rendering.
+    """
+    dc = symbol.get("docComment")
+    if not dc:
+        return None
+    text = "\n".join(line["text"] for line in dc["lines"]).strip()
+    if not text:
+        return None
+    text = re.sub(r"``([^`]+)``", r"`\1`", text)
+    return text
+
+
+# --- stored vs computed --------------------------------------------------
+
+def fragment_keywords(symbol: dict) -> set[str]:
+    return {
+        f["spelling"]
+        for f in symbol.get("declarationFragments", [])
+        if f["kind"] == "keyword"
+    }
+
+
+_SOURCE_CACHE: dict[str, list[str] | None] = {}
+
+
+def _source_path(loc: dict) -> str | None:
+    uri = loc.get("uri", "") if loc else ""
+    if not uri:
+        return None
+    return unquote(uri[7:]) if uri.startswith("file://") else uri
+
+
+def _read_source(path: str | None) -> list[str] | None:
+    """Source file lines (with newlines), cached. None if unreadable."""
+    if path is None:
+        return None
+    if path not in _SOURCE_CACHE:
+        try:
+            with open(path, encoding="utf-8") as f:
+                _SOURCE_CACHE[path] = f.readlines()
+        except OSError:
+            _SOURCE_CACHE[path] = None
+    return _SOURCE_CACHE[path]
+
+
+def coding_key_name(case_sym: dict) -> str:
+    """The JSON key for a CodingKeys case: its raw-value rename if present, else the
+    case name. Raw values are absent from the symbol graph, so read them from source
+    via the case's recorded location (the script runs where the source lives)."""
+    name = case_sym["pathComponents"][-1]
+    loc = case_sym.get("location")
+    lines = _read_source(_source_path(loc)) if loc else None
+    if lines is None:
+        return name
+    try:
+        line = lines[loc["position"]["line"]]  # symbol-graph positions are 0-based
+    except (IndexError, KeyError):
+        return name
+    m = re.search(r"\b" + re.escape(name) + r"""\s*=\s*["']([^"']+)["']""", line)
+    return m.group(1) if m else name
+
+
+def _blank_swift_noise(s: str) -> str:
+    """Blank out comments and string literals (preserving length) so brace matching
+    isn't fooled by braces inside them."""
+    s = re.sub(r"//[^\n]*", lambda m: " " * len(m.group()), s)
+    s = re.sub(r"/\*.*?\*/", lambda m: " " * len(m.group()), s, flags=re.S)
+    s = re.sub(r'"(?:\\.|[^"\\])*"', lambda m: " " * len(m.group()), s)
+    return s
+
+
+def _match_brace(s: str, i: int) -> tuple[int, int] | None:
+    """Given s[i] == '{', return (content_start, close_index) of the matching block."""
+    depth = 0
+    for j in range(i, len(s)):
+        if s[j] == "{":
+            depth += 1
+        elif s[j] == "}":
+            depth -= 1
+            if depth == 0:
+                return (i + 1, j)
+    return None
+
+
+def _parse_coding_cases(enum_src: str) -> list[tuple[str, str]]:
+    """(case_name, json_key) pairs from a CodingKeys enum body."""
+    out: list[tuple[str, str]] = []
+    for m in re.finditer(r"\bcase\b([^\n]*)", enum_src):
+        for part in m.group(1).split(","):
+            part = part.strip().rstrip(";")
+            cm = re.match(r"([A-Za-z_]\w*)\s*(?:=\s*[\"']([^\"']+)[\"'])?", part)
+            if cm:
+                out.append((cm.group(1), cm.group(2) or cm.group(1)))
+    return out
+
+
+def source_coding_keys(type_sym: dict) -> list[tuple[str, str]] | None:
+    """Parse a type's `CodingKeys` enum from its source file. Handles a CodingKeys
+    nested directly in the type declaration (covers private ones invisible to the
+    symbol graph). Returns None if not found."""
+    loc = type_sym.get("location")
+    lines = _read_source(_source_path(loc)) if loc else None
+    if lines is None:
+        return None
+    orig = "".join(lines[loc["position"]["line"]:])
+    blank = _blank_swift_noise(orig)
+    open_i = blank.find("{")
+    if open_i < 0:
+        return None
+    body = _match_brace(blank, open_i)
+    if body is None:
+        return None
+    bs, be = body
+    m = re.search(r"enum\s+CodingKeys\b[^{]*\{", blank[bs:be])
+    if not m:
+        return None
+    enum_block = _match_brace(blank, bs + m.end() - 1)
+    if enum_block is None:
+        return None
+    es, ee = enum_block
+    return _parse_coding_cases(orig[es:ee]) or None
+
+
+def classify_property(symbol: dict) -> tuple[bool, bool]:
+    """Return (is_stored, is_ambiguous).
+
+    Codable encodes only stored properties. The symbol graph has no explicit
+    flag, so we infer from the accessor block in declarationFragments:
+      - no accessor block            -> stored
+      - `{ get }` (read-only)        -> computed (a stored prop is never read-only)
+      - `{ get set }`                -> ambiguous: stored-with-didSet vs computed
+                                        read-write. Default to stored, but warn.
+    """
+    kws = fragment_keywords(symbol)
+    has_get = "get" in kws
+    has_set = "set" in kws
+    if has_get and not has_set:
+        return (False, False)
+    if has_get and has_set:
+        return (True, True)
+    return (True, False)
+
+
+# --- type parsing --------------------------------------------------------
+
+def type_fragments(symbol: dict) -> list[dict]:
+    """Fragments describing the property's type (after the name, before any
+    accessor block)."""
+    frags = symbol.get("declarationFragments", [])
+    # Locate the property name (first identifier fragment).
+    start = None
+    for i, f in enumerate(frags):
+        if f["kind"] == "identifier":
+            start = i + 1
+            break
+    if start is None:
+        return []
+    out = []
+    for f in frags[start:]:
+        if f["kind"] == "text" and "{" in f["spelling"]:
+            break  # accessor block begins
+        out.append(f)
+    # Strip the leading ": " separator. The compiler may fuse it with the next
+    # token (e.g. ": [" for an array), so trim it off the first fragment rather
+    # than dropping whole fragments.
+    if out and out[0]["kind"] == "text":
+        stripped = re.sub(r"^\s*:\s*", "", out[0]["spelling"])
+        if stripped:
+            out[0] = {**out[0], "spelling": stripped}
+        else:
+            out.pop(0)
+    return out
+
+
+def reconstruct(frags: list[dict]) -> str:
+    return "".join(f["spelling"] for f in frags).strip()
+
+
+def split_optional(frags: list[dict]) -> tuple[list[dict], bool]:
+    """Strip a single trailing top-level `?` (Optional)."""
+    trimmed = list(frags)
+    while trimmed and trimmed[-1]["kind"] == "text" and trimmed[-1]["spelling"].strip() == "":
+        trimmed.pop()
+    if trimmed and trimmed[-1]["kind"] == "text" and trimmed[-1]["spelling"].rstrip().endswith("?"):
+        last = dict(trimmed[-1])
+        last["spelling"] = last["spelling"].rstrip()[:-1]
+        trimmed[-1] = last
+        if not last["spelling"]:
+            trimmed.pop()
+        return trimmed, True
+    return trimmed, False
+
+
+def typealias_underlying(sym: dict) -> list[dict] | None:
+    """Fragments of a typealias's underlying type (everything after `=`).
+
+    The compiler fuses the `=` with the following token (e.g. ` = [`), so split
+    that fragment and keep the trailing part rather than dropping it.
+    """
+    frags = sym.get("declarationFragments", [])
+    for i, f in enumerate(frags):
+        if f["kind"] == "text" and "=" in f["spelling"]:
+            after = f["spelling"].split("=", 1)[1]
+            rest = frags[i + 1:]
+            return [{"kind": "text", "spelling": after}] + rest if after.strip() else rest
+    return None
+
+
+def map_named_type(name: str, usr: str, graph: "SymbolGraph", resolver) -> dict:
+    if usr:
+        ref = resolver(usr)
+        if ref is not None:
+            return ref
+    # Known scalars and free-form JSON containers (matched by name) take precedence
+    # over alias expansion, so e.g. JSONObject/JSONData stay free-form.
+    if name in JSON_CONTAINERS:
+        return copy.deepcopy(JSON_CONTAINERS[name])
+    if name in SCALAR_TYPES:
+        return dict(SCALAR_TYPES[name])
+    if name in ("Any", "AnyObject", "AnyHashable"):
+        return {}
+    # Expand any other typealias to its underlying type.
+    if usr:
+        sym = graph.symbols.get(usr)
+        if sym and sym["kind"]["identifier"] == "swift.typealias":
+            under = typealias_underlying(sym)
+            if under:
+                return map_type(under, graph, resolver)
+    # Unresolved generic parameter (e.g. T, Element) -> permit anything.
+    if re.fullmatch(r"[A-Z][A-Za-z0-9]?", name) or name in ("Element", "Key", "Value", "Wrapped"):
+        return {}
+    warn(f"unrecognized type {name!r} (usr={usr or '-'}); emitting permissive schema")
+    return {"$comment": f"unmapped Swift type: {name}"}
+
+
+# Generic container kinds. RealmSwift collections are matched by USR (NOT name) because
+# the app has its own `Map`/`List` model types whose names would otherwise collide.
+_REALM_COLLECTION_USRS = {
+    "s:10RealmSwift4ListC": "array",       # List<Element>  -> array
+    "s:10RealmSwift3MapC": "dict",         # Map<Key,Value> -> object (dictionary)
+    "s:10RealmSwift10MutableSetC": "set",  # MutableSet<Element> -> array (unique)
+}
+_STDLIB_COLLECTION_NAMES = {
+    "Array": "array", "ContiguousArray": "array",
+    "Set": "set", "Dictionary": "dict", "Optional": "optional",
+}
+
+
+def _collection_kind(name: str, usr: str) -> str | None:
+    """array / set / dict / optional for a generic container base type, else None."""
+    if usr in _REALM_COLLECTION_USRS:
+        return _REALM_COLLECTION_USRS[usr]
+    return _STDLIB_COLLECTION_NAMES.get(name)
+
+
+def _tid_schema(tid: dict | None, graph: "SymbolGraph", resolver) -> dict:
+    if tid is None:
+        return {}
+    return map_named_type(tid["spelling"], tid.get("preciseIdentifier", ""), graph, resolver)
+
+
+def map_type(frags: list[dict], graph: "SymbolGraph", resolver) -> dict:
+    """Map a list of type fragments to a JSON Schema fragment."""
+    frags, _optional = split_optional(frags)
+    text = reconstruct(frags)
+    type_ids = [f for f in frags if f["kind"] == "typeIdentifier"]
+
+    # [T] (array) or [Key: Value] (dictionary) sugar.
+    if text.startswith("[") and text.endswith("]"):
+        is_dict = any(f["kind"] == "text" and ":" in f["spelling"] for f in frags)
+        if is_dict:
+            return {"type": "object", "additionalProperties": _tid_schema(type_ids[-1] if type_ids else None, graph, resolver)}
+        return {"type": "array", "items": _tid_schema(type_ids[0] if type_ids else None, graph, resolver)}
+
+    # Generic containers: Array<T>, Set<T>, Dictionary<K,V>, Optional<T>, and the
+    # RealmSwift List<T> (array) / Map<K,V> (object) / MutableSet<T> (matched by USR).
+    if re.match(r"^\w+\s*<", text) and type_ids:
+        base = type_ids[0]
+        kind = _collection_kind(base["spelling"], base.get("preciseIdentifier", ""))
+        if kind:
+            inner = type_ids[1:]  # generic argument type identifiers
+            if kind == "array":
+                return {"type": "array", "items": _tid_schema(inner[0] if inner else None, graph, resolver)}
+            if kind == "set":
+                return {"type": "array", "uniqueItems": True, "items": _tid_schema(inner[0] if inner else None, graph, resolver)}
+            if kind == "optional":
+                return _tid_schema(inner[0] if inner else None, graph, resolver)
+            if kind == "dict":
+                return {"type": "object", "additionalProperties": _tid_schema(inner[-1] if inner else None, graph, resolver)}
+        # Other custom generic (e.g. Wrapper<T>): resolve the base type.
+        return _tid_schema(base, graph, resolver)
+
+    # Plain or qualified (Parent.Nested) named type: the last identifier is the type.
+    if type_ids:
+        return _tid_schema(type_ids[-1], graph, resolver)
+
+    if text in ("Any", "AnyObject"):
+        return {}
+    warn(f"could not parse type {text!r}; emitting permissive schema")
+    return {"$comment": f"unparsed Swift type: {text}"}
+
+
+# --- model ---------------------------------------------------------------
+
+class SymbolGraph:
+    def __init__(self, paths: list[Path]):
+        self.symbols: dict[str, dict] = {}
+        self.conforms: dict[str, set[str]] = {}
+        for p in paths:
+            data = json.loads(p.read_text())
+            for s in data.get("symbols", []):
+                self.symbols[s["identifier"]["precise"]] = s
+            for r in data.get("relationships", []):
+                if r["kind"] == "conformsTo":
+                    self.conforms.setdefault(r["source"], set()).add(r["target"])
+        self.path_to_usr: dict[tuple, str] = {}
+        for usr, s in self.symbols.items():
+            self.path_to_usr[tuple(s["pathComponents"])] = usr
+
+    def is_codable(self, usr: str) -> bool:
+        c = self.conforms.get(usr, set())
+        return USR_DECODABLE in c or USR_ENCODABLE in c
+
+    def selected_types(self) -> dict[str, dict]:
+        """USR -> symbol, for structs/enums/classes that are Codable."""
+        out = {}
+        for usr, s in self.symbols.items():
+            simple = s["pathComponents"][-1]
+            if simple in JSON_CONTAINERS or simple == "CodingKeys":
+                continue  # opaque container / coding-keys helper: not emitted
+            if s["kind"]["identifier"] in ("swift.struct", "swift.enum", "swift.class") and self.is_codable(usr):
+                out[usr] = s
+        return out
+
+    def members(self, type_path: list[str]) -> list[dict]:
+        """Property symbols whose parent path equals type_path."""
+        tp = tuple(type_path)
+        out = []
+        for s in self.symbols.values():
+            if s["kind"]["identifier"] != "swift.property":
+                continue
+            if tuple(s["pathComponents"][:-1]) == tp:
+                out.append(s)
+        return out
+
+    def enum_cases(self, type_path: list[str]) -> list[dict]:
+        tp = tuple(type_path)
+        out = []
+        for s in self.symbols.values():
+            if s["kind"]["identifier"] != "swift.enum.case":
+                continue
+            if tuple(s["pathComponents"][:-1]) == tp:
+                out.append(s)
+        return out
+
+    def coding_keys_cases(self, type_path: list[str]) -> list[dict] | None:
+        """Case symbols of a type's explicit `CodingKeys` enum (source order), or
+        None if it has none (then all stored properties are encoded)."""
+        ck_path = list(type_path) + ["CodingKeys"]
+        has = any(s["kind"]["identifier"] == "swift.enum" and s["pathComponents"] == ck_path
+                  for s in self.symbols.values())
+        if not has:
+            return None
+        cases = self.enum_cases(ck_path)
+        cases.sort(key=lambda c: (c.get("location", {}).get("position", {}).get("line", 0),
+                                  c.get("location", {}).get("position", {}).get("character", 0)))
+        return cases
+
+
+def build(graph: SymbolGraph, draft: str) -> dict[str, dict]:
+    """Return {filename: schema} for each top-level Codable type.
+
+    A Codable type becomes its own schema file unless it is nested inside another
+    Codable type, in which case it is emitted under that ancestor's `$defs`. Types
+    nested in a non-Codable container (e.g. an @objc class) are promoted to their
+    own files.
+    """
+    selected = graph.selected_types()
+    selected_by_path = {tuple(s["pathComponents"]): usr for usr, s in selected.items()}
+
+    def simple_name(usr: str) -> str:
+        return selected[usr]["pathComponents"][-1]
+
+    def codable_owner(usr: str) -> str | None:
+        """Nearest strict ancestor that is itself a selected Codable type."""
+        path = selected[usr]["pathComponents"]
+        for i in range(len(path) - 1, 0, -1):
+            anc = selected_by_path.get(tuple(path[:i]))
+            if anc is not None:
+                return anc
+        return None
+
+    def root_of(usr: str) -> str:
+        owner = codable_owner(usr)
+        while owner is not None:
+            usr = owner
+            owner = codable_owner(usr)
+        return usr
+
+    roots: dict[str, list[str]] = {}
+    for usr in selected:
+        roots.setdefault(root_of(usr), []).append(usr)
+
+    def filename(root_usr: str) -> str:
+        return f"{simple_name(root_usr)}.schema.json"
+
+    def make_resolver(current_root: str):
+        def resolve(usr: str) -> dict | None:
+            if usr not in selected:
+                return None
+            r = root_of(usr)
+            if r == current_root:
+                return {"$ref": "#"} if usr == r else {"$ref": f"#/$defs/{simple_name(usr)}"}
+            fn = filename(r)
+            return {"$ref": fn} if usr == r else {"$ref": f"{fn}#/$defs/{simple_name(usr)}"}
+        return resolve
+
+    def schema_for(usr: str, resolver) -> dict:
+        s = selected[usr]
+        if s["kind"]["identifier"] == "swift.enum":
+            return enum_schema(s, graph)
+        return object_schema(s, graph, resolver)
+
+    files: dict[str, dict] = {}
+    for root_usr, members in roots.items():
+        resolver = make_resolver(root_usr)
+        schema = {
+            "$schema": f"https://json-schema.org/draft/{draft}/schema",
+            "$id": filename(root_usr),
+            **schema_for(root_usr, resolver),
+        }
+        defs: dict[str, dict] = {}
+        for usr in members:
+            if usr == root_usr:
+                continue
+            key = simple_name(usr)
+            if key in defs:  # two nested types share a simple name
+                key = "_".join(selected[usr]["pathComponents"])
+            defs[key] = schema_for(usr, resolver)
+        if defs:
+            schema["$defs"] = defs
+        fn = filename(root_usr)
+        if fn in files:
+            warn(f"duplicate schema filename {fn}; overwriting")
+        files[fn] = schema
+    return files
+
+
+def _property_entry(prop: dict, graph: SymbolGraph, resolver) -> tuple[dict, bool]:
+    """Schema fragment and optionality for a stored-property symbol."""
+    frags = type_fragments(prop)
+    _, optional = split_optional(frags)
+    entry = map_type(frags, graph, resolver)
+    pdesc = doc_text(prop)
+    if pdesc:
+        entry["description"] = pdesc
+    return entry, optional
+
+
+def coding_keys_for(type_sym: dict, graph: SymbolGraph) -> list[tuple[str, str]] | None:
+    """Unified (case_name, json_key) list for a type's CodingKeys, or None if it has
+    none. Prefers the symbol graph (internal/public CodingKeys), then falls back to
+    parsing source (private CodingKeys, invisible to the graph)."""
+    cases = graph.coding_keys_cases(type_sym["pathComponents"])
+    if cases is not None:
+        return [(c["pathComponents"][-1], coding_key_name(c)) for c in cases]
+    src = source_coding_keys(type_sym)
+    if src is not None:
+        warn(f"{'.'.join(type_sym['pathComponents'])}: CodingKeys read from source "
+             f"(not in symbol graph, likely private) — verify keys")
+    return src
+
+
+def object_schema(s: dict, graph: SymbolGraph, resolver) -> dict:
+    type_path = s["pathComponents"]
+    schema: dict = {"title": type_path[-1], "type": "object"}
+    desc = doc_text(s)
+    if desc:
+        schema["description"] = desc
+
+    properties: dict[str, dict] = {}
+    required: list[str] = []
+    members = {p["names"]["title"]: p for p in graph.members(type_path)}
+    coding_keys = coding_keys_for(s, graph)
+
+    if coding_keys is not None:
+        # Explicit CodingKeys: exported attributes are exactly these cases (renames
+        # honored), regardless of which other stored properties exist.
+        for case_name, key in coding_keys:
+            dotted = ".".join(type_path) + "." + case_name
+            if dotted in FORCE_EXCLUDE:
+                continue
+            prop = members.get(case_name)
+            if prop is None:
+                warn(f"{dotted}: CodingKeys case has no matching stored property; "
+                     f"emitting permissive schema")
+                properties[key] = {}
+                required.append(key)
+                continue
+            entry, optional = _property_entry(prop, graph, resolver)
+            properties[key] = entry
+            if not optional:
+                required.append(key)
+    else:
+        # No CodingKeys: every stored property is encoded.
+        for prop in graph.members(type_path):
+            dotted = ".".join(prop["pathComponents"])
+            if dotted in FORCE_EXCLUDE:
+                continue
+            forced_in = dotted in FORCE_INCLUDE
+            stored, ambiguous = classify_property(prop)
+            if not stored and not forced_in:
+                continue
+            if ambiguous and not forced_in:
+                warn(f"{dotted}: `{{ get set }}` is ambiguous (stored-with-didSet vs "
+                     f"read-write computed); included as stored "
+                     f"(use --exclude {dotted} to drop it)")
+            entry, optional = _property_entry(prop, graph, resolver)
+            properties[prop["names"]["title"]] = entry
+            if not optional:
+                required.append(prop["names"]["title"])
+
+    schema["properties"] = properties
+    if required:
+        schema["required"] = required
+    schema["additionalProperties"] = False
+    return schema
+
+
+def enum_schema(s: dict, graph: SymbolGraph) -> dict:
+    schema: dict = {"title": s["pathComponents"][-1]}
+    desc = doc_text(s)
+    if desc:
+        schema["description"] = desc
+    cases = [c["pathComponents"][-1] for c in graph.enum_cases(s["pathComponents"])]
+    # Raw-value enums are RawRepresentable; default the value type to string.
+    schema["type"] = "string"
+    if cases:
+        schema["enum"] = cases
+    return schema
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("source", type=Path, help="Symbol-graph .symbols.json file or directory")
+    parser.add_argument("out", type=Path, help="Output directory for *.schema.json")
+    parser.add_argument("--draft", default="2020-12", help="JSON Schema draft (default: 2020-12)")
+    parser.add_argument("--exclude", action="append", default=[], metavar="Type.prop",
+                        help="Force-exclude a property by dotted path (repeatable)")
+    parser.add_argument("--include", action="append", default=[], metavar="Type.prop",
+                        help="Force-include a property by dotted path (repeatable)")
+    args = parser.parse_args()
+    FORCE_EXCLUDE.update(args.exclude)
+    FORCE_INCLUDE.update(args.include)
+
+    if args.source.is_dir():
+        paths = sorted(args.source.glob("*.symbols.json"))
+    else:
+        paths = [args.source]
+    if not paths:
+        print(f"no symbol-graph files found at {args.source}", file=sys.stderr)
+        return 1
+
+    graph = SymbolGraph(paths)
+    files = build(graph, args.draft)
+    if not files:
+        print("no Codable types found in symbol graph", file=sys.stderr)
+        return 1
+
+    args.out.mkdir(parents=True, exist_ok=True)
+    for filename, schema in sorted(files.items()):
+        (args.out / filename).write_text(json.dumps(schema, indent=2) + "\n")
+        print(f"wrote {args.out / filename}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

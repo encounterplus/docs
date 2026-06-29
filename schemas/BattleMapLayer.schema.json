@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "BattleMapLayer.schema.json",
+  "title": "BattleMapLayer",
+  "type": "string",
+  "enum": [
+    "token",
+    "object",
+    "map",
+    "dm",
+    "wall",
+    "floor",
+    "light"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Marker.schema.json",
+  "title": "Marker",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string"
+    },
+    "shape": {
+      "type": "string"
+    },
+    "size": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "descr": {
+      "type": "string"
+    },
+    "reference": {
+      "type": "string"
+    },
+    "hidden": {
+      "type": "boolean"
+    },
+    "locked": {
+      "type": "boolean"
+    },
+    "x": {
+      "type": "integer"
+    },
+    "y": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "label",
+    "color",
+    "shape",
+    "size",
+    "name",
+    "descr",
+    "reference",
+    "hidden",
+    "locked",
+    "x",
+    "y"
+  ],
+  "additionalProperties": false
+}

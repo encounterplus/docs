@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Dice.schema.json",
+  "title": "Dice",
+  "type": "object",
+  "properties": {
+    "formula": {
+      "type": "string"
+    },
+    "faces": {
+      "type": "integer"
+    },
+    "result": {
+      "type": "integer"
+    },
+    "rolls": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    }
+  },
+  "required": [
+    "formula",
+    "faces",
+    "result",
+    "rolls"
+  ],
+  "additionalProperties": false
+}

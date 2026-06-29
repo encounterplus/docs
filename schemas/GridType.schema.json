@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "GridType.schema.json",
+  "title": "GridType",
+  "type": "string",
+  "enum": [
+    "square",
+    "hexFlat",
+    "hexPointy"
+  ]
+}

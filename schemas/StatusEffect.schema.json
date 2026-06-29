@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "StatusEffect.schema.json",
+  "title": "StatusEffect",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "reference": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "number"
+    },
+    "durationUnit": {
+      "type": "string"
+    },
+    "durationType": {
+      "type": "string"
+    },
+    "descr": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "roundStart": {
+      "type": "integer"
+    },
+    "turnStart": {
+      "type": "integer"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "attributes": {
+      "type": [
+        "string",
+        "number",
+        "boolean"
+      ]
+    },
+    "modifiers": {
+      "type": "array",
+      "items": {
+        "$ref": "Modifier.schema.json"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "type",
+    "reference",
+    "duration",
+    "durationUnit",
+    "durationType",
+    "descr",
+    "notes",
+    "color",
+    "icon",
+    "source",
+    "roundStart",
+    "turnStart",
+    "enabled",
+    "data",
+    "attributes",
+    "modifiers"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "DurationType": {
+      "title": "DurationType",
+      "type": "string",
+      "enum": [
+        "sourceStartNextTurn",
+        "sourceEndNextTurn",
+        "targetStartNextTurn",
+        "targetEndNextTurn",
+        "time"
+      ]
+    },
+    "DurationUnit": {
+      "title": "DurationUnit",
+      "type": "string",
+      "enum": [
+        "round",
+        "minute",
+        "hour",
+        "day"
+      ]
+    }
+  }
+}

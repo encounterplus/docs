@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "GridStyle.schema.json",
+  "title": "GridStyle",
+  "type": "string",
+  "enum": [
+    "solid",
+    "corners"
+  ]
+}

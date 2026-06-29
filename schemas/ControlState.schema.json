@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ControlState.schema.json",
+  "title": "ControlState",
+  "type": "string",
+  "enum": [
+    "start",
+    "control",
+    "end",
+    "block",
+    "cancel"
+  ]
+}

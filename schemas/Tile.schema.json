@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Tile.schema.json",
+  "title": "Tile",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "x": {
+      "type": "integer"
+    },
+    "y": {
+      "type": "integer"
+    },
+    "width": {
+      "type": "integer"
+    },
+    "height": {
+      "type": "integer"
+    },
+    "rotation": {
+      "type": "integer"
+    },
+    "opacity": {
+      "type": "number"
+    },
+    "scale": {
+      "type": "number"
+    },
+    "layer": {
+      "type": "string"
+    },
+    "zIndex": {
+      "type": "integer"
+    },
+    "hidden": {
+      "type": "boolean"
+    },
+    "locked": {
+      "type": "boolean"
+    },
+    "asset": {
+      "$ref": "Asset.schema.json"
+    },
+    "light": {
+      "$ref": "Light.schema.json"
+    },
+    "reference": {
+      "type": "string"
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "$ref": "Component.schema.json"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "x",
+    "y",
+    "width",
+    "height",
+    "rotation",
+    "opacity",
+    "scale",
+    "layer",
+    "zIndex",
+    "hidden",
+    "locked",
+    "asset",
+    "light",
+    "reference",
+    "components"
+  ],
+  "additionalProperties": false
+}

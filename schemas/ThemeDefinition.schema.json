@@ -1,0 +1,543 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ThemeDefinition.schema.json",
+  "title": "ThemeDefinition",
+  "type": "object",
+  "description": "A comprehensive theming system for customizing the visual appearance of native views\n\n`ThemeDefinition` provides a flexible, hierarchical theming framework that allows complete visual customization\nof RPG character sheets, compendiums, and related interfaces. It supports color schemes, typography, component\nstyling, and game-system-specific visual elements.",
+  "properties": {
+    "debug": {
+      "type": "boolean",
+      "description": "Enables debug mode for theme development.\n\nWhen `true`, may display additional visual indicators for layout boundaries,\nstyle application, or other development aids. Defaults to `false`."
+    },
+    "extends": {
+      "type": "string",
+      "description": "The identifier of a parent theme to inherit styles from.\n\nAllows creating theme variants by extending a base theme and overriding specific properties.\nAny properties not set in the current theme will fall back to the parent theme.\n\nExample: `\"dark-mode\"`, `\"parchment\"`, `\"minimal\"`"
+    },
+    "tintColor": {
+      "type": "string",
+      "description": "The primary accent color used throughout the interface.\n\nApplied to interactive elements, selection highlights, and accent UI components.\nSpecified as a hex color string (e.g., `\"#007AFF\"`, `\"#FF5733\"`)."
+    },
+    "primaryColor": {
+      "type": "string",
+      "description": "The primary brand or theme color.\n\nUsed for major UI elements, headers, and primary actions. Works alongside `tintColor`\nto create a cohesive color scheme. Specified as a hex color string."
+    },
+    "secondaryColor": {
+      "type": "string",
+      "description": "The secondary accent color.\n\nUsed for less prominent UI elements and to provide visual variety alongside `primaryColor`.\nSpecified as a hex color string."
+    },
+    "textColor": {
+      "type": "string",
+      "description": "The default text color for body content.\n\nApplied to standard text throughout the application unless overridden by specific text styles.\nSpecified as a hex color string (e.g., `\"#000000\"` for black, `\"#FFFFFF\"` for white).\n\n- Note: Use `defaultTextColor` to get the parsed `UIColor` instance."
+    },
+    "dividerColor": {
+      "type": "string",
+      "description": "The color for divider lines and separators.\n\nUsed to visually separate sections, list items, and content blocks.\nSpecified as a hex color string."
+    },
+    "bgColor": {
+      "type": "string",
+      "description": "The background color for the main interface.\n\nApplied to view backgrounds, cards, and content containers.\nSpecified as a hex color string."
+    },
+    "bgImage": {
+      "type": "string",
+      "description": "An optional background image or texture.\n\nCan be used to apply parchment textures, subtle patterns, or thematic backgrounds.\nSpecified as an image asset name or resource identifier."
+    },
+    "textStyles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/TextStyle"
+      },
+      "description": "A collection of named text styles for typography throughout the application.\n\nCommon style names include:\n- `\"body\"`: Standard body text\n- `\"heading\"`, `\"heading1\"`, `\"heading2\"`, etc.: Hierarchical headings\n- `\"caption\"`: Small descriptive text\n- `\"title\"`: Prominent titles\n- `\"footnote\"`: Fine print and supplementary text"
+    },
+    "tableStyles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/TableStyle"
+      },
+      "description": "A collection of named table styles for data presentation.\n\nCommon style names include `\"default\"`, `\"striped\"`, `\"minimal\"`.\nUse `defaultTableStyle` to access the default table style."
+    },
+    "blockQuoteStyles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/BlockQuoteStyle"
+      },
+      "description": "A collection of named block quote styles for callouts and special content.\n\nCommon style names include `\"default\"`, `\"note\"`, `\"warning\"`, `\"tip\"`.\nUse `defaultBlockQuoteStyle` to access the default block quote style."
+    },
+    "buttonStyles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/ButtonStyle"
+      },
+      "description": "A collection of named button styles for interactive elements.\n\nCommon style names include `\"default\"`, `\"primary\"`, `\"secondary\"`, `\"destructive\"`.\nUse `defaultButtonStyle` to access the default button style."
+    },
+    "checkboxStyles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/CheckboxStyle"
+      },
+      "description": "A collection of named checkbox styles for boolean selection.\n\nCommon style names include `\"default\"`, `\"skill\"`, `\"proficiency\"`."
+    },
+    "fieldStyles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/FieldStyle"
+      },
+      "description": "A collection of named field styles for form inputs.\n\nCommon style names include `\"default\"`, `\"inline\"`, `\"prominent\"`.\nUse `defaultFieldStyle` to access the default field style."
+    },
+    "dividerStyles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/DividerStyle"
+      },
+      "description": "A collection of named divider styles for visual separation.\n\nCommon style names include `\"default\"`, `\"thick\"`, `\"thin\"`, `\"ornamental\"`.\nUse `defaultDividerStyle` to access the default divider style."
+    },
+    "statBlockStyles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/StatBlockStyle"
+      },
+      "description": "A collection of named stat block styles for creature and character statistics.\n\nStat blocks are a core RPG component displaying creature/character attributes in a formatted layout.\nCommon style names include `\"default\"`, `\"monster\"`, `\"npc\"`, `\"spell\"`.\n\nUse `defaultStatBlockStyle` to access the default stat block style."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "TextTrait": {
+      "title": "TextTrait",
+      "description": "Typographic traits that can be applied to text styles.\n\nTraits modify the appearance of text beyond basic font and size settings.",
+      "type": "string",
+      "enum": [
+        "bold",
+        "italic",
+        "condensed",
+        "expanded",
+        "tightLeading",
+        "looseleading"
+      ]
+    },
+    "TextCase": {
+      "title": "TextCase",
+      "description": "Text case transformations.\n\nControls automatic capitalization of text content.",
+      "type": "string",
+      "enum": [
+        "uppercase",
+        "lowercase"
+      ]
+    },
+    "DividerStyle": {
+      "title": "DividerStyle",
+      "type": "object",
+      "description": "Visual styling for divider lines and separators.\n\nDividers visually separate content sections, list items, and UI regions.",
+      "properties": {
+        "shape": {
+          "type": "string",
+          "description": "The shape or style of the divider.\n\nExamples: `\"line\"`, `\"dots\"`, `\"dashes\"`, `\"ornamental\"`"
+        },
+        "color": {
+          "type": "string",
+          "description": "The color of the divider.\n\nSpecified as a hex color string (e.g., `\"#CCCCCC\"`)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "ButtonStyle": {
+      "title": "ButtonStyle",
+      "type": "object",
+      "description": "Visual styling for button components.\n\nDefines the appearance of interactive buttons including colors, borders, and text styling.",
+      "properties": {
+        "color": {
+          "type": "string",
+          "description": "The text/foreground color of the button.\n\nSpecified as a hex color string (e.g., `\"#FFFFFF\"`)."
+        },
+        "bgColor": {
+          "type": "string",
+          "description": "The background color of the button.\n\nSpecified as a hex color string (e.g., `\"#007AFF\"`)."
+        },
+        "borderColor": {
+          "type": "string",
+          "description": "The border/stroke color of the button.\n\nSpecified as a hex color string. If `nil`, no border is drawn."
+        },
+        "borderWidth": {
+          "type": "number",
+          "description": "The width of the button border in points.\n\nOnly applies if `borderColor` is set."
+        },
+        "cornerRadius": {
+          "type": "number",
+          "description": "The corner radius for rounded button corners.\n\nSpecified in points. A value of `0` creates square corners."
+        },
+        "padding": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Internal padding around the button content.\n\nCan be specified as a single value (all sides) or an array of values\nfor [top, leading, bottom, trailing] padding."
+        },
+        "body": {
+          "$ref": "#/$defs/TextStyle",
+          "description": "The text style for the button label.\n\nIf `nil`, uses the theme's default body text style."
+        }
+      },
+      "additionalProperties": false
+    },
+    "CheckboxStyle": {
+      "title": "CheckboxStyle",
+      "type": "object",
+      "description": "Visual styling for checkbox and toggle components.\n\nDefines the appearance of checkboxes used for skill proficiencies, feature toggles,\nand boolean selections.",
+      "properties": {
+        "tintColor": {
+          "type": "string",
+          "description": "The accent color for the checkbox when selected.\n\nSpecified as a hex color string."
+        },
+        "primaryColor": {
+          "type": "string",
+          "description": "The primary color for the checkbox outline or background.\n\nSpecified as a hex color string."
+        },
+        "icon": {
+          "type": "string",
+          "description": "The SF Symbol name or icon identifier for the checkbox.\n\nExamples: `\"checkmark.circle.fill\"`, `\"checkmark.square.fill\"`, `\"circle.fill\"`"
+        },
+        "size": {
+          "type": "number",
+          "description": "The size of the checkbox in points.\n\nTypically ranges from 16-24 points."
+        }
+      },
+      "additionalProperties": false
+    },
+    "FieldStyle": {
+      "title": "FieldStyle",
+      "type": "object",
+      "description": "Visual styling for form input fields.\n\nDefines the appearance of text fields, number inputs, and other form controls,\nincluding layout, colors, borders, and label positioning.",
+      "properties": {
+        "bgColor": {
+          "type": "string",
+          "description": "The background color of the input field.\n\nSpecified as a hex color string (e.g., `\"#F5F5F5\"`)."
+        },
+        "borderColor": {
+          "type": "string",
+          "description": "The border color of the input field.\n\nSpecified as a hex color string. If `nil`, no border is drawn."
+        },
+        "borderWidth": {
+          "type": "number",
+          "description": "The width of the field border in points.\n\nOnly applies if `borderColor` is set."
+        },
+        "cornerRadius": {
+          "type": "number",
+          "description": "The corner radius for rounded field corners.\n\nSpecified in points. A value of `0` creates square corners."
+        },
+        "spacing": {
+          "type": "number",
+          "description": "The spacing between the label and input control.\n\nSpecified in points."
+        },
+        "alignment": {
+          "$ref": "ViewDefinition.schema.json#/$defs/Alignment",
+          "description": "The alignment of content within the field.\n\nCan override the default alignment from `Layout/alignment`."
+        },
+        "padding": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Internal padding around the field content.\n\nCan be specified as a single value or an array for different sides."
+        },
+        "layout": {
+          "$ref": "#/$defs/Layout",
+          "description": "The positioning of the field label.\n\nDefaults to `.top` if not specified."
+        },
+        "titleWidth": {
+          "type": "number",
+          "description": "The fixed width for the field label.\n\nWhen set, creates a consistent label column width for aligned form layouts.\nSpecified in points."
+        },
+        "title": {
+          "$ref": "#/$defs/TextStyle",
+          "description": "The text style for the field label.\n\nIf `nil`, uses the theme's default caption or secondary text style."
+        },
+        "body": {
+          "$ref": "#/$defs/TextStyle",
+          "description": "The text style for the field input value.\n\nIf `nil`, uses the theme's default body text style."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Layout": {
+      "title": "Layout",
+      "type": "string",
+      "enum": [
+        "top",
+        "bottom",
+        "leading",
+        "trailing"
+      ]
+    },
+    "TableStyle": {
+      "title": "TableStyle",
+      "type": "object",
+      "description": "Visual styling for table and data grid components.\n\nDefines the appearance of tabular data displays including headers, rows, and separators.",
+      "properties": {
+        "head": {
+          "$ref": "#/$defs/TextStyle",
+          "description": "The text style for table header cells.\n\nIf `nil`, uses the theme's default heading or bold text style."
+        },
+        "body": {
+          "$ref": "#/$defs/TextStyle",
+          "description": "The text style for table body cells.\n\nIf `nil`, uses the theme's default body text style."
+        },
+        "rowStyle": {
+          "$ref": "#/$defs/RowStyle",
+          "description": "The row styling treatment to apply.\n\nDefaults to `.even` if not specified."
+        },
+        "rowColor": {
+          "type": "string",
+          "description": "The background color for alternating rows.\n\nSpecified as a hex color string. Only applies when `rowStyle` is `.even` or `.odd`."
+        },
+        "rowLineColor": {
+          "type": "string",
+          "description": "The color of row separator lines.\n\nSpecified as a hex color string. Only applies when `rowStyle` is `.underline`."
+        },
+        "rowLineWidth": {
+          "type": "number",
+          "description": "The width of row separator lines in points.\n\nOnly applies when `rowStyle` is `.underline`."
+        }
+      },
+      "additionalProperties": false
+    },
+    "RowStyle": {
+      "title": "RowStyle",
+      "type": "string",
+      "enum": [
+        "even",
+        "odd",
+        "underline",
+        "clean"
+      ]
+    },
+    "BlockQuoteStyle": {
+      "title": "BlockQuoteStyle",
+      "type": "object",
+      "description": "Visual styling for block quotes, callouts, and highlighted content sections.\n\nBlock quotes are used to emphasize rules, spell descriptions, special abilities,\nand other important text that should stand out from regular content.",
+      "properties": {
+        "bgColor": {
+          "type": "string",
+          "description": "The background color of the block quote.\n\nSpecified as a hex color string (e.g., `\"#FFF8DC\"` for cornsilk)."
+        },
+        "borderColor": {
+          "type": "string",
+          "description": "The color of the decorative border.\n\nSpecified as a hex color string."
+        },
+        "borderWidth": {
+          "type": "number",
+          "description": "The width of the border in points.\n\nTypically 2-5 points for subtle emphasis."
+        },
+        "borderStyle": {
+          "$ref": "#/$defs/BorderStyle",
+          "description": "The border decoration style.\n\nIf `nil`, no decorative border is applied."
+        },
+        "padding": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Internal padding around the block quote content.\n\nCan be specified as a single value or an array for different sides."
+        },
+        "body": {
+          "$ref": "#/$defs/TextStyle",
+          "description": "The text style for block quote content.\n\nIf `nil`, uses the theme's default body text style."
+        }
+      },
+      "additionalProperties": false
+    },
+    "BorderStyle": {
+      "title": "BorderStyle",
+      "description": "The style of decorative border for block quotes.",
+      "type": "string",
+      "enum": [
+        "horizontal",
+        "vertical",
+        "left",
+        "arrows"
+      ]
+    },
+    "StatBlockStyle": {
+      "title": "StatBlockStyle",
+      "type": "object",
+      "description": "Stat blocks are a fundamental RPG component that display creature and character statistics\nin a standardized, visually distinctive format. They typically include attributes, abilities,\nactions, and other game mechanics.",
+      "properties": {
+        "bgColor": {
+          "type": "string",
+          "description": "The background color of the stat block.\n\nSpecified as a hex color string (e.g., `\"#FDF6E3\"` for parchment-like color)."
+        },
+        "bgImage": {
+          "type": "string",
+          "description": "An optional background image or texture for the stat block.\n\nExamples: `\"parchment-texture\"`, `\"paper-grain\"`, `\"canvas-texture\"`"
+        },
+        "topImage": {
+          "type": "string",
+          "description": "A decorative header image displayed at the top of the stat block.\n\nExamples: `\"stat-block-header\"`, `\"creature-bar-top\"`"
+        },
+        "bottomImage": {
+          "type": "string",
+          "description": "A decorative footer image displayed at the bottom of the stat block.\n\nExamples: `\"stat-block-footer\"`, `\"creature-bar-bottom\"`"
+        },
+        "barImage": {
+          "type": "string",
+          "description": "A decorative divider image used between stat block sections.\n\nExamples: `\"stat-block-divider\"`, `\"ornamental-line\"`"
+        },
+        "borderColor": {
+          "type": "string",
+          "description": "Specified as a hex color string."
+        },
+        "borderWidth": {
+          "type": "number",
+          "description": "The width of the stat block border in points.\n\nTypically 1-3 points for subtle framing."
+        },
+        "borderStyle": {
+          "$ref": "#/$defs/BorderStyle",
+          "description": "The border decoration style.\n\nIf `nil`, no decorative border is applied."
+        },
+        "cornerRadius": {
+          "type": "number",
+          "description": "The corner radius for rounded field corners.\n\nSpecified in points. A value of `0` creates square corners."
+        },
+        "shadowColor": {
+          "type": "string"
+        },
+        "shadowOffsetX": {
+          "type": "number"
+        },
+        "shadowOffsetY": {
+          "type": "number"
+        },
+        "shadowRadius": {
+          "type": "number"
+        },
+        "padding": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Internal padding around the stat block content.\n\nCan be specified as a single value or an array for different sides."
+        },
+        "body": {
+          "$ref": "#/$defs/TextStyle",
+          "description": "The text style for stat block body content.\n\nApplied to ability descriptions, stat values, and general text."
+        },
+        "section": {
+          "$ref": "#/$defs/TextStyle",
+          "description": "The text style for stat block section headings.\n\nApplied to section titles like \"Actions\", \"Traits\", \"Legendary Actions\"."
+        }
+      },
+      "additionalProperties": false
+    },
+    "ThemeDefinition_StatBlockStyle_BorderStyle": {
+      "title": "BorderStyle",
+      "description": "The style of decorative border for stat blocks.",
+      "type": "string",
+      "enum": [
+        "single",
+        "double"
+      ]
+    },
+    "TextStyle": {
+      "title": "TextStyle",
+      "type": "object",
+      "description": "Comprehensive styling for text rendering.\n\n`TextStyle` defines every aspect of text appearance including font family, size, color,\nspacing, alignment, and special effects. Text styles can be named and reused throughout\nthe theme for consistency.",
+      "properties": {
+        "font": {
+          "type": "string",
+          "description": "The font family name.\n\nSpecify a custom font name (e.g., `\"Georgia\"`, `\"Palatino-Bold\"`, `\"Cinzel\"`)\nor leave `nil` to use the system font."
+        },
+        "size": {
+          "type": "number",
+          "description": "The base font size in points.\n\nThis size is automatically adjusted for accessibility using Dynamic Type.\nSee `adjustedFontSize` for the computed accessible size."
+        },
+        "alignment": {
+          "$ref": "ViewDefinition.schema.json#/$defs/Alignment",
+          "description": "Examples: `.leading`, `.center`, `.trailing`"
+        },
+        "divider": {
+          "type": "boolean",
+          "description": "Useful for headings and section titles. Defaults to `false`."
+        },
+        "color": {
+          "type": "string",
+          "description": "The text color.\n\nSpecified as a hex color string (e.g., `\"#000000\"`). Use `uicolor` to get the parsed `UIColor`."
+        },
+        "tintColor": {
+          "type": "string",
+          "description": "An accent or tint color for the text.\n\nSpecified as a hex color string. Used for special highlighting or emphasis."
+        },
+        "bgColor": {
+          "type": "string",
+          "description": "The background color behind the text.\n\nSpecified as a hex color string. Use `uibgcolor` to get the parsed `UIColor`."
+        },
+        "padding": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Internal padding around the text.\n\nCan be specified as a single value or an array for different sides."
+        },
+        "lineHeight": {
+          "type": "number",
+          "description": "The line height multiplier.\n\nA value of `1.0` is normal line height, `1.5` is one-and-a-half spacing, etc."
+        },
+        "lineSpacing": {
+          "type": "number",
+          "description": "Additional spacing between lines in points.\n\nThis is added to the standard line height."
+        },
+        "lineLimit": {
+          "type": "integer",
+          "description": "The maximum number of lines before truncating.\n\nIf `nil`, text is not line-limited."
+        },
+        "strokeWidth": {
+          "type": "number",
+          "description": "The text stroke (outline) width.\n\nPositive values create an outline; negative values create a filled stroke effect.\nTypically ranges from -3 to 3."
+        },
+        "strokeColor": {
+          "type": "string",
+          "description": "The color of the text stroke/outline.\n\nSpecified as a hex color string. Only visible when `strokeWidth` is set."
+        },
+        "paragraphSpacing": {
+          "type": "number",
+          "description": "Spacing after each paragraph in points.\n\nApplied to multi-paragraph text blocks."
+        },
+        "paragraphSpacingBefore": {
+          "type": "number",
+          "description": "Spacing before each paragraph in points.\n\nApplied to multi-paragraph text blocks."
+        },
+        "paragraphHeadIndent": {
+          "type": "number",
+          "description": "The indentation of the first line of each paragraph in points.\n\nPositive values indent, negative values outdent (hanging indent)."
+        },
+        "traits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TextTrait"
+          },
+          "description": "Typographic traits to apply to the text.\n\nMultiple traits can be combined (e.g., `[.bold, .italic]`)."
+        },
+        "traitStyles": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Custom styling applied to specific trait markers in text.\n\nMaps trait identifiers to style names for dynamic text formatting.\nExample: `[\"emphasis\": \"italic\", \"strong\": \"bold\"]`"
+        },
+        "case": {
+          "$ref": "#/$defs/TextCase",
+          "description": "Text case transformation.\n\nAutomatically converts text to uppercase or lowercase."
+        },
+        "prefix": {
+          "type": "string",
+          "description": "Text to prepend before the content.\n\nExample: `\"Chapter \"`, `\"\u2022 \"` for bullet points"
+        },
+        "suffix": {
+          "type": "string",
+          "description": "Text to append after the content.\n\nExample: `\" ft\"` for feet units, `\":\"` after labels"
+        },
+        "caps": {
+          "type": "boolean",
+          "description": "Whether to use small caps font variant.\n\nWhen `true`, applies typographic small capitals if available in the font."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

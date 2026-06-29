@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Asset.schema.json",
+  "title": "Asset",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "resource": {
+      "type": "string"
+    },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "$ref": "Component.schema.json"
+      }
+    },
+    "rank": {
+      "type": "integer"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "parentId": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "slug",
+    "type",
+    "resource",
+    "parameters",
+    "components",
+    "rank",
+    "tags",
+    "parentId"
+  ],
+  "additionalProperties": false
+}

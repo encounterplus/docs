@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Measurement.schema.json",
+  "title": "Measurement",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string"
+    },
+    "hidden": {
+      "type": "boolean"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "color",
+    "hidden",
+    "data"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "MeasurementType": {
+      "title": "MeasurementType",
+      "type": "string",
+      "enum": [
+        "grid",
+        "precise"
+      ]
+    }
+  }
+}
