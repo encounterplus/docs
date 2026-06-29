@@ -1,8 +1,6 @@
 ---
-title: Title
+title: Working with Library
 ---
-
-# Working with Library
 
 ## Creating creatures
 

@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Component
-
 ```xml
 <component>
     <type>filter.tint</type>

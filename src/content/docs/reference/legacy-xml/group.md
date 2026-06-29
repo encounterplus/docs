@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Group
-
 ```xml
 <group id="987C39B8-2A3B-4B11-8503-6B3B1AFBBF02" sort="3">
     <name>Treasure</name>

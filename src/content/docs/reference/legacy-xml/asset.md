@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Asset
-
 ```xml
 <asset id="445D1DF0-745E-44D6-9EF0-69F67D45B277">
     <name>Campfire</name>

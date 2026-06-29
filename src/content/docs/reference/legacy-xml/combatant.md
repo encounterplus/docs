@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Combatant
-
 ```xml
  <combatant>
     <label>G2</label>

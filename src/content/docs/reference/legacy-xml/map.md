@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Map
-
 ```xml
 <map id="038C45F6-5DD4-480C-B2D0-C7675746EA48" sort="2">
     <name>Example Map</name>

@@ -2,8 +2,6 @@
 title: Encounter Management
 ---
 
-# Encounter Management
-
 Encounter+ is a great way to manage any combat encounter. It’s designed to quickly add creatures or NPCs as well Player Characters on the fly. It’s also designed to keep track of various conditions both positive and negative for each creature and Player in an encounter.
 
 ### What is an Encounter?

@@ -1,8 +1,7 @@
 ---
-title: Title
+title: Remote Play
 ---
 
-# How does the Web Client work?
 The device that is running the game can act as a server for other players to connect to either locally or over the internet. This feature is in Early Access so there are a few things you must do in order to set up your internet to allow players connect. The following is a setup guide in the form of a FAQ. To start, just go into the external display setting located in the top left of E+ and turn it on.
 
 ### Why doesn’t the URL E+ gives me work?

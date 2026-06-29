@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Item
-
 ```xml
 <compendium>
     <item id="BADD84E5-5219-4710-B4BF-1C5C45B359C9">

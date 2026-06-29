@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Page
-
 ```xml
 <page id="2BA4481B-B606-4084-9AF6-7DC70AB88A05">
     <name>Example Page</name>

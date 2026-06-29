@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Marker
-
 ```xml
 <marker>
     <name>Example Page</name>

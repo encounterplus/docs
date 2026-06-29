@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Monster
-
 ```xml
 <monster id="6D875315-4ABC-45E2-B77E-031493092136">
     <name>Aboleth</name>

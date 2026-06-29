@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Encounter
-
 ```xml
 <encounter id="45923627-08CB-40FD-A7B2-76DDC2FF1C41" sort="1">
     <name>Example Encounter</name>

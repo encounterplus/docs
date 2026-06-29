@@ -1,8 +1,6 @@
 ---
-title: Title
+title: Special Thanks
 ---
-
-# Special Thanks
 
 ### Beta Testers &amp; Users
 

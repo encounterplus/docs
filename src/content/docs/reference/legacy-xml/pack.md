@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Pack
-
 ```xml
 <pack id="8BEBC35E-0C03-4F2B-AAAA-6DA21DC18FAB">
 	<name>Sample Assets</name>

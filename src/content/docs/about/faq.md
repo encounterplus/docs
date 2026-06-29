@@ -1,8 +1,6 @@
 ---
-title: Title
+title: Frequently Asked Questions
 ---
-
-# Frequently Asked Questions
 
 ### Missing monsters, spells or items?
 

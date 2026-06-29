@@ -1,10 +1,7 @@
 ---
-title: Title
+title: Web Client FAQ
 ---
 
-FAQ Web Client for Encounter Plus
-
-# How does the Web Client work?
 The device that is running the game can act as a server for other players to connect to either locally or over the internet. Just go into the external display setting located in the top left of E+ and turn it on.
 
 ### Why doesn’t the URL E+ gives me work?

@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Spell
-
 ```xml
 <spell id="AE2A734B-F6ED-4B90-B7B5-ACB1178D4162">
     <name>Acid Arrow</name>

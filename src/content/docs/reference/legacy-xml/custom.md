@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Trait, Action, Reaction, Legendary
-
 ```xml
 <trait>
     <name>Amphibious</name>

@@ -1,13 +1,11 @@
 ---
-title: Title
+title: Tutorials
 ---
-
-# Tutorials
 
 Here are some tutorials. Work in progress.
 * [Working with Library](library)
 
-# Official video tutorials
+## Official video tutorials
 
 ### Fog of War & Line of sight
 
@@ -21,7 +19,7 @@ Here are some tutorials. Work in progress.
 <iframe src="https://www.youtube.com/embed/V-BUZvcmO5Y" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
-# Community video tutorials
+## Community video tutorials
 
 ## Video tutorials by Dusey
 

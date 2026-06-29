@@ -5,8 +5,6 @@ sidebar:
   order: 0
 ---
 
-# Legacy XML
-
 These pages describe the legacy XML import/export format used by previous versions of Encounter+.
 
 Legacy exports are ZIP archives that contain one root XML definition file, plus optional folders for images, tokens, fonts, styles, and other imported files. The archive extension identifies the package type, but the XML file in the archive root defines the content.

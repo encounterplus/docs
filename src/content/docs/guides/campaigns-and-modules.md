@@ -2,8 +2,6 @@
 title: Campaigns & Modules
 ---
 
-# Campaigns & Modules
-
 ### Campaigns and Modules
 
 In the **Compendium** ![load][icon-library], materials for managing campaigns can be accessed. Documents can be created, maps can be organized, and encounters can be saved. All of the creatures and Player Characters are managed here as well. This article will focus on managing **Campaigns**, which are whole adventures for the Player Characters. This will also apply to **Modules** which are small bite-sized adventures that can be inserted into larger campaigns.

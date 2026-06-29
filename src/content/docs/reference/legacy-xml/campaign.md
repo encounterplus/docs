@@ -5,8 +5,6 @@ sidebar:
   hidden: true
 ---
 
-# Campaign
-
 ```xml
 <campaign id="07D8A58C-52E3-461C-928C-12F45878E60A">
 	<name>New Campaign</name>

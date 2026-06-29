@@ -1,8 +1,6 @@
 ---
-title: Title
+title: Tips and Tricks
 ---
-
-# Tips and Tricks
 
 For more information about Campaigns, please see [here](campaigns-and-modules).
 

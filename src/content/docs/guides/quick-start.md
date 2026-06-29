@@ -10,7 +10,7 @@ TODO: update to v5
 
 <video src="https://encounter.plus/videos/basics.mp4" width="100%" controls preload></video>
 
-# Adding Creatures to Combat
+## Adding Creatures to Combat
 
 ## Inserting Monster or NPC
 
