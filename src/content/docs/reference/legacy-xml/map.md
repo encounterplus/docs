@@ -1,6 +1,8 @@
 ---
 title: Map
 description: Legacy Encounter+ XML reference for map documents used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Map

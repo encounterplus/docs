@@ -1,6 +1,8 @@
 ---
 title: Tile
 description: Legacy Encounter+ XML reference for map tile entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Tile

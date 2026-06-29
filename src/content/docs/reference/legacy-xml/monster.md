@@ -1,6 +1,8 @@
 ---
 title: Monster
 description: Legacy Encounter+ XML reference for monster entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Monster

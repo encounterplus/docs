@@ -1,6 +1,8 @@
 ---
 title: Compendium
 description: Legacy Encounter+ XML reference for compendium documents used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Compendium

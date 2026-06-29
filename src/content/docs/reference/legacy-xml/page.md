@@ -1,6 +1,8 @@
 ---
 title: Page
 description: Legacy Encounter+ XML reference for page entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Page

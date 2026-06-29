@@ -1,6 +1,8 @@
 ---
 title: Campaign
 description: Legacy Encounter+ XML reference for campaign documents used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Campaign

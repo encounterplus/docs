@@ -1,6 +1,8 @@
 ---
 title: Module
 description: Legacy Encounter+ XML reference for module documents used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Module
@@ -126,4 +128,3 @@ description: Legacy Encounter+ XML reference for module documents used by previo
 | page | [Page](page.md) |  |
 | encounter | [Encounter](encounter.md) |  |
 | group | [Group](group.md) |  |
-

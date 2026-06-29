@@ -1,6 +1,8 @@
 ---
 title: Pack
 description: Legacy Encounter+ XML reference for asset pack documents used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Pack
@@ -57,4 +59,3 @@ description: Legacy Encounter+ XML reference for asset pack documents used by pr
 | image | String | cover image filename |
 | group | [Group](group.md) |  |
 | asset | [Asset](asset.md) |  |
-

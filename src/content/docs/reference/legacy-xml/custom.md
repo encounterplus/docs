@@ -1,6 +1,8 @@
 ---
 title: Trait, Action, Reaction, Legendary
 description: Legacy Encounter+ XML reference for custom monster text blocks used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Trait, Action, Reaction, Legendary

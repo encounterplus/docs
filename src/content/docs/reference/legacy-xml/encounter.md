@@ -1,6 +1,8 @@
 ---
 title: Encounter
 description: Legacy Encounter+ XML reference for encounter documents used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Encounter

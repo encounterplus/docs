@@ -1,6 +1,8 @@
 ---
 title: Component
 description: Legacy Encounter+ XML reference for map component entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Component

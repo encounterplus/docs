@@ -1,6 +1,8 @@
 ---
 title: Asset
 description: Legacy Encounter+ XML reference for asset entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Asset

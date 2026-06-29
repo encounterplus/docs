@@ -1,6 +1,8 @@
 ---
 title: Combatant
 description: Legacy Encounter+ XML reference for combatant entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Combatant

@@ -1,6 +1,8 @@
 ---
 title: Marker
 description: Legacy Encounter+ XML reference for map marker entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Marker

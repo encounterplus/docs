@@ -1,6 +1,8 @@
 ---
 title: Group
 description: Legacy Encounter+ XML reference for grouped content entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Group

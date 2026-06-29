@@ -29,6 +29,9 @@ export default defineConfig({
           label: "Guides",
           items: [
             { label: "Quick start", link: "/guides/quick-start/" },
+            { label: "Campaigns & Modules", link: "/guides/campaigns-and-modules/" },
+            { label: "Encounter Management", link: "/guides/encounter-management/" },
+            { label: "Library", link: "/guides/library/" },
             { label: "Battle maps", link: "/guides/battle-map/" },
 						{
               label: "Battle Maps",
@@ -36,6 +39,13 @@ export default defineConfig({
                 { label: "Line of Sight", link: "/guides/battle-maps/line-of-sight/" },
               ],
             },
+            { label: "Import and Export", link: "/guides/import-and-export/" },
+            { label: "Remote Play", link: "/guides/remote-play/" },
+            { label: "Web Client FAQ", link: "/guides/web-client-faq/" },
+            { label: "Tips and Tricks", link: "/guides/tips-and-tricks/" },
+            { label: "Tutorials", link: "/guides/tutorials/" },
+            { label: "Special Thanks", link: "/guides/special-thanks/" },
+            { label: "Example Guide", link: "/guides/example/" },
           ],
         },
 				{

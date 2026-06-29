@@ -1,6 +1,8 @@
 ---
 title: Spell
 description: Legacy Encounter+ XML reference for spell entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Spell

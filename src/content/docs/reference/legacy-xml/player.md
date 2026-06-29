@@ -1,6 +1,8 @@
 ---
 title: Player
 description: Legacy Encounter+ XML reference for player character entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Player

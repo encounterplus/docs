@@ -1,6 +1,8 @@
 ---
 title: Item
 description: Legacy Encounter+ XML reference for item entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Item

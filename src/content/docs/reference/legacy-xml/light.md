@@ -1,6 +1,8 @@
 ---
 title: Light
 description: Legacy Encounter+ XML reference for light source entries used by previous versions.
+sidebar:
+  hidden: true
 ---
 
 # Light
