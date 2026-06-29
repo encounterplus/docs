@@ -2,6 +2,10 @@
 title: Working with Library
 ---
 
+:::caution[Obsolete]
+TODO: update to v5
+:::
+
 ## Creating creatures
 
 >Creatures are all entities created through the Monster or NPC and the Player Character menus. In this documentation, the term ‘Creature’ is used to refer to any creature created in the Monster or NPC and Player Character creation menus, and are stored in the Compendium under Monsters and Player Characters.

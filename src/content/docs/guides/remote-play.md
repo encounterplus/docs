@@ -2,6 +2,10 @@
 title: Remote Play
 ---
 
+:::caution[Obsolete]
+TODO: update to v5
+:::
+
 The device that is running the game can act as a server for other players to connect to either locally or over the internet. This feature is in Early Access so there are a few things you must do in order to set up your internet to allow players connect. The following is a setup guide in the form of a FAQ. To start, just go into the external display setting located in the top left of E+ and turn it on.
 
 ### Why doesn’t the URL E+ gives me work?
@@ -33,4 +37,3 @@ Tokens have the ability to move through walls, unless you enable restricted move
 Auras and other animated assets are currently not working. Stay Tuned. 
 
 Markers added in the DM layer will not be visible to players. However, anything written with the pen or highlighter tool will be visible even if added in the DM layer. 
-

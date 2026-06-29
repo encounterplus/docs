@@ -2,6 +2,10 @@
 title: Special Thanks
 ---
 
+:::caution[Obsolete]
+TODO: update to v5
+:::
+
 ### Beta Testers &amp; Users
 
 A special thanks to all beta testers and users on Reddit, Discord and Facebook for providing invaluable feedback during and after development.

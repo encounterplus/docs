@@ -2,6 +2,10 @@
 title: Import and Export
 ---
 
+:::caution[Obsolete]
+TODO: update to v5
+:::
+
 ## Data Format
 
 EncounterPlus is using XML files as a data exchange format, packed into ZIP archive along with other files (images, tokens, fonts, styles, etc..). 

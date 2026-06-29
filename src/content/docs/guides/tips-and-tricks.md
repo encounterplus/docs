@@ -2,6 +2,10 @@
 title: Tips and Tricks
 ---
 
+:::caution[Obsolete]
+TODO: update to v5
+:::
+
 For more information about Campaigns, please see [here](campaigns-and-modules).
 
 [icon-pencil]: ../../../assets/icons/pencil.png 
