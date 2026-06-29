@@ -40,7 +40,12 @@ export default defineConfig({
         },
 				{
 					label: 'Reference',
-					items: [{ autogenerate: { directory: 'reference' } }],
+					items: [
+						{
+							label: 'Legacy XML',
+							items: [{ autogenerate: { directory: 'reference/legacy-xml' } }],
+						},
+					],
 				},
 			],
 		}),
