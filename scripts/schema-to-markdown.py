@@ -342,6 +342,53 @@ def build_sidebar(pages: list[Page]) -> list[dict]:
     return to_items(root)
 
 
+def _effective_path(page: Page) -> list[str]:
+    """Heading path for the index: standalone types sit under their group nesting;
+    a concat page's leaf becomes a subsection holding its types."""
+    return page.groups if page.standalone else page.groups + [page.label]
+
+
+def render_index(pages: list[Page]) -> str:
+    """A single landing page listing every schema (grouped, with descriptions and
+    links) — the slim alternative to enumerating the whole type tree in the nav."""
+    has_json = SCHEMA_URL_BASE is not None
+    root: dict = {"children": {}, "rows": []}
+    for page in pages:
+        node = root
+        for label in _effective_path(page):
+            node = node["children"].setdefault(label, {"children": {}, "rows": []})
+        for type_name, schema in page.types:
+            node["rows"].append((type_name, schema))
+
+    out = ["---", 'title: "Schema reference"',
+           'description: "Reference for the JSON import/export and game-system '
+           'configuration schemas."', "---", "", GENERATED_BANNER, "",
+           "Reference for the JSON formats the app reads and writes, generated from "
+           "its data model. Each type links to its details and its raw JSON Schema.", ""]
+
+    def emit(node: dict, depth: int) -> None:
+        if node["rows"]:
+            out.append("| Schema | Description |" + (" JSON |" if has_json else ""))
+            out.append("| --- | --- |" + (" --- |" if has_json else ""))
+            for type_name, schema in sorted(node["rows"], key=lambda r: r[0]):
+                route, standalone = INDEX[type_name]
+                detail = route if standalone else f"{route}#{github_slug(type_name)}"
+                desc = escape_cell((schema.get("description") or "").split("\n", 1)[0])
+                row = f"| [{type_name}]({detail}) | {desc} |"
+                if has_json:
+                    fn = schema.get("$id", f"{type_name}.schema.json")
+                    row += f" [JSON]({SCHEMA_URL_BASE}/{fn}) |"
+                out.append(row)
+            out.append("")
+        for label in sorted(node["children"]):
+            out.append(f"{'#' * min(depth + 2, 6)} {label}")
+            out.append("")
+            emit(node["children"][label], depth + 1)
+
+    emit(root, 0)
+    return "\n".join(out).rstrip() + "\n"
+
+
 # --------------------------------------------------------------------------- #
 
 def main() -> int:
@@ -357,9 +404,15 @@ def main() -> int:
                              "from; adds a 'View JSON Schema' link per type")
     parser.add_argument("--sidebar-out", type=Path,
                         help="Write a Starlight sidebar fragment (JSON) here")
-    parser.add_argument("--sidebar-root", default="Schema",
-                        help="Wrap the sidebar groups under this root group label "
+    parser.add_argument("--sidebar-root", default="JSON Schema",
+                        help="In tree mode, wrap the groups under this root label; "
+                             "in index mode, the label of the single index link "
                              "(empty string = no root). Default: Schema")
+    parser.add_argument("--sidebar-mode", choices=("index", "tree"), default="index",
+                        help="index: one 'Schema' link to a generated landing page "
+                             "that lists every schema (slim nav, recommended). "
+                             "tree: enumerate every group/page in the sidebar. "
+                             "Default: index")
     args = parser.parse_args()
 
     global BASE_PATH, SCHEMA_URL_BASE
@@ -373,16 +426,29 @@ def main() -> int:
 
     pages = build_pages(files)
 
+    if any(p.slug == "index" for p in pages):
+        print("error: a schema page has slug 'index', colliding with the landing "
+              "page", file=sys.stderr)
+        raise SystemExit(1)
+
     args.out.mkdir(parents=True, exist_ok=True)
     for page in pages:
         dest = args.out / f"{page.slug}.md"
         dest.write_text(render_page(page))
         print(f"wrote {dest}  ({len(page.types)} type(s))")
 
+    index_route = BASE_PATH + "/"
+    (args.out / "index.md").write_text(render_index(pages))
+    print(f"wrote {args.out / 'index.md'}  (landing page)")
+
     if args.sidebar_out:
-        sidebar = build_sidebar(pages)
-        if args.sidebar_root:
-            sidebar = [{"label": args.sidebar_root, "items": sidebar}]
+        if args.sidebar_mode == "index":
+            label = args.sidebar_root or "Schema"
+            sidebar = [{"label": label, "link": index_route}]
+        else:
+            sidebar = build_sidebar(pages)
+            if args.sidebar_root:
+                sidebar = [{"label": args.sidebar_root, "items": sidebar}]
         args.sidebar_out.parent.mkdir(parents=True, exist_ok=True)
         args.sidebar_out.write_text(json.dumps(sidebar, indent=2) + "\n")
         print(f"wrote {args.sidebar_out}")
