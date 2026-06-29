@@ -15,6 +15,25 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Python generated files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.orig
+
 
 # environment variables
 .env
