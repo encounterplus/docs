@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Message.schema.json",
+  "title": "Message",
+  "x-group": "API/",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string"
+    },
+    "creature": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "source",
+    "color",
+    "creature",
+    "content",
+    "created"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "MessageType": {
+      "title": "MessageType",
+      "type": "string",
+      "enum": [
+        "chat",
+        "roll",
+        "tableRoll",
+        "command"
+      ]
+    }
+  }
+}

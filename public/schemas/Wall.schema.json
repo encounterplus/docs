@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Wall.schema.json",
+  "title": "Wall",
+  "x-group": "Shared",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "color": {
+      "type": "string"
+    },
+    "type": {
+      "$ref": "WallType.schema.json"
+    },
+    "side": {
+      "$ref": "#/$defs/Side"
+    },
+    "door": {
+      "$ref": "#/$defs/DoorState"
+    },
+    "generated": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "data"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Side": {
+      "title": "Side",
+      "type": "string",
+      "enum": [
+        "both",
+        "left",
+        "right"
+      ]
+    },
+    "DoorState": {
+      "title": "DoorState",
+      "type": "string",
+      "enum": [
+        "closed",
+        "open",
+        "locked"
+      ]
+    }
+  }
+}

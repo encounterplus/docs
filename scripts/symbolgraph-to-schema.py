@@ -17,6 +17,21 @@ Emit the input from the app project with, e.g.:
 `-symbol-graph-minimum-access-level internal` is required: the Codable structs
 are `internal`, and without it they are omitted from the graph.
 
+Tag a type for the docs by adding a `- SchemaGroup:` line to its doc comment:
+
+    /// A battle map and everything placed on it.
+    ///
+    /// - SchemaGroup: Content/Maps
+    struct Map: Codable { ... }
+
+The value is written to the schema as `x-group` (and stripped from the
+description). Only tagged types — plus everything they transitively `$ref` — are
+emitted; untagged, unreferenced Codable types are dropped. If no type is tagged,
+all Codable types are emitted (unfiltered), preserving the pre-tag behavior.
+
+Types with a `ViewModel` path component (e.g. `Foo.ViewModel`) are skipped — they
+are app-internal and not part of the exported format (see SKIP_PATH_COMPONENTS).
+
 Usage:
     symbolgraph-to-schema.py <symbols-dir-or-file> <out-dir> [--draft 2020-12]
 """
@@ -30,6 +45,10 @@ import re
 import sys
 from pathlib import Path
 from urllib.parse import unquote
+
+# Path components that exclude a type from emission entirely (matched per
+# component, so `Foo.ViewModel` is skipped but `FooViewModelThing` is not).
+SKIP_PATH_COMPONENTS = {"ViewModel"}
 
 # Stable stdlib USRs for the conformances that mark a Codable type.
 USR_DECODABLE = "s:Se"
@@ -73,6 +92,16 @@ def warn(msg: str) -> None:
     print(f"warning: {msg}", file=sys.stderr)
 
 
+# A `- SchemaGroup: <path>` doc-comment line tags a type for the docs taxonomy.
+# It drives both filtering (only tagged types and what they reach are emitted)
+# and grouping (the value becomes the schema's `x-group`). See README/CLAUDE.md.
+SCHEMA_GROUP_RE = re.compile(r"^\s*-\s*SchemaGroup\s*:\s*(.+?)\s*$", re.IGNORECASE)
+
+# Group assigned to a type that is reached from a tagged root but isn't tagged
+# itself, so every emitted schema is self-describing and lands on a page.
+DEFAULT_GROUP = "Shared"
+
+
 # Dotted property paths (e.g. "ViewDefinition.id") to force-exclude / force-include,
 # populated from --exclude / --include. Resolves the ambiguous `{ get set }` cases.
 FORCE_EXCLUDE: set[str] = set()
@@ -90,11 +119,91 @@ def doc_text(symbol: dict) -> str | None:
     dc = symbol.get("docComment")
     if not dc:
         return None
-    text = "\n".join(line["text"] for line in dc["lines"]).strip()
+    # Drop the `- SchemaGroup:` tag line(s) — that metadata is carried in `x-group`,
+    # not the human-readable description.
+    lines = [l["text"] for l in dc["lines"] if not SCHEMA_GROUP_RE.match(l["text"])]
+    text = "\n".join(lines).strip()
     if not text:
         return None
     text = re.sub(r"``([^`]+)``", r"`\1`", text)
     return text
+
+
+def extract_group(symbol: dict) -> str | None:
+    """The `- SchemaGroup:` value from a symbol's doc comment, or None."""
+    dc = symbol.get("docComment")
+    if not dc:
+        return None
+    for line in dc["lines"]:
+        m = SCHEMA_GROUP_RE.match(line["text"])
+        if m:
+            return m.group(1).strip()
+    return None
+
+
+def with_group(schema: dict, group: str) -> dict:
+    """Return schema with `x-group` inserted right after its title for readable diffs."""
+    out: dict = {}
+    placed = False
+    for k, v in schema.items():
+        if k == "x-group":
+            continue
+        out[k] = v
+        if not placed and k in ("title", "description"):
+            out["x-group"] = group
+            placed = True
+    if not placed:
+        out["x-group"] = group
+    return out
+
+
+def ref_filenames(node) -> set[str]:
+    """All cross-file `$ref` targets (the `<Type>.schema.json` part) within a schema."""
+    out: set[str] = set()
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if k == "$ref" and isinstance(v, str):
+                fp = v.split("#", 1)[0]
+                if fp.endswith(".schema.json"):
+                    out.add(fp)
+            else:
+                out |= ref_filenames(v)
+    elif isinstance(node, list):
+        for x in node:
+            out |= ref_filenames(x)
+    return out
+
+
+def filter_to_tagged(files: dict[str, dict]) -> None:
+    """Keep only tagged roots and everything they transitively `$ref`; drop the rest.
+
+    Untagged-but-reachable schemas are stamped with the default group so every
+    emitted file is self-describing. If nothing is tagged (e.g. the app source
+    has no `- SchemaGroup:` yet), leave all files untouched."""
+    tagged = {fn for fn, s in files.items() if "x-group" in s}
+    if not tagged:
+        warn("no `- SchemaGroup:` tags found; emitting all Codable types unfiltered")
+        return
+
+    keep = set(tagged)
+    stack = list(tagged)
+    while stack:
+        for ref in ref_filenames(files[stack.pop()]):
+            if ref in files and ref not in keep:
+                keep.add(ref)
+                stack.append(ref)
+
+    dropped = sorted(set(files) - keep)
+    for fn in dropped:
+        del files[fn]
+    untagged_kept = sorted(fn for fn in keep if "x-group" not in files[fn])
+    for fn in untagged_kept:
+        files[fn] = with_group(files[fn], DEFAULT_GROUP)
+    if untagged_kept:
+        warn(f"reached but untagged, assigned to {DEFAULT_GROUP!r}: "
+             f"{', '.join(file_part[:-12] for file_part in untagged_kept)}")
+    if dropped:
+        print(f"dropped {len(dropped)} untagged, unreferenced type(s)", file=sys.stderr)
 
 
 # --- stored vs computed --------------------------------------------------
@@ -412,9 +521,12 @@ class SymbolGraph:
         """USR -> symbol, for structs/enums/classes that are Codable."""
         out = {}
         for usr, s in self.symbols.items():
-            simple = s["pathComponents"][-1]
+            path = s["pathComponents"]
+            simple = path[-1]
             if simple in JSON_CONTAINERS or simple == "CodingKeys":
                 continue  # opaque container / coding-keys helper: not emitted
+            if SKIP_PATH_COMPONENTS.intersection(path):
+                continue  # e.g. a `.ViewModel` type: app-internal, not exported
             if s["kind"]["identifier"] in ("swift.struct", "swift.enum", "swift.class") and self.is_codable(usr):
                 out[usr] = s
         return out
@@ -516,6 +628,9 @@ def build(graph: SymbolGraph, draft: str) -> dict[str, dict]:
             "$id": filename(root_usr),
             **schema_for(root_usr, resolver),
         }
+        group = extract_group(selected[root_usr])
+        if group:
+            schema = with_group(schema, group)
         defs: dict[str, dict] = {}
         for usr in members:
             if usr == root_usr:
@@ -530,6 +645,7 @@ def build(graph: SymbolGraph, draft: str) -> dict[str, dict]:
         if fn in files:
             warn(f"duplicate schema filename {fn}; overwriting")
         files[fn] = schema
+    filter_to_tagged(files)
     return files
 
 

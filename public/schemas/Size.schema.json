@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Size.schema.json",
+  "title": "Size",
+  "x-group": "Shared/",
+  "type": "string",
+  "enum": [
+    "tiny",
+    "small",
+    "medium",
+    "large",
+    "huge",
+    "gargantuan",
+    "colossal"
+  ]
+}

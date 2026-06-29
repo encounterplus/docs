@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Component.schema.json",
+  "title": "Component",
+  "x-group": "Shared",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "hue": {},
+    "saturation": {},
+    "brightness": {},
+    "color": {},
+    "from": {},
+    "to": {},
+    "repeat": {},
+    "duration": {},
+    "autoreverse": {}
+  },
+  "required": [
+    "type",
+    "enabled",
+    "hue",
+    "saturation",
+    "brightness",
+    "color",
+    "from",
+    "to",
+    "repeat",
+    "duration",
+    "autoreverse"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "EntityDefinition.schema.json",
+  "title": "EntityDefinition",
+  "x-group": "Definitions/",
+  "type": "object",
+  "description": "`EntityDefinition` describes the structure, behavior, and resources associated with a type of game entity\nsuch as characters, monsters, spells, items, or custom game objects. It provides the blueprint for how\nentities are stored, displayed, edited, and organized within the application.",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The internal programmatic name for this entity type.\n\nUsed for code-level identification, inheritance relationships, and resource naming.\nShould be lowercase, singular, and contain no spaces (e.g., \"character\", \"spell\", \"magic-item\").\n\nThis is the canonical identifier for the entity type within the system."
+    },
+    "title": {
+      "type": "string",
+      "description": "The localized display title for a single entity.\n\nThis is the human-readable name for one instance of this entity type.\nShould be in singular form (e.g., \"Character\", \"Spell\", \"Magic Item\").\n\nIf `nil`, the title is automatically derived from the `name` using localization."
+    },
+    "label": {
+      "type": "string",
+      "description": "The generic programmatic label for this entity type.\n\nUsed to construct file paths and resource names. Typically matches `name` but\ncan differ for entity variants or specialized types."
+    },
+    "collection": {
+      "$ref": "#/$defs/Collection",
+      "description": "Metadata for the collection this entity type belongs to.\n\nDefines how groups of these entities are organized and displayed."
+    },
+    "extends": {
+      "type": "string",
+      "description": "The parent entity type this entity extends.\n\nEnables entity type hierarchies where specialized entities inherit behavior from\nbase types. For example, \"dragon\" might extend \"monster\", or \"longsword\" might\nextend \"weapon\".\n\nWhen set, this entity is treated as a specialized variant of the parent type,\npotentially inheriting its forms, views, and validation rules."
+    },
+    "loadable": {
+      "type": "boolean",
+      "description": "Whether entities of this type can be loaded from data files.\n\nWhen `true`, the system can load entities from the collection JSON file.\nWhen `false`, entities are created programmatically or generated dynamically.\n\nDefaults to `nil`, which is typically interpreted as `true` for most entity types."
+    },
+    "system": {
+      "type": "string",
+      "description": "The game system this entity type belongs to.\n\nIdentifies the specific RPG system (e.g., \"dnd5e\", \"pathfinder2e\", \"call-of-cthulhu\")\nthat defines this entity type. Used to locate system-specific resources and data.\n\nIf `nil`, the entity uses the currently active system's resources."
+    },
+    "standalone": {
+      "type": "boolean",
+      "description": "Whether this entity type has only one instance (singleton pattern).\n\nWhen `true`, the entity represents a unique object like a campaign, party, or\ngame state, rather than a type that can have multiple instances.\n\nStandalone entities typically have specialized UI and data handling."
+    },
+    "dynamic": {
+      "type": "boolean",
+      "description": "Whether entities of this type are generated dynamically.\n\nWhen `true`, entities may be created on-the-fly based on rules, calculations,\nor procedural generation rather than loaded from static data files.\n\nExamples include calculated spell slots, derived ability modifiers, or\nprocedurally generated encounters."
+    },
+    "custom": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Custom metadata for extended entity behavior.\n\nAllows extensions and plugins to attach additional configuration without modifying\nthe core structure. Keys and values are application-specific."
+    }
+  },
+  "required": [
+    "name",
+    "label",
+    "collection"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Collection": {
+      "title": "Collection",
+      "type": "object",
+      "description": "Metadata for organizing and displaying a collection of entities.\n\nCollections group related entities together (e.g., all characters, all spells, all items)\nand define how they appear in list views and navigation interfaces.",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The display title for the collection.\n\nThis is the human-readable name shown in navigation and list headers.\nShould be in plural form (e.g., \"Characters\", \"Spells\", \"Magic Items\").\n\nIf `nil`, the title is derived from the entity's localization key."
+        },
+        "label": {
+          "type": "string",
+          "description": "The programmatic label for the collection.\n\nUsed to construct file paths and resource identifiers. Should be lowercase,\nplural, and contain no spaces (e.g., \"characters\", \"spells\", \"magic-items\")."
+        },
+        "icon": {
+          "type": "string",
+          "description": "An optional icon identifier for the collection.\n\nCan be an SF Symbol name (e.g., \"person.3.fill\") or a path to a custom icon\nasset (e.g., \"icons/spells.png\")."
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

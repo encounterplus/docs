@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Game.schema.json",
+  "title": "Game",
+  "x-group": "API/",
+  "type": "object",
+  "properties": {
+    "started": {
+      "type": "boolean"
+    },
+    "round": {
+      "type": "integer"
+    },
+    "turn": {
+      "type": "integer"
+    },
+    "combatantId": {
+      "type": "string"
+    },
+    "initiativeId": {
+      "type": "string"
+    },
+    "combatants": {
+      "type": "array",
+      "items": {
+        "$ref": "Combatant.schema.json"
+      }
+    }
+  },
+  "required": [
+    "started",
+    "round",
+    "turn",
+    "combatantId",
+    "initiativeId",
+    "combatants"
+  ],
+  "additionalProperties": false
+}

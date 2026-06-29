@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Source.schema.json",
+  "title": "Source",
+  "x-group": "Shared",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "page": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "name",
+    "page"
+  ],
+  "additionalProperties": false
+}

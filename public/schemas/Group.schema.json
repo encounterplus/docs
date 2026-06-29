@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Group.schema.json",
+  "title": "Group",
+  "x-group": "Content/",
+  "type": "object",
+  "description": "A Group",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "parentId": {
+      "type": "string"
+    },
+    "rank": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "slug",
+    "parentId",
+    "rank"
+  ],
+  "additionalProperties": false
+}

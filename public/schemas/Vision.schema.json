@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Vision.schema.json",
+  "title": "Vision",
+  "x-group": "Shared",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "light": {
+      "type": "boolean"
+    },
+    "lightRadiusMin": {
+      "type": "number"
+    },
+    "lightRadiusMax": {
+      "type": "number"
+    },
+    "lightColor": {
+      "type": "string"
+    },
+    "lightOpacity": {
+      "type": "number"
+    },
+    "dark": {
+      "type": "boolean"
+    },
+    "darkRadiusMin": {
+      "type": "number"
+    },
+    "darkRadiusMax": {
+      "type": "number"
+    },
+    "sight": {}
+  },
+  "required": [
+    "id",
+    "enabled",
+    "light",
+    "lightRadiusMin",
+    "lightRadiusMax",
+    "lightColor",
+    "lightOpacity",
+    "dark",
+    "darkRadiusMin",
+    "darkRadiusMax",
+    "sight"
+  ],
+  "additionalProperties": false
+}

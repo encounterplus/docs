@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Token.schema.json",
+  "title": "Token",
+  "x-group": "Shared",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "x": {
+      "type": "integer"
+    },
+    "y": {
+      "type": "integer"
+    },
+    "scale": {
+      "type": "number"
+    },
+    "width": {
+      "type": "integer"
+    },
+    "height": {
+      "type": "integer"
+    },
+    "style": {
+      "type": "string"
+    },
+    "rotation": {
+      "type": "integer"
+    },
+    "elevation": {
+      "type": "integer"
+    },
+    "hidden": {
+      "type": "boolean"
+    },
+    "asset": {
+      "$ref": "Asset.schema.json"
+    },
+    "vision": {
+      "$ref": "Vision.schema.json"
+    },
+    "reference": {
+      "type": "string"
+    },
+    "auras": {
+      "type": "array",
+      "items": {
+        "$ref": "Aura.schema.json"
+      }
+    },
+    "entityId": {},
+    "trackingId": {
+      "type": "integer"
+    },
+    "image": {},
+    "path": {
+      "$comment": "unmapped Swift type: CGPoint"
+    },
+    "combatant": {
+      "$ref": "Combatant.schema.json"
+    },
+    "player": {}
+  },
+  "required": [
+    "id",
+    "name",
+    "label",
+    "role",
+    "x",
+    "y",
+    "scale",
+    "width",
+    "height",
+    "style",
+    "rotation",
+    "elevation",
+    "hidden",
+    "asset",
+    "vision",
+    "reference",
+    "auras",
+    "entityId",
+    "trackingId",
+    "image",
+    "path",
+    "combatant",
+    "player"
+  ],
+  "additionalProperties": false
+}

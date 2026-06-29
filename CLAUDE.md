@@ -42,6 +42,32 @@ There is no test suite. `npm run build` is the closest thing to CI validation �
 
 Many guide pages are mid-migration to app v5 and carry an `:::caution[Obsolete]` admonition with a `TODO: update to v5` note. When editing a page, check whether its obsolete notice still applies before treating its content as current.
 
+## Schema reference generation
+
+The developer-facing format/config/template reference is **generated**, not hand-written. The app's Swift `Codable` types are the source of truth; two dependency-free Python scripts turn them into docs:
+
+1. `scripts/symbolgraph-to-schema.py <symbols-dir> public/schemas` — Swift symbol graph → JSON Schema 2020-12, one flat `*.schema.json` per type. `public/schemas/` is the **single source of truth** and is served verbatim at `/schemas/*.schema.json`.
+2. `scripts/schema-to-markdown.py public/schemas src/content/docs/reference/schema --base-path /reference/schema --schema-url-base /schemas --sidebar-out src/schema-sidebar.json` — schemas → Markdown pages + a sidebar fragment.
+
+**`src/content/docs/reference/schema/` and `src/schema-sidebar.json` are fully generated — do not hand-edit.** They carry an `AUTO-GENERATED` banner and are marked `linguist-generated` in `.gitattributes`. To change them, edit the schema/tags and rerun the script. Pages are written **flat** (`reference/schema/<name>.md`), so a page's URL never encodes its group — re-grouping in the sidebar never breaks a link. `astro.config.mjs` imports the sidebar fragment and spreads it into the Reference group, so regenerating updates the nav automatically.
+
+### The `- SchemaGroup:` tag
+
+Grouping and filtering are driven by a DocC tag on each Swift type:
+
+```swift
+/// A battle map and everything placed on it.
+///
+/// - SchemaGroup: Content/Maps
+struct Map: Codable { ... }
+```
+
+- Only **tagged** types — and everything they transitively `$ref` — are emitted. Untagged, unreferenced Codable types are dropped; untagged-but-reached types fall back to the `Shared` group. (If nothing is tagged, all Codable types are emitted unfiltered.)
+- The tag is stored as `x-group` in the schema JSON and stripped from the description.
+- **Trailing slash decides layout:** `Content/Maps` (no slash) = a shared **page** that concatenates every type with that exact tag as a `##` section; `System/Templates/` (trailing slash) = a **group** under which each type gets its own page. A path can't be both a page and a group.
+
+Until the app source carries these tags, `public/schemas/*.schema.json` are tagged via an interim hand-maintained mapping; the next tagged app build overwrites them.
+
 ## Icon tooling
 
 `scripts/strip-sf-symbol.py` extracts a single weight/scale variant from an SF Symbols template SVG export, stripping template guides/notes to produce a compact SVG for the docs. Usage:

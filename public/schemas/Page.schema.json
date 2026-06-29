@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Page.schema.json",
+  "title": "Page",
+  "x-group": "Content/",
+  "type": "object",
+  "description": "A page",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "parentId": {
+      "type": "string"
+    },
+    "rank": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "slug",
+    "content",
+    "parentId",
+    "rank"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "HtmlData": {
+      "title": "HtmlData",
+      "type": "object",
+      "properties": {
+        "page": {
+          "$ref": "#"
+        },
+        "module": {
+          "$ref": "Module.schema.json"
+        },
+        "campaign": {
+          "$ref": "Campaign.schema.json"
+        }
+      },
+      "required": [
+        "page"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

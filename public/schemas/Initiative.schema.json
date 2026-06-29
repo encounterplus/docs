@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Initiative.schema.json",
+  "title": "Initiative",
+  "x-group": "API/",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "value": {
+      "type": [
+        "string",
+        "number",
+        "boolean"
+      ]
+    },
+    "order": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "value",
+    "order"
+  ],
+  "additionalProperties": false
+}

@@ -1,16 +1,38 @@
 #!/usr/bin/env python3
-"""Render JSON Schema files into Starlight Markdown reference pages.
+"""Render JSON Schema files into grouped Starlight Markdown reference pages.
 
 Consumes the `*.schema.json` produced by `symbolgraph-to-schema.py` (the
-version-controlled source of truth) and writes one Markdown page per top-level
-schema, with a property table, nested-type sections, and links between types.
-This script knows nothing about Swift — it is a pure JSON Schema -> Markdown step.
+version-controlled source of truth, flat files under `public/schemas/`) and
+groups them into pages driven by each schema's `x-group` tag. This script knows
+nothing about Swift — it is a pure JSON Schema -> Markdown step.
 
 Usage:
-    schema-to-markdown.py <schemas-dir> <out-dir>
+    schema-to-markdown.py <schemas-dir> <out-dir> [options]
 
-Each `<Type>.schema.json` becomes `<out-dir>/<type-slug>.md` with Starlight
-front matter. Add the generated pages to the sidebar in `astro.config.mjs`.
+The `x-group` value is a slash path whose trailing slash decides layout:
+
+    "Content/Maps"            no trailing slash -> the last segment ("Maps") is a
+                              shared PAGE; every type with this exact tag is
+                              concatenated onto it as a `##` section.
+    "System/Templates/"       trailing slash -> the whole path is a GROUP; the
+                              type gets its OWN page (named after the type)
+                              inside it.
+
+Leading segments become nested sidebar groups, but pages are written FLAT (one
+file per page, named after the leaf/type) so a page's URL never encodes its group
+— re-grouping in the sidebar never breaks a link. Flat slugs share one namespace,
+so a collision is a hard error. Schemas with no `x-group` fall back to a `Shared`
+page so the build never breaks.
+
+`--base-path` is the route prefix the pages live under; it must match where
+`<out-dir>` maps to on the site so cross-page `$ref` links resolve.
+
+`--schema-url-base` (optional) adds a "View JSON Schema" link per type. Point the
+input `<schemas-dir>` at `public/schemas` so the same files are served on the
+docs origin and that link (and `$schema` validation) resolves.
+
+`--sidebar-out` (optional) writes a Starlight sidebar fragment (JSON array of the
+group tree) for `astro.config.mjs` to import and spread into the Reference group.
 """
 
 from __future__ import annotations
@@ -19,17 +41,49 @@ import argparse
 import json
 import re
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
+
+# Route prefix the generated pages are served under; set from --base-path.
+BASE_PATH = "/reference"
+
+# URL prefix the raw *.schema.json files are served from, or None to omit the
+# "View JSON Schema" link. Set from --schema-url-base.
+SCHEMA_URL_BASE: str | None = None
+
+# Tag used for schemas that carry no `x-group`.
+FALLBACK_GROUP = "Shared"
+
+# type name -> (page route, is the page a single-type "standalone" page).
+# Built in pass 1, consumed by render_ref to resolve cross-type links.
+INDEX: dict[str, tuple[str, bool]] = {}
+
+# Render context for the type currently being emitted (so in-page `#` and
+# `#/$defs/...` refs resolve against the right section).
+CURRENT_TYPE = ""
+CURRENT_ROUTE = ""
+CURRENT_STANDALONE = False
 
 
 def slug(name: str) -> str:
-    """CamelCase type name -> kebab-case slug (EntityDefinition -> entity-definition)."""
+    """Type/segment name -> kebab-case URL slug (EntityDefinition -> entity-definition,
+    "Game Systems" -> game-systems). Used for file paths and routes (which we control
+    on both ends), so CamelCase splitting is safe here."""
     s = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", "-", name)
-    return s.lower()
+    s = re.sub(r"[^A-Za-z0-9]+", "-", s)
+    return s.strip("-").lower()
 
 
-def anchor(name: str) -> str:
-    return slug(name)
+def github_slug(text: str) -> str:
+    """Mirror github-slugger, which is what Astro uses to generate heading ids.
+
+    Critically: it does NOT split CamelCase and replaces each space 1:1 with a
+    hyphen (no collapsing). We must match it exactly or in-page `#anchor` links
+    silently point at nothing. `EntityDefinition` -> `entitydefinition`,
+    `Map.Marker` -> `mapmarker`."""
+    s = text.strip().lower()
+    s = re.sub(r"[^\w\- ]", "", s)  # keep word chars, hyphen, space
+    return s.replace(" ", "-")
 
 
 def escape_cell(text: str) -> str:
@@ -37,8 +91,123 @@ def escape_cell(text: str) -> str:
     return text.replace("|", "\\|").replace("\n\n", " ").replace("\n", " ").strip()
 
 
+def yaml_str(text: str) -> str:
+    """Double-quote a string for a YAML front-matter value.
+
+    Required because plain scalars may not start with reserved indicators such
+    as backtick or `@`, which schema descriptions often do."""
+    one_line = text.replace("\n\n", " ").replace("\n", " ").strip()
+    escaped = one_line.replace("\\", "\\\\").replace('"', '\\"')
+    return f'"{escaped}"'
+
+
 def file_to_type(filename: str) -> str:
     return filename.replace(".schema.json", "")
+
+
+# --------------------------------------------------------------------------- #
+# Tag parsing / page model
+# --------------------------------------------------------------------------- #
+
+@dataclass
+class Page:
+    key: str                       # unique page identity (dedupes concat types)
+    route: str                     # /reference/schema/<slug>/ — link & anchor base
+    slug: str                      # flat page slug = the output file name
+    label: str                     # page title / sidebar label
+    groups: list[str]              # ancestor group labels (sidebar only)
+    standalone: bool               # True = one type IS the page
+    types: list[tuple[str, dict]] = field(default_factory=list)  # (name, schema)
+
+
+def parse_tag(tag: str, type_name: str):
+    """Resolve a schema's `x-group` into its page identity. Pages are FLAT — the
+    route never encodes the group, so re-grouping in the sidebar never changes a
+    URL. Returns (page_key, route, page_slug, label, groups, standalone)."""
+    raw = (tag or "").strip()
+    standalone = raw.endswith("/")
+    parts = [p for p in raw.strip("/").split("/") if p] or [FALLBACK_GROUP]
+    if standalone:
+        groups = parts                       # whole path is sidebar nesting
+        label = type_name
+        page_slug = slug(type_name)          # own page, named after the type
+        key = "/".join(parts) + "/" + type_name
+    else:
+        groups = parts[:-1]
+        label = parts[-1]
+        page_slug = slug(parts[-1])          # shared page named after the leaf
+        key = "/".join(parts)
+    route = BASE_PATH + "/" + page_slug + "/"
+    return key, route, page_slug, label, groups, standalone
+
+
+def build_pages(files: list[Path]) -> list[Page]:
+    """Pass 1: load every schema, assign it to a page, and populate INDEX."""
+    pages: dict[str, Page] = {}
+    for f in sorted(files):
+        schema = json.loads(f.read_text())
+        type_name = schema.get("title") or file_to_type(f.name)
+        tag = schema.get("x-group", FALLBACK_GROUP)
+        key, route, page_slug, label, groups, standalone = parse_tag(tag, type_name)
+        page = pages.get(key)
+        if page is None:
+            page = Page(key, route, page_slug, label, groups, standalone)
+            pages[key] = page
+        page.types.append((type_name, schema))
+        INDEX[type_name] = (route, standalone)
+    for page in pages.values():
+        page.types.sort(key=lambda t: t[0])
+
+    # Flat slugs share one namespace, so they must be unique. Folders used to
+    # disambiguate; now a collision would silently overwrite a page.
+    by_slug: dict[str, list[str]] = {}
+    for p in pages.values():
+        by_slug.setdefault(p.slug, []).append(p.key)
+    clashes = {s: keys for s, keys in by_slug.items() if len(keys) > 1}
+    if clashes:
+        for s, keys in clashes.items():
+            print(f"error: page slug '{s}' is claimed by multiple groups: "
+                  f"{', '.join(keys)}", file=sys.stderr)
+        raise SystemExit(1)
+
+    return sorted(pages.values(), key=lambda p: p.route)
+
+
+# --------------------------------------------------------------------------- #
+# Reference resolution
+# --------------------------------------------------------------------------- #
+
+def render_ref(ref: str) -> str:
+    """Turn a $ref into a linked type label, resolved against INDEX + context."""
+    if ref == "#":  # the current type itself
+        if CURRENT_STANDALONE:
+            return CURRENT_TYPE
+        return f"[{CURRENT_TYPE}](#{github_slug(CURRENT_TYPE)})"
+
+    if ref.startswith("#/$defs/"):  # in-page nested type
+        nested = ref.rsplit("/", 1)[-1]
+        a = github_slug(nested if CURRENT_STANDALONE else f"{CURRENT_TYPE}.{nested}")
+        return f"[{nested}](#{a})"
+
+    file_part, _, frag = ref.partition("#")
+    type_name = file_to_type(file_part)
+    target = INDEX.get(type_name)
+    if target is None:  # untagged / dropped / external — no page to link to
+        return type_name
+    route, standalone = target
+    same_page = route == CURRENT_ROUTE
+
+    if frag.startswith("/$defs/"):
+        nested = frag.rsplit("/", 1)[-1]
+        a = github_slug(nested if standalone else f"{type_name}.{nested}")
+        href = f"#{a}" if same_page else f"{route}#{a}"
+        return f"[{nested}]({href})"
+
+    if standalone:
+        return type_name if same_page else f"[{type_name}]({route})"
+    a = github_slug(type_name)
+    href = f"#{a}" if same_page else f"{route}#{a}"
+    return f"[{type_name}]({href})"
 
 
 def render_type(entry: dict) -> str:
@@ -47,39 +216,24 @@ def render_type(entry: dict) -> str:
         return render_ref(entry["$ref"])
     t = entry.get("type")
     if t == "array":
-        items = entry.get("items", {})
-        return f"Array&lt;{render_type(items)}&gt;"
+        return f"Array&lt;{render_type(entry.get('items', {}))}&gt;"
     if t == "object":
-        if entry.get("additionalProperties") not in (None, False):
-            ap = entry["additionalProperties"]
+        ap = entry.get("additionalProperties")
+        if ap not in (None, False):
             inner = render_type(ap) if isinstance(ap, dict) and ap else "Any"
             return f"Object&lt;{inner}&gt;" if inner != "Any" else "Object"
         return "Object"
     if "enum" in entry:
-        base = t or "string"
-        return f"{base} (enum)"
+        return f"{t or 'string'} (enum)"
     if t:
         fmt = entry.get("format")
         return f"{t} ({fmt})" if fmt else t
     return "any"
 
 
-def render_ref(ref: str) -> str:
-    """Turn a $ref into a linked type label."""
-    if ref == "#":
-        return "(self)"
-    if ref.startswith("#/$defs/"):
-        name = ref.rsplit("/", 1)[-1]
-        return f"[{name}](#{anchor(name)})"
-    # cross-file: <Type>.schema.json  or  <Type>.schema.json#/$defs/Nested
-    file_part, _, frag = ref.partition("#")
-    type_name = file_to_type(file_part)
-    page = slug(type_name)
-    if frag.startswith("/$defs/"):
-        nested = frag.rsplit("/", 1)[-1]
-        return f"[{nested}](/reference/{page}/#{anchor(nested)})"
-    return f"[{type_name}](/reference/{page}/)"
-
+# --------------------------------------------------------------------------- #
+# Rendering
+# --------------------------------------------------------------------------- #
 
 def property_table(schema: dict) -> list[str]:
     props = schema.get("properties", {})
@@ -96,57 +250,142 @@ def property_table(schema: dict) -> list[str]:
     return lines
 
 
-def render_def(name: str, schema: dict) -> list[str]:
-    lines = [f"### {name}", ""]
+def enum_block(schema: dict) -> list[str]:
+    base = schema.get("type", "string")
+    lines = [f"Type: `{base}` — one of:", ""]
+    lines += [f"- `{v}`" for v in schema.get("enum", [])]
+    return lines + [""]
+
+
+def body_block(schema: dict) -> list[str]:
+    return enum_block(schema) if "enum" in schema else property_table(schema)
+
+
+def render_def(type_name: str, def_name: str, schema: dict,
+               standalone: bool, level: str) -> list[str]:
+    # Heading text doubles as the anchor source; qualify with the parent type on
+    # concat pages so two types' nested `Style` defs don't collide.
+    heading = def_name if standalone else f"{type_name}.{def_name}"
+    lines = [f"{level} {heading}", ""]
     if schema.get("description"):
         lines += [schema["description"], ""]
-    if "enum" in schema:
-        base = schema.get("type", "string")
-        lines += [f"Type: `{base}` — one of:", ""]
-        lines += [f"- `{v}`" for v in schema["enum"]]
-        lines += [""]
-    else:
-        lines += property_table(schema)
+    lines += body_block(schema)
     return lines
 
 
-def render_page(schema: dict) -> str:
-    title = schema.get("title", file_to_type(schema.get("$id", "Type")))
-    description = schema.get("description", "")
-    # Front matter (description is the first line, summarized for the meta tag).
-    summary = description.split("\n", 1)[0] if description else f"{title} reference."
-    out = ["---", f"title: {title}", f"description: {escape_cell(summary)}", "---", ""]
-    if description:
-        out += [description, ""]
-    out += ["## Properties", ""]
-    out += property_table(schema)
-    defs = schema.get("$defs")
-    if defs:
-        out += ["## Types", ""]
-        for name, sub in defs.items():
-            out += render_def(name, sub)
+def render_type_section(type_name: str, schema: dict, standalone: bool) -> list[str]:
+    """Render one top-level type. Standalone pages omit the `##` heading (the page
+    title already is the type) and host defs at `##`; concat pages add a `##
+    {Type}` heading and host defs at `###`."""
+    global CURRENT_TYPE, CURRENT_STANDALONE
+    CURRENT_TYPE = type_name
+    CURRENT_STANDALONE = standalone
+
+    lines: list[str] = []
+    if not standalone:
+        lines += [f"## {type_name}", ""]
+    if schema.get("description"):
+        lines += [schema["description"], ""]
+    if SCHEMA_URL_BASE is not None:
+        filename = schema.get("$id", f"{type_name}.schema.json")
+        lines += [f"[View JSON Schema]({SCHEMA_URL_BASE}/{filename})", ""]
+    lines += body_block(schema)
+
+    def_level = "##" if standalone else "###"
+    for dname, dschema in schema.get("$defs", {}).items():
+        lines += render_def(type_name, dname, dschema, standalone, def_level)
+    return lines
+
+
+GENERATED_BANNER = ("<!-- AUTO-GENERATED by scripts/schema-to-markdown.py — do not edit. "
+                    "Regenerate from public/schemas/. -->")
+
+
+def render_page(page: Page) -> str:
+    global CURRENT_ROUTE
+    CURRENT_ROUTE = page.route
+    summary = (page.types[0][1].get("description", "").split("\n", 1)[0]
+               if len(page.types) == 1 else f"{page.label} reference.")
+    out = ["---", f"title: {yaml_str(page.label)}",
+           f"description: {yaml_str(summary or page.label)}", "---", "",
+           GENERATED_BANNER, ""]
+    for type_name, schema in page.types:
+        out += render_type_section(type_name, schema, page.standalone)
     return "\n".join(out).rstrip() + "\n"
 
+
+# --------------------------------------------------------------------------- #
+# Sidebar fragment
+# --------------------------------------------------------------------------- #
+
+def build_sidebar(pages: list[Page]) -> list[dict]:
+    """Nest pages under their group labels into a Starlight sidebar item tree."""
+    root: dict = {"children": {}, "pages": []}
+    for page in pages:
+        node = root
+        for label in page.groups:
+            node = node["children"].setdefault(label, {"children": {}, "pages": []})
+        node["pages"].append((page.label, page.route))
+
+    def to_items(node: dict) -> list[dict]:
+        items = []
+        group_labels = set(node["children"])
+        for label in sorted(node["children"]):
+            items.append({"label": label, "items": to_items(node["children"][label])})
+        for label, route in sorted(node["pages"]):
+            if label in group_labels:
+                print(f"warning: '{label}' is both a page and a group; "
+                      f"the sidebar tree may be ambiguous", file=sys.stderr)
+            items.append({"label": label, "link": route})
+        return items
+
+    return to_items(root)
+
+
+# --------------------------------------------------------------------------- #
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("schemas", type=Path, help="Directory of *.schema.json files")
     parser.add_argument("out", type=Path, help="Output directory for .md pages")
+    parser.add_argument("--base-path", default="/reference",
+                        help="Route prefix the pages are served under "
+                             "(must match <out> on the site). Default: /reference")
+    parser.add_argument("--schema-url-base",
+                        help="URL prefix the raw *.schema.json files are served "
+                             "from; adds a 'View JSON Schema' link per type")
+    parser.add_argument("--sidebar-out", type=Path,
+                        help="Write a Starlight sidebar fragment (JSON) here")
+    parser.add_argument("--sidebar-root", default="Schema",
+                        help="Wrap the sidebar groups under this root group label "
+                             "(empty string = no root). Default: Schema")
     args = parser.parse_args()
 
-    files = sorted(args.schemas.glob("*.schema.json"))
+    global BASE_PATH, SCHEMA_URL_BASE
+    BASE_PATH = args.base_path.rstrip("/")
+    SCHEMA_URL_BASE = args.schema_url_base.rstrip("/") if args.schema_url_base else None
+
+    files = list(args.schemas.glob("*.schema.json"))
     if not files:
         print(f"no *.schema.json found in {args.schemas}", file=sys.stderr)
         return 1
 
+    pages = build_pages(files)
+
     args.out.mkdir(parents=True, exist_ok=True)
-    for f in files:
-        schema = json.loads(f.read_text())
-        page = render_page(schema)
-        name = slug(file_to_type(f.name))
-        (args.out / f"{name}.md").write_text(page)
-        print(f"wrote {args.out / name}.md")
+    for page in pages:
+        dest = args.out / f"{page.slug}.md"
+        dest.write_text(render_page(page))
+        print(f"wrote {dest}  ({len(page.types)} type(s))")
+
+    if args.sidebar_out:
+        sidebar = build_sidebar(pages)
+        if args.sidebar_root:
+            sidebar = [{"label": args.sidebar_root, "items": sidebar}]
+        args.sidebar_out.parent.mkdir(parents=True, exist_ok=True)
+        args.sidebar_out.write_text(json.dumps(sidebar, indent=2) + "\n")
+        print(f"wrote {args.sidebar_out}")
     return 0
 
 

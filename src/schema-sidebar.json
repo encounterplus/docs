@@ -1,0 +1,107 @@
+[
+  {
+    "label": "Schema",
+    "items": [
+      {
+        "label": "API",
+        "items": [
+          {
+            "label": "Combatant",
+            "link": "/reference/schema/combatant/"
+          },
+          {
+            "label": "Game",
+            "link": "/reference/schema/game/"
+          },
+          {
+            "label": "Initiative",
+            "link": "/reference/schema/initiative/"
+          },
+          {
+            "label": "Message",
+            "link": "/reference/schema/message/"
+          },
+          {
+            "label": "WSEvent",
+            "link": "/reference/schema/wsevent/"
+          }
+        ]
+      },
+      {
+        "label": "Content",
+        "items": [
+          {
+            "label": "Encounter",
+            "link": "/reference/schema/encounter/"
+          },
+          {
+            "label": "Entity",
+            "link": "/reference/schema/entity/"
+          },
+          {
+            "label": "Group",
+            "link": "/reference/schema/group/"
+          },
+          {
+            "label": "Map",
+            "link": "/reference/schema/map/"
+          },
+          {
+            "label": "Page",
+            "link": "/reference/schema/page/"
+          },
+          {
+            "label": "Reference",
+            "link": "/reference/schema/reference/"
+          },
+          {
+            "label": "Table",
+            "link": "/reference/schema/table/"
+          }
+        ]
+      },
+      {
+        "label": "Definitions",
+        "items": [
+          {
+            "label": "DataTransform",
+            "link": "/reference/schema/data-transform/"
+          },
+          {
+            "label": "EntityDefinition",
+            "link": "/reference/schema/entity-definition/"
+          },
+          {
+            "label": "FormDefinition",
+            "link": "/reference/schema/form-definition/"
+          },
+          {
+            "label": "TemplateDefinition",
+            "link": "/reference/schema/template-definition/"
+          },
+          {
+            "label": "ThemeDefinition",
+            "link": "/reference/schema/theme-definition/"
+          },
+          {
+            "label": "ViewDefinition",
+            "link": "/reference/schema/view-definition/"
+          }
+        ]
+      },
+      {
+        "label": "Shared",
+        "items": [
+          {
+            "label": "Size",
+            "link": "/reference/schema/size/"
+          }
+        ]
+      },
+      {
+        "label": "Shared",
+        "link": "/reference/schema/shared/"
+      }
+    ]
+  }
+]

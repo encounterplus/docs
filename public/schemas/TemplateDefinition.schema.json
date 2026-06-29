@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "TemplateDefinition.schema.json",
+  "title": "TemplateDefinition",
+  "x-group": "Definitions/",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "template": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

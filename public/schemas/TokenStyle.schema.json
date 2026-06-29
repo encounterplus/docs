@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "TokenStyle.schema.json",
+  "title": "TokenStyle",
+  "x-group": "Shared",
+  "type": "string",
+  "enum": [
+    "circle",
+    "topdown"
+  ]
+}
