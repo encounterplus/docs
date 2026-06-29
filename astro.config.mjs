@@ -40,14 +40,18 @@ export default defineConfig({
               ],
             },
             { label: "Import and Export", link: "/guides/import-and-export/" },
-            { label: "Remote Play", link: "/guides/remote-play/" },
-            { label: "Web Client FAQ", link: "/guides/web-client-faq/" },
             { label: "Tips and Tricks", link: "/guides/tips-and-tricks/" },
             { label: "Tutorials", link: "/guides/tutorials/" },
             { label: "Special Thanks", link: "/guides/special-thanks/" },
-            { label: "Example Guide", link: "/guides/example/" },
           ],
         },
+				{
+					label: 'Web Client',
+					items: [
+						{ label: 'Remote Play', link: '/guides/remote-play/' },
+						{ label: 'FAQ', link: '/guides/web-client-faq/' },
+					],
+				},
 				{
 					label: 'Reference',
 					items: [
