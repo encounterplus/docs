@@ -39,12 +39,9 @@
   "required": [
     "id",
     "enabled",
-    "name",
     "color",
     "opacity",
     "radius",
-    "asset",
-    "reference",
     "components"
   ],
   "additionalProperties": false

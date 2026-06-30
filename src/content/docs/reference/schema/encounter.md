@@ -15,7 +15,7 @@ An Encounter
 | `name` | `string` | Yes |  |
 | `slug` | `string` | Yes |  |
 | `descr` | `string` | Yes |  |
-| `combatants` | Array&lt;`Object`&gt; | Yes |  |
+| `combatants` | Array&lt;`Object`&gt; | No |  |
 | `parentId` | `string` | Yes |  |
 | `rank` | `integer` | Yes |  |
 
@@ -29,4 +29,4 @@ An Encounter
 | `reference` | `string` | No |  |
 | `x` | `integer` | No |  |
 | `y` | `integer` | No |  |
-| `center` | `any` | Yes |  |
+| `center` | `any` | No |  |

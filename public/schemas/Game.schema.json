@@ -31,8 +31,6 @@
     "started",
     "round",
     "turn",
-    "combatantId",
-    "initiativeId",
     "combatants"
   ],
   "additionalProperties": false

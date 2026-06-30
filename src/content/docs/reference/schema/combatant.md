@@ -10,21 +10,21 @@ description: "Combatant"
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | Yes |  |
-| `label` | `string` | Yes |  |
-| `name` | `string` | Yes |  |
-| `role` | [Role](/reference/schema/shared/#role) | Yes |  |
-| `hidden` | `boolean` | Yes |  |
-| `notes` | `string` | Yes |  |
+| `label` | `string` | No |  |
+| `name` | `string` | No |  |
+| `role` | [Role](/reference/schema/shared/#role) | No |  |
+| `hidden` | `boolean` | No |  |
+| `notes` | `string` | No |  |
 | `initiative` | Array&lt;[Initiative](/reference/schema/initiative/)&gt; | Yes |  |
-| `data` | `Object` | Yes |  |
+| `data` | `Object` | No |  |
 | `attributes` | `Object` | Yes |  |
-| `reference` | `string` | Yes |  |
+| `reference` | `string` | No |  |
 | `modifiers` | Array&lt;[Modifier](/reference/schema/shared/#modifier)&gt; | Yes |  |
 | `effects` | Array&lt;[StatusEffect](/reference/schema/shared/#statuseffect)&gt; | Yes |  |
 | `bloodied` | `any` | Yes |  |
 | `defeated` | `any` | Yes |  |
 | `player` | `any` | Yes |  |
 | `image` | `any` | Yes |  |
-| `entityId` | `string` | Yes |  |
-| `entityType` | `any` | Yes |  |
+| `entityId` | `string` | No |  |
+| `entityType` | `any` | No |  |
 | `tokenId` | `any` | Yes |  |

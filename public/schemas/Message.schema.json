@@ -31,10 +31,6 @@
   "required": [
     "id",
     "type",
-    "source",
-    "color",
-    "creature",
-    "content",
     "created"
   ],
   "additionalProperties": false,

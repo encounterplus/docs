@@ -12,6 +12,6 @@ description: "Game"
 | `started` | `boolean` | Yes |  |
 | `round` | `integer` | Yes |  |
 | `turn` | `integer` | Yes |  |
-| `combatantId` | `string` | Yes |  |
-| `initiativeId` | `string` | Yes |  |
+| `combatantId` | `string` | No |  |
+| `initiativeId` | `string` | No |  |
 | `combatants` | Array&lt;[Combatant](/reference/schema/combatant/)&gt; | Yes |  |

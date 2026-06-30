@@ -354,7 +354,14 @@ def type_fragments(symbol: dict) -> list[dict]:
     out = []
     for f in frags[start:]:
         if f["kind"] == "text" and "{" in f["spelling"]:
-            break  # accessor block begins
+            # The accessor block begins here, but the compiler fuses the brace
+            # with the preceding type token (e.g. a property-wrapped optional is
+            # spelled `String` + `"? { "`). Keep the part before the `{` so the
+            # trailing `?` survives, then stop.
+            before = f["spelling"].split("{", 1)[0]
+            if before.strip():
+                out.append({**f, "spelling": before})
+            break
         out.append(f)
     # Strip the leading ": " separator. The compiler may fuse it with the next
     # token (e.g. ": [" for an array), so trim it off the first fragment rather

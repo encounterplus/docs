@@ -69,23 +69,14 @@
   },
   "required": [
     "id",
-    "label",
-    "name",
-    "role",
-    "hidden",
-    "notes",
     "initiative",
-    "data",
     "attributes",
-    "reference",
     "modifiers",
     "effects",
     "bloodied",
     "defeated",
     "player",
     "image",
-    "entityId",
-    "entityType",
     "tokenId"
   ],
   "additionalProperties": false

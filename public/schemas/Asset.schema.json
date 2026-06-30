@@ -48,7 +48,6 @@
     "name",
     "slug",
     "type",
-    "resource",
     "parameters",
     "components",
     "rank",

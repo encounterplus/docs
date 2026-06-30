@@ -66,13 +66,9 @@
     "rotation",
     "opacity",
     "scale",
-    "layer",
     "zIndex",
     "hidden",
     "locked",
-    "asset",
-    "light",
-    "reference",
     "components"
   ],
   "additionalProperties": false

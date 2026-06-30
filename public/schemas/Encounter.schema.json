@@ -37,7 +37,6 @@
     "name",
     "slug",
     "descr",
-    "combatants",
     "parentId",
     "rank"
   ],
@@ -69,9 +68,6 @@
           "$comment": "unmapped Swift type: CGPoint"
         }
       },
-      "required": [
-        "center"
-      ],
       "additionalProperties": false
     }
   }

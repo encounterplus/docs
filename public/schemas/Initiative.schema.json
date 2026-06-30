@@ -24,9 +24,7 @@
   },
   "required": [
     "id",
-    "name",
-    "value",
-    "order"
+    "value"
   ],
   "additionalProperties": false
 }

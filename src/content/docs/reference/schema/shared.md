@@ -22,9 +22,9 @@ description: "Shared reference."
 | `radius` | `number` | Yes |  |
 | `length` | `number` | Yes |  |
 | `width` | `number` | Yes |  |
-| `asset` | [Asset](#asset) | Yes |  |
-| `source` | [Token](#token) | Yes |  |
-| `reference` | `string` | Yes |  |
+| `asset` | [Asset](#asset) | No |  |
+| `source` | [Token](#token) | No |  |
+| `reference` | `string` | No |  |
 | `hidden` | `boolean` | Yes |  |
 | `locked` | `boolean` | Yes |  |
 | `components` | Array&lt;[Component](#component)&gt; | Yes |  |
@@ -50,7 +50,7 @@ Type: `string` — one of:
 | `name` | `string` | Yes |  |
 | `slug` | `string` | Yes |  |
 | `type` | `string` | Yes |  |
-| `resource` | `string` | Yes |  |
+| `resource` | `string` | No |  |
 | `parameters` | `Object` | Yes |  |
 | `components` | Array&lt;[Component](#component)&gt; | Yes |  |
 | `rank` | `integer` | Yes |  |
@@ -65,12 +65,12 @@ Type: `string` — one of:
 | --- | --- | --- | --- |
 | `id` | `string` | Yes |  |
 | `enabled` | `boolean` | Yes |  |
-| `name` | `string` | Yes |  |
+| `name` | `string` | No |  |
 | `color` | `string` | Yes |  |
 | `opacity` | `number` | Yes |  |
 | `radius` | `number` | Yes |  |
-| `asset` | [Asset](#asset) | Yes |  |
-| `reference` | `string` | Yes |  |
+| `asset` | [Asset](#asset) | No |  |
+| `reference` | `string` | No |  |
 | `components` | Array&lt;[Component](#component)&gt; | Yes |  |
 
 ## Campaign
@@ -80,18 +80,18 @@ Type: `string` — one of:
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | Yes |  |
-| `system` | `string` | Yes |  |
+| `system` | `string` | No |  |
 | `name` | `string` | Yes |  |
 | `slug` | `string` | Yes |  |
-| `descr` | `string` | Yes |  |
-| `shortDescr` | `string` | Yes |  |
-| `image` | `string` | Yes |  |
-| `banner` | `string` | Yes |  |
+| `descr` | `string` | No |  |
+| `shortDescr` | `string` | No |  |
+| `image` | `string` | No |  |
+| `banner` | `string` | No |  |
 | `tags` | Array&lt;`string`&gt; | Yes |  |
 | `references` | Array&lt;`string`&gt; | Yes |  |
-| `data` | `Object` | Yes |  |
+| `data` | `Object` | No |  |
 | `attributes` | `Object` | Yes |  |
-| `systemVersion` | `string` | Yes |  |
+| `systemVersion` | `string` | No |  |
 
 ## Component
 
@@ -99,7 +99,7 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `type` | `string` | Yes |  |
+| `type` | `string` | No |  |
 | `enabled` | `boolean` | Yes |  |
 | `hue` | `any` | Yes |  |
 | `saturation` | `any` | Yes |  |
@@ -153,7 +153,7 @@ Type: `string` — one of:
 | `size` | `string` | Yes |  |
 | `name` | `string` | Yes |  |
 | `descr` | `string` | Yes |  |
-| `reference` | `string` | Yes |  |
+| `reference` | `string` | No |  |
 | `hidden` | `boolean` | Yes |  |
 | `locked` | `boolean` | Yes |  |
 | `x` | `integer` | Yes |  |
@@ -186,11 +186,11 @@ Type: `string` — one of:
 | --- | --- | --- | --- |
 | `id` | `string` | Yes |  |
 | `enabled` | `boolean` | Yes |  |
-| `name` | `string` | Yes |  |
-| `mode` | [Mode](#modifiermode) | Yes |  |
-| `attribute` | `string` | Yes |  |
-| `value` | `string` | Yes |  |
-| `scope` | [Scope](#modifierscope) | Yes |  |
+| `name` | `string` | No |  |
+| `mode` | [Mode](#modifiermode) | No |  |
+| `attribute` | `string` | No |  |
+| `value` | `string` | No |  |
+| `scope` | [Scope](#modifierscope) | No |  |
 
 ### Modifier.Mode
 
@@ -217,24 +217,24 @@ Type: `string` — one of:
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | Yes |  |
-| `system` | `string` | Yes |  |
+| `system` | `string` | No |  |
 | `name` | `string` | Yes |  |
 | `slug` | `string` | Yes |  |
 | `version` | `string` | Yes |  |
-| `descr` | `string` | Yes |  |
-| `shortDescr` | `string` | Yes |  |
-| `acronym` | `string` | Yes |  |
-| `author` | `string` | Yes |  |
-| `category` | `string` | Yes |  |
-| `website` | `string` | Yes |  |
-| `repository` | `string` | Yes |  |
-| `package` | `string` | Yes |  |
-| `image` | `string` | Yes |  |
-| `banner` | `string` | Yes |  |
+| `descr` | `string` | No |  |
+| `shortDescr` | `string` | No |  |
+| `acronym` | `string` | No |  |
+| `author` | `string` | No |  |
+| `category` | `string` | No |  |
+| `website` | `string` | No |  |
+| `repository` | `string` | No |  |
+| `package` | `string` | No |  |
+| `image` | `string` | No |  |
+| `banner` | `string` | No |  |
 | `tags` | Array&lt;`string`&gt; | Yes |  |
-| `data` | `Object` | Yes |  |
+| `data` | `Object` | No |  |
 | `attributes` | `Object` | Yes |  |
-| `systemVersion` | `string` | Yes |  |
+| `systemVersion` | `string` | No |  |
 
 ## Role
 
@@ -252,8 +252,8 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | Yes |  |
-| `page` | `integer` | Yes |  |
+| `name` | `string` | No |  |
+| `page` | `integer` | No |  |
 
 ## StatusEffect
 
@@ -262,21 +262,21 @@ Type: `string` — one of:
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | Yes |  |
-| `name` | `string` | Yes |  |
-| `type` | `string` | Yes |  |
-| `reference` | `string` | Yes |  |
-| `duration` | `number` | Yes |  |
-| `durationUnit` | `string` | Yes |  |
-| `durationType` | `string` | Yes |  |
-| `descr` | `string` | Yes |  |
-| `notes` | `string` | Yes |  |
-| `color` | `string` | Yes |  |
-| `icon` | `string` | Yes |  |
-| `source` | `string` | Yes |  |
-| `roundStart` | `integer` | Yes |  |
-| `turnStart` | `integer` | Yes |  |
-| `enabled` | `boolean` | Yes |  |
-| `data` | `Object` | Yes |  |
+| `name` | `string` | No |  |
+| `type` | `string` | No |  |
+| `reference` | `string` | No |  |
+| `duration` | `number` | No |  |
+| `durationUnit` | `string` | No |  |
+| `durationType` | `string` | No |  |
+| `descr` | `string` | No |  |
+| `notes` | `string` | No |  |
+| `color` | `string` | No |  |
+| `icon` | `string` | No |  |
+| `source` | `string` | No |  |
+| `roundStart` | `integer` | No |  |
+| `turnStart` | `integer` | No |  |
+| `enabled` | `boolean` | No |  |
+| `data` | `Object` | No |  |
 | `attributes` | `Object` | Yes |  |
 | `modifiers` | Array&lt;[Modifier](#modifier)&gt; | Yes |  |
 
@@ -306,8 +306,8 @@ Type: `string` — one of:
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | Yes |  |
-| `alignment` | `string` | Yes |  |
-| `size` | `number` | Yes |  |
+| `alignment` | `string` | No |  |
+| `size` | `number` | No |  |
 
 ### TableColumn.Alignment
 
@@ -331,13 +331,13 @@ Type: `string` — one of:
 | `rotation` | `integer` | Yes |  |
 | `opacity` | `number` | Yes |  |
 | `scale` | `number` | Yes |  |
-| `layer` | `string` | Yes |  |
+| `layer` | `string` | No |  |
 | `zIndex` | `integer` | Yes |  |
 | `hidden` | `boolean` | Yes |  |
 | `locked` | `boolean` | Yes |  |
-| `asset` | [Asset](#asset) | Yes |  |
-| `light` | [Light](#light) | Yes |  |
-| `reference` | `string` | Yes |  |
+| `asset` | [Asset](#asset) | No |  |
+| `light` | [Light](#light) | No |  |
+| `reference` | `string` | No |  |
 | `components` | Array&lt;[Component](#component)&gt; | Yes |  |
 
 ## Token
@@ -347,37 +347,28 @@ Type: `string` — one of:
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | Yes |  |
-| `name` | `string` | Yes |  |
-| `label` | `string` | Yes |  |
-| `role` | `string` | Yes |  |
+| `name` | `string` | No |  |
+| `label` | `string` | No |  |
+| `role` | `string` | No |  |
 | `x` | `integer` | Yes |  |
 | `y` | `integer` | Yes |  |
 | `scale` | `number` | Yes |  |
 | `width` | `integer` | Yes |  |
 | `height` | `integer` | Yes |  |
-| `style` | `string` | Yes |  |
+| `style` | `string` | No |  |
 | `rotation` | `integer` | Yes |  |
 | `elevation` | `integer` | Yes |  |
 | `hidden` | `boolean` | Yes |  |
-| `asset` | [Asset](#asset) | Yes |  |
-| `vision` | [Vision](#vision) | Yes |  |
-| `reference` | `string` | Yes |  |
+| `asset` | [Asset](#asset) | No |  |
+| `vision` | [Vision](#vision) | No |  |
+| `reference` | `string` | No |  |
 | `auras` | Array&lt;[Aura](#aura)&gt; | Yes |  |
 | `entityId` | `any` | Yes |  |
-| `trackingId` | `integer` | Yes |  |
+| `trackingId` | `integer` | No |  |
 | `image` | `any` | Yes |  |
-| `path` | `any` | Yes |  |
-| `combatant` | [Combatant](/reference/schema/combatant/) | Yes |  |
+| `path` | Array&lt;`any`&gt; | No |  |
+| `combatant` | [Combatant](/reference/schema/combatant/) | No |  |
 | `player` | `any` | Yes |  |
-
-## TokenStyle
-
-[View JSON Schema](/schemas/TokenStyle.schema.json)
-
-Type: `string` — one of:
-
-- `circle`
-- `topdown`
 
 ## Vision
 

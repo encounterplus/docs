@@ -72,9 +72,6 @@
     "radius",
     "length",
     "width",
-    "asset",
-    "source",
-    "reference",
     "hidden",
     "locked",
     "components"

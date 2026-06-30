@@ -12,9 +12,5 @@
       "type": "integer"
     }
   },
-  "required": [
-    "name",
-    "page"
-  ],
   "additionalProperties": false
 }

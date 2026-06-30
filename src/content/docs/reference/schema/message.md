@@ -11,10 +11,10 @@ description: "Message"
 | --- | --- | --- | --- |
 | `id` | `string` | Yes |  |
 | `type` | `string` | Yes |  |
-| `source` | `string` | Yes |  |
-| `color` | `string` | Yes |  |
-| `creature` | `string` | Yes |  |
-| `content` | `string` | Yes |  |
+| `source` | `string` | No |  |
+| `color` | `string` | No |  |
+| `creature` | `string` | No |  |
+| `content` | `string` | No |  |
 | `created` | `string (date-time)` | Yes |  |
 
 ## MessageType

@@ -10,6 +10,6 @@ description: "Initiative"
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | Yes |  |
-| `name` | `string` | Yes |  |
+| `name` | `string` | No |  |
 | `value` | `string | number | boolean` | Yes |  |
-| `order` | `integer` | Yes |  |
+| `order` | `integer` | No |  |

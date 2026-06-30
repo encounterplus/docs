@@ -14,6 +14,6 @@ A reference to other entities
 | `id` | `string` | Yes |  |
 | `name` | `string` | Yes |  |
 | `slug` | `string` | Yes |  |
-| `reference` | `string` | Yes |  |
+| `reference` | `string` | No |  |
 | `parentId` | `string` | Yes |  |
 | `rank` | `integer` | Yes |  |

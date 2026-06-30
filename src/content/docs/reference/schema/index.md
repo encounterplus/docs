@@ -66,13 +66,11 @@ Reference for the JSON formats the app reads and writes, generated from its data
 | [Modifier](/reference/schema/shared/#modifier) |  | [JSON](/schemas/Modifier.schema.json) |
 | [Module](/reference/schema/shared/#module) |  | [JSON](/schemas/Module.schema.json) |
 | [Role](/reference/schema/shared/#role) |  | [JSON](/schemas/Role.schema.json) |
-| [Size](/reference/schema/size/) |  | [JSON](/schemas/Size.schema.json) |
 | [Source](/reference/schema/shared/#source) |  | [JSON](/schemas/Source.schema.json) |
 | [StatusEffect](/reference/schema/shared/#statuseffect) |  | [JSON](/schemas/StatusEffect.schema.json) |
 | [TableColumn](/reference/schema/shared/#tablecolumn) |  | [JSON](/schemas/TableColumn.schema.json) |
 | [Tile](/reference/schema/shared/#tile) |  | [JSON](/schemas/Tile.schema.json) |
 | [Token](/reference/schema/shared/#token) |  | [JSON](/schemas/Token.schema.json) |
-| [TokenStyle](/reference/schema/shared/#tokenstyle) |  | [JSON](/schemas/TokenStyle.schema.json) |
 | [Vision](/reference/schema/shared/#vision) |  | [JSON](/schemas/Vision.schema.json) |
 | [Wall](/reference/schema/shared/#wall) |  | [JSON](/schemas/Wall.schema.json) |
 | [WallType](/reference/schema/shared/#walltype) |  | [JSON](/schemas/WallType.schema.json) |

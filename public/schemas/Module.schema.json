@@ -73,24 +73,11 @@
   },
   "required": [
     "id",
-    "system",
     "name",
     "slug",
     "version",
-    "descr",
-    "shortDescr",
-    "acronym",
-    "author",
-    "category",
-    "website",
-    "repository",
-    "package",
-    "image",
-    "banner",
     "tags",
-    "data",
-    "attributes",
-    "systemVersion"
+    "attributes"
   ],
   "additionalProperties": false
 }

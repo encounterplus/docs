@@ -65,7 +65,10 @@
     },
     "image": {},
     "path": {
-      "$comment": "unmapped Swift type: CGPoint"
+      "type": "array",
+      "items": {
+        "$comment": "unmapped Swift type: CGPoint"
+      }
     },
     "combatant": {
       "$ref": "Combatant.schema.json"
@@ -74,27 +77,17 @@
   },
   "required": [
     "id",
-    "name",
-    "label",
-    "role",
     "x",
     "y",
     "scale",
     "width",
     "height",
-    "style",
     "rotation",
     "elevation",
     "hidden",
-    "asset",
-    "vision",
-    "reference",
     "auras",
     "entityId",
-    "trackingId",
     "image",
-    "path",
-    "combatant",
     "player"
   ],
   "additionalProperties": false

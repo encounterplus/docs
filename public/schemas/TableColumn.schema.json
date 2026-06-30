@@ -16,9 +16,7 @@
     }
   },
   "required": [
-    "name",
-    "alignment",
-    "size"
+    "name"
   ],
   "additionalProperties": false,
   "$defs": {

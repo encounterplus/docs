@@ -22,7 +22,6 @@
     "autoreverse": {}
   },
   "required": [
-    "type",
     "enabled",
     "hue",
     "saturation",

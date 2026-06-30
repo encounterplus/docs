@@ -58,18 +58,11 @@
   },
   "required": [
     "id",
-    "system",
     "name",
     "slug",
-    "descr",
-    "shortDescr",
-    "image",
-    "banner",
     "tags",
     "references",
-    "data",
-    "attributes",
-    "systemVersion"
+    "attributes"
   ],
   "additionalProperties": false
 }
