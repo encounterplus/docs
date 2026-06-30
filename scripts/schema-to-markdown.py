@@ -282,8 +282,16 @@ def render_type(entry: dict) -> str:
 # Rendering
 # --------------------------------------------------------------------------- #
 
+# Fields dropped from every type — opaque internal bookkeeping the docs ignore.
+SKIP_FIELDS = {"meta", "metadata"}
+# Fields always documented as a free-form JSON object, regardless of their
+# declared schema (the app treats them as an arbitrary bag of values).
+FREEFORM_FIELDS = {"attributes"}
+
+
 def property_table(schema: dict) -> list[str]:
-    props = schema.get("properties", {})
+    props = {n: e for n, e in schema.get("properties", {}).items()
+             if n not in SKIP_FIELDS}
     if not props:
         return ["_No properties._", ""]
     required = set(schema.get("required", []))
@@ -292,7 +300,8 @@ def property_table(schema: dict) -> list[str]:
     for name, entry in props.items():
         req = "Yes" if name in required else "No"
         desc = flatten_description(entry.get("description", ""))
-        lines.append(f"| `{name}` | {render_type(entry)} | {req} | {desc} |")
+        type_label = "`Object`" if name in FREEFORM_FIELDS else render_type(entry)
+        lines.append(f"| `{name}` | {type_label} | {req} | {desc} |")
     lines.append("")
     return lines
 

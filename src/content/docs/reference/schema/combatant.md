@@ -17,7 +17,7 @@ description: "Combatant"
 | `notes` | `string` | Yes |  |
 | `initiative` | Array&lt;[Initiative](/reference/schema/initiative/)&gt; | Yes |  |
 | `data` | `Object` | Yes |  |
-| `attributes` | `string | number | boolean` | Yes |  |
+| `attributes` | `Object` | Yes |  |
 | `reference` | `string` | Yes |  |
 | `modifiers` | Array&lt;[Modifier](/reference/schema/shared/#modifier)&gt; | Yes |  |
 | `effects` | Array&lt;[StatusEffect](/reference/schema/shared/#statuseffect)&gt; | Yes |  |

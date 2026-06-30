@@ -90,7 +90,7 @@ Type: `string` — one of:
 | `tags` | Array&lt;`string`&gt; | Yes |  |
 | `references` | Array&lt;`string`&gt; | Yes |  |
 | `data` | `Object` | Yes |  |
-| `attributes` | `string | number | boolean` | Yes |  |
+| `attributes` | `Object` | Yes |  |
 | `systemVersion` | `string` | Yes |  |
 
 ## Component
@@ -233,7 +233,7 @@ Type: `string` — one of:
 | `banner` | `string` | Yes |  |
 | `tags` | Array&lt;`string`&gt; | Yes |  |
 | `data` | `Object` | Yes |  |
-| `attributes` | `string | number | boolean` | Yes |  |
+| `attributes` | `Object` | Yes |  |
 | `systemVersion` | `string` | Yes |  |
 
 ## Role
@@ -277,7 +277,7 @@ Type: `string` — one of:
 | `turnStart` | `integer` | Yes |  |
 | `enabled` | `boolean` | Yes |  |
 | `data` | `Object` | Yes |  |
-| `attributes` | `string | number | boolean` | Yes |  |
+| `attributes` | `Object` | Yes |  |
 | `modifiers` | Array&lt;[Modifier](#modifier)&gt; | Yes |  |
 
 ### StatusEffect.DurationType
