@@ -10,9 +10,9 @@ description: "WSEvent"
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
 | `name` | [Name](#name) | Yes |  |
-| `data` | any | No |  |
-| `requestId` | string | No |  |
-| `responseId` | string | No |  |
+| `data` | `any` | No |  |
+| `requestId` | `string` | No |  |
+| `responseId` | `string` | No |  |
 
 ## Name
 
@@ -88,70 +88,70 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `name` | string | No |  |
-| `color` | string | No |  |
+| `id` | `string` | Yes |  |
+| `name` | `string` | No |  |
+| `color` | `string` | No |  |
 
 ## Movement
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `x` | integer | Yes |  |
-| `y` | integer | Yes |  |
+| `id` | `string` | Yes |  |
+| `x` | `integer` | Yes |  |
+| `y` | `integer` | Yes |  |
 | `state` | [ControlState](/reference/schema/shared/#controlstate) | Yes |  |
-| `polygon` | Array&lt;number&gt; | No |  |
-| `path` | Array&lt;integer&gt; | No |  |
-| `distance` | string | No |  |
-| `animated` | boolean | No |  |
+| `polygon` | Array&lt;`number`&gt; | No |  |
+| `path` | Array&lt;`integer`&gt; | No |  |
+| `distance` | `string` | No |  |
+| `animated` | `boolean` | No |  |
 | `source` | [Source](#source) | No |  |
 
 ## Frame
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `x` | integer | No |  |
-| `y` | integer | No |  |
-| `zoom` | number | No |  |
+| `id` | `string` | Yes |  |
+| `x` | `integer` | No |  |
+| `y` | `integer` | No |  |
+| `zoom` | `number` | No |  |
 
 ## Image
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `image` | string | Yes |  |
+| `id` | `string` | Yes |  |
+| `image` | `string` | Yes |  |
 
 ## VideoControl
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `state` | string | Yes |  |
-| `time` | number | Yes |  |
+| `state` | `string` | Yes |  |
+| `time` | `number` | Yes |  |
 
 ## Focus
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `x` | integer | Yes |  |
-| `y` | integer | Yes |  |
-| `color` | string | Yes |  |
-| `effect` | boolean | Yes |  |
-| `pan` | boolean | Yes |  |
-| `zoom` | boolean | Yes |  |
-| `reset` | boolean | Yes |  |
+| `x` | `integer` | Yes |  |
+| `y` | `integer` | Yes |  |
+| `color` | `string` | Yes |  |
+| `effect` | `boolean` | Yes |  |
+| `pan` | `boolean` | Yes |  |
+| `zoom` | `boolean` | Yes |  |
+| `reset` | `boolean` | Yes |  |
 
 ## Door
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `mapId` | string | Yes |  |
-| `id` | string | Yes |  |
+| `mapId` | `string` | Yes |  |
+| `id` | `string` | Yes |  |
 | `state` | [DoorState](/reference/schema/shared/#walldoorstate) | Yes |  |
 
 ## Attribute
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `entityId` | string | Yes |  |
-| `attributes` | Object | No |  |
+| `entityId` | `string` | Yes |  |
+| `attributes` | `Object` | No |  |

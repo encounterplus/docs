@@ -11,9 +11,9 @@ A reference to other entities
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `name` | string | Yes |  |
-| `slug` | string | Yes |  |
-| `reference` | string | Yes |  |
-| `parentId` | string | Yes |  |
-| `rank` | integer | Yes |  |
+| `id` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `slug` | `string` | Yes |  |
+| `reference` | `string` | Yes |  |
+| `parentId` | `string` | Yes |  |
+| `rank` | `integer` | Yes |  |

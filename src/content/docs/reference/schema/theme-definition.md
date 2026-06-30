@@ -15,16 +15,16 @@ styling, and game-system-specific visual elements.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `debug` | boolean | No | Enables debug mode for theme development. When `true`, may display additional visual indicators for layout boundaries, style application, or other development aids. Defaults to `false`. |
-| `extends` | string | No | The identifier of a parent theme to inherit styles from. Allows creating theme variants by extending a base theme and overriding specific properties. Any properties not set in the current theme will fall back to the parent theme. Example: `"dark-mode"`, `"parchment"`, `"minimal"` |
-| `tintColor` | string | No | The primary accent color used throughout the interface. Applied to interactive elements, selection highlights, and accent UI components. Specified as a hex color string (e.g., `"#007AFF"`, `"#FF5733"`). |
-| `primaryColor` | string | No | The primary brand or theme color. Used for major UI elements, headers, and primary actions. Works alongside `tintColor` to create a cohesive color scheme. Specified as a hex color string. |
-| `secondaryColor` | string | No | The secondary accent color. Used for less prominent UI elements and to provide visual variety alongside `primaryColor`. Specified as a hex color string. |
-| `textColor` | string | No | The default text color for body content. Applied to standard text throughout the application unless overridden by specific text styles. Specified as a hex color string (e.g., `"#000000"` for black, `"#FFFFFF"` for white). - Note: Use `defaultTextColor` to get the parsed `UIColor` instance. |
-| `dividerColor` | string | No | The color for divider lines and separators. Used to visually separate sections, list items, and content blocks. Specified as a hex color string. |
-| `bgColor` | string | No | The background color for the main interface. Applied to view backgrounds, cards, and content containers. Specified as a hex color string. |
-| `bgImage` | string | No | An optional background image or texture. Can be used to apply parchment textures, subtle patterns, or thematic backgrounds. Specified as an image asset name or resource identifier. |
-| `textStyles` | Object&lt;[TextStyle](#textstyle)&gt; | No | A collection of named text styles for typography throughout the application. Common style names include: - `"body"`: Standard body text - `"heading"`, `"heading1"`, `"heading2"`, etc.: Hierarchical headings - `"caption"`: Small descriptive text - `"title"`: Prominent titles - `"footnote"`: Fine print and supplementary text |
+| `debug` | `boolean` | No | Enables debug mode for theme development. When `true`, may display additional visual indicators for layout boundaries, style application, or other development aids. Defaults to `false`. |
+| `extends` | `string` | No | The identifier of a parent theme to inherit styles from. Allows creating theme variants by extending a base theme and overriding specific properties. Any properties not set in the current theme will fall back to the parent theme. Example: `"dark-mode"`, `"parchment"`, `"minimal"` |
+| `tintColor` | `string` | No | The primary accent color used throughout the interface. Applied to interactive elements, selection highlights, and accent UI components. Specified as a hex color string (e.g., `"#007AFF"`, `"#FF5733"`). |
+| `primaryColor` | `string` | No | The primary brand or theme color. Used for major UI elements, headers, and primary actions. Works alongside `tintColor` to create a cohesive color scheme. Specified as a hex color string. |
+| `secondaryColor` | `string` | No | The secondary accent color. Used for less prominent UI elements and to provide visual variety alongside `primaryColor`. Specified as a hex color string. |
+| `textColor` | `string` | No | The default text color for body content. Applied to standard text throughout the application unless overridden by specific text styles. Specified as a hex color string (e.g., `"#000000"` for black, `"#FFFFFF"` for white). Note: Use `defaultTextColor` to get the parsed `UIColor` instance. |
+| `dividerColor` | `string` | No | The color for divider lines and separators. Used to visually separate sections, list items, and content blocks. Specified as a hex color string. |
+| `bgColor` | `string` | No | The background color for the main interface. Applied to view backgrounds, cards, and content containers. Specified as a hex color string. |
+| `bgImage` | `string` | No | An optional background image or texture. Can be used to apply parchment textures, subtle patterns, or thematic backgrounds. Specified as an image asset name or resource identifier. |
+| `textStyles` | Object&lt;[TextStyle](#textstyle)&gt; | No | A collection of named text styles for typography throughout the application. Common style names include: `"body"`: Standard body text; `"heading"`, `"heading1"`, `"heading2"`, etc.: Hierarchical headings; `"caption"`: Small descriptive text; `"title"`: Prominent titles; `"footnote"`: Fine print and supplementary text |
 | `tableStyles` | Object&lt;[TableStyle](#tablestyle)&gt; | No | A collection of named table styles for data presentation. Common style names include `"default"`, `"striped"`, `"minimal"`. Use `defaultTableStyle` to access the default table style. |
 | `blockQuoteStyles` | Object&lt;[BlockQuoteStyle](#blockquotestyle)&gt; | No | A collection of named block quote styles for callouts and special content. Common style names include `"default"`, `"note"`, `"warning"`, `"tip"`. Use `defaultBlockQuoteStyle` to access the default block quote style. |
 | `buttonStyles` | Object&lt;[ButtonStyle](#buttonstyle)&gt; | No | A collection of named button styles for interactive elements. Common style names include `"default"`, `"primary"`, `"secondary"`, `"destructive"`. Use `defaultButtonStyle` to access the default button style. |
@@ -67,8 +67,8 @@ Dividers visually separate content sections, list items, and UI regions.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `shape` | string | No | The shape or style of the divider. Examples: `"line"`, `"dots"`, `"dashes"`, `"ornamental"` |
-| `color` | string | No | The color of the divider. Specified as a hex color string (e.g., `"#CCCCCC"`). |
+| `shape` | `string` | No | The shape or style of the divider. Examples: `"line"`, `"dots"`, `"dashes"`, `"ornamental"` |
+| `color` | `string` | No | The color of the divider. Specified as a hex color string (e.g., `"#CCCCCC"`). |
 
 ## ButtonStyle
 
@@ -78,12 +78,12 @@ Defines the appearance of interactive buttons including colors, borders, and tex
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `color` | string | No | The text/foreground color of the button. Specified as a hex color string (e.g., `"#FFFFFF"`). |
-| `bgColor` | string | No | The background color of the button. Specified as a hex color string (e.g., `"#007AFF"`). |
-| `borderColor` | string | No | The border/stroke color of the button. Specified as a hex color string. If `nil`, no border is drawn. |
-| `borderWidth` | number | No | The width of the button border in points. Only applies if `borderColor` is set. |
-| `cornerRadius` | number | No | The corner radius for rounded button corners. Specified in points. A value of `0` creates square corners. |
-| `padding` | Array&lt;number&gt; | No | Internal padding around the button content. Can be specified as a single value (all sides) or an array of values for [top, leading, bottom, trailing] padding. |
+| `color` | `string` | No | The text/foreground color of the button. Specified as a hex color string (e.g., `"#FFFFFF"`). |
+| `bgColor` | `string` | No | The background color of the button. Specified as a hex color string (e.g., `"#007AFF"`). |
+| `borderColor` | `string` | No | The border/stroke color of the button. Specified as a hex color string. If `nil`, no border is drawn. |
+| `borderWidth` | `number` | No | The width of the button border in points. Only applies if `borderColor` is set. |
+| `cornerRadius` | `number` | No | The corner radius for rounded button corners. Specified in points. A value of `0` creates square corners. |
+| `padding` | Array&lt;`number`&gt; | No | Internal padding around the button content. Can be specified as a single value (all sides) or an array of values for [top, leading, bottom, trailing] padding. |
 | `body` | [TextStyle](#textstyle) | No | The text style for the button label. If `nil`, uses the theme's default body text style. |
 
 ## CheckboxStyle
@@ -95,10 +95,10 @@ and boolean selections.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `tintColor` | string | No | The accent color for the checkbox when selected. Specified as a hex color string. |
-| `primaryColor` | string | No | The primary color for the checkbox outline or background. Specified as a hex color string. |
-| `icon` | string | No | The SF Symbol name or icon identifier for the checkbox. Examples: `"checkmark.circle.fill"`, `"checkmark.square.fill"`, `"circle.fill"` |
-| `size` | number | No | The size of the checkbox in points. Typically ranges from 16-24 points. |
+| `tintColor` | `string` | No | The accent color for the checkbox when selected. Specified as a hex color string. |
+| `primaryColor` | `string` | No | The primary color for the checkbox outline or background. Specified as a hex color string. |
+| `icon` | `string` | No | The SF Symbol name or icon identifier for the checkbox. Examples: `"checkmark.circle.fill"`, `"checkmark.square.fill"`, `"circle.fill"` |
+| `size` | `number` | No | The size of the checkbox in points. Typically ranges from 16-24 points. |
 
 ## FieldStyle
 
@@ -109,15 +109,15 @@ including layout, colors, borders, and label positioning.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `bgColor` | string | No | The background color of the input field. Specified as a hex color string (e.g., `"#F5F5F5"`). |
-| `borderColor` | string | No | The border color of the input field. Specified as a hex color string. If `nil`, no border is drawn. |
-| `borderWidth` | number | No | The width of the field border in points. Only applies if `borderColor` is set. |
-| `cornerRadius` | number | No | The corner radius for rounded field corners. Specified in points. A value of `0` creates square corners. |
-| `spacing` | number | No | The spacing between the label and input control. Specified in points. |
+| `bgColor` | `string` | No | The background color of the input field. Specified as a hex color string (e.g., `"#F5F5F5"`). |
+| `borderColor` | `string` | No | The border color of the input field. Specified as a hex color string. If `nil`, no border is drawn. |
+| `borderWidth` | `number` | No | The width of the field border in points. Only applies if `borderColor` is set. |
+| `cornerRadius` | `number` | No | The corner radius for rounded field corners. Specified in points. A value of `0` creates square corners. |
+| `spacing` | `number` | No | The spacing between the label and input control. Specified in points. |
 | `alignment` | [Alignment](/reference/schema/view-definition/#alignment) | No | The alignment of content within the field. Can override the default alignment from `Layout/alignment`. |
-| `padding` | Array&lt;number&gt; | No | Internal padding around the field content. Can be specified as a single value or an array for different sides. |
+| `padding` | Array&lt;`number`&gt; | No | Internal padding around the field content. Can be specified as a single value or an array for different sides. |
 | `layout` | [Layout](#layout) | No | The positioning of the field label. Defaults to `.top` if not specified. |
-| `titleWidth` | number | No | The fixed width for the field label. When set, creates a consistent label column width for aligned form layouts. Specified in points. |
+| `titleWidth` | `number` | No | The fixed width for the field label. When set, creates a consistent label column width for aligned form layouts. Specified in points. |
 | `title` | [TextStyle](#textstyle) | No | The text style for the field label. If `nil`, uses the theme's default caption or secondary text style. |
 | `body` | [TextStyle](#textstyle) | No | The text style for the field input value. If `nil`, uses the theme's default body text style. |
 
@@ -141,9 +141,9 @@ Defines the appearance of tabular data displays including headers, rows, and sep
 | `head` | [TextStyle](#textstyle) | No | The text style for table header cells. If `nil`, uses the theme's default heading or bold text style. |
 | `body` | [TextStyle](#textstyle) | No | The text style for table body cells. If `nil`, uses the theme's default body text style. |
 | `rowStyle` | [RowStyle](#rowstyle) | No | The row styling treatment to apply. Defaults to `.even` if not specified. |
-| `rowColor` | string | No | The background color for alternating rows. Specified as a hex color string. Only applies when `rowStyle` is `.even` or `.odd`. |
-| `rowLineColor` | string | No | The color of row separator lines. Specified as a hex color string. Only applies when `rowStyle` is `.underline`. |
-| `rowLineWidth` | number | No | The width of row separator lines in points. Only applies when `rowStyle` is `.underline`. |
+| `rowColor` | `string` | No | The background color for alternating rows. Specified as a hex color string. Only applies when `rowStyle` is `.even` or `.odd`. |
+| `rowLineColor` | `string` | No | The color of row separator lines. Specified as a hex color string. Only applies when `rowStyle` is `.underline`. |
+| `rowLineWidth` | `number` | No | The width of row separator lines in points. Only applies when `rowStyle` is `.underline`. |
 
 ## RowStyle
 
@@ -163,11 +163,11 @@ and other important text that should stand out from regular content.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `bgColor` | string | No | The background color of the block quote. Specified as a hex color string (e.g., `"#FFF8DC"` for cornsilk). |
-| `borderColor` | string | No | The color of the decorative border. Specified as a hex color string. |
-| `borderWidth` | number | No | The width of the border in points. Typically 2-5 points for subtle emphasis. |
+| `bgColor` | `string` | No | The background color of the block quote. Specified as a hex color string (e.g., `"#FFF8DC"` for cornsilk). |
+| `borderColor` | `string` | No | The color of the decorative border. Specified as a hex color string. |
+| `borderWidth` | `number` | No | The width of the border in points. Typically 2-5 points for subtle emphasis. |
 | `borderStyle` | [BorderStyle](#borderstyle) | No | The border decoration style. If `nil`, no decorative border is applied. |
-| `padding` | Array&lt;number&gt; | No | Internal padding around the block quote content. Can be specified as a single value or an array for different sides. |
+| `padding` | Array&lt;`number`&gt; | No | Internal padding around the block quote content. Can be specified as a single value or an array for different sides. |
 | `body` | [TextStyle](#textstyle) | No | The text style for block quote content. If `nil`, uses the theme's default body text style. |
 
 ## BorderStyle
@@ -189,20 +189,20 @@ actions, and other game mechanics.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `bgColor` | string | No | The background color of the stat block. Specified as a hex color string (e.g., `"#FDF6E3"` for parchment-like color). |
-| `bgImage` | string | No | An optional background image or texture for the stat block. Examples: `"parchment-texture"`, `"paper-grain"`, `"canvas-texture"` |
-| `topImage` | string | No | A decorative header image displayed at the top of the stat block. Examples: `"stat-block-header"`, `"creature-bar-top"` |
-| `bottomImage` | string | No | A decorative footer image displayed at the bottom of the stat block. Examples: `"stat-block-footer"`, `"creature-bar-bottom"` |
-| `barImage` | string | No | A decorative divider image used between stat block sections. Examples: `"stat-block-divider"`, `"ornamental-line"` |
-| `borderColor` | string | No | Specified as a hex color string. |
-| `borderWidth` | number | No | The width of the stat block border in points. Typically 1-3 points for subtle framing. |
+| `bgColor` | `string` | No | The background color of the stat block. Specified as a hex color string (e.g., `"#FDF6E3"` for parchment-like color). |
+| `bgImage` | `string` | No | An optional background image or texture for the stat block. Examples: `"parchment-texture"`, `"paper-grain"`, `"canvas-texture"` |
+| `topImage` | `string` | No | A decorative header image displayed at the top of the stat block. Examples: `"stat-block-header"`, `"creature-bar-top"` |
+| `bottomImage` | `string` | No | A decorative footer image displayed at the bottom of the stat block. Examples: `"stat-block-footer"`, `"creature-bar-bottom"` |
+| `barImage` | `string` | No | A decorative divider image used between stat block sections. Examples: `"stat-block-divider"`, `"ornamental-line"` |
+| `borderColor` | `string` | No | Specified as a hex color string. |
+| `borderWidth` | `number` | No | The width of the stat block border in points. Typically 1-3 points for subtle framing. |
 | `borderStyle` | [BorderStyle](#borderstyle) | No | The border decoration style. If `nil`, no decorative border is applied. |
-| `cornerRadius` | number | No | The corner radius for rounded field corners. Specified in points. A value of `0` creates square corners. |
-| `shadowColor` | string | No |  |
-| `shadowOffsetX` | number | No |  |
-| `shadowOffsetY` | number | No |  |
-| `shadowRadius` | number | No |  |
-| `padding` | Array&lt;number&gt; | No | Internal padding around the stat block content. Can be specified as a single value or an array for different sides. |
+| `cornerRadius` | `number` | No | The corner radius for rounded field corners. Specified in points. A value of `0` creates square corners. |
+| `shadowColor` | `string` | No |  |
+| `shadowOffsetX` | `number` | No |  |
+| `shadowOffsetY` | `number` | No |  |
+| `shadowRadius` | `number` | No |  |
+| `padding` | Array&lt;`number`&gt; | No | Internal padding around the stat block content. Can be specified as a single value or an array for different sides. |
 | `body` | [TextStyle](#textstyle) | No | The text style for stat block body content. Applied to ability descriptions, stat values, and general text. |
 | `section` | [TextStyle](#textstyle) | No | The text style for stat block section headings. Applied to section titles like "Actions", "Traits", "Legendary Actions". |
 
@@ -225,25 +225,25 @@ the theme for consistency.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `font` | string | No | The font family name. Specify a custom font name (e.g., `"Georgia"`, `"Palatino-Bold"`, `"Cinzel"`) or leave `nil` to use the system font. |
-| `size` | number | No | The base font size in points. This size is automatically adjusted for accessibility using Dynamic Type. See `adjustedFontSize` for the computed accessible size. |
+| `font` | `string` | No | The font family name. Specify a custom font name (e.g., `"Georgia"`, `"Palatino-Bold"`, `"Cinzel"`) or leave `nil` to use the system font. |
+| `size` | `number` | No | The base font size in points. This size is automatically adjusted for accessibility using Dynamic Type. See `adjustedFontSize` for the computed accessible size. |
 | `alignment` | [Alignment](/reference/schema/view-definition/#alignment) | No | Examples: `.leading`, `.center`, `.trailing` |
-| `divider` | boolean | No | Useful for headings and section titles. Defaults to `false`. |
-| `color` | string | No | The text color. Specified as a hex color string (e.g., `"#000000"`). Use `uicolor` to get the parsed `UIColor`. |
-| `tintColor` | string | No | An accent or tint color for the text. Specified as a hex color string. Used for special highlighting or emphasis. |
-| `bgColor` | string | No | The background color behind the text. Specified as a hex color string. Use `uibgcolor` to get the parsed `UIColor`. |
-| `padding` | Array&lt;number&gt; | No | Internal padding around the text. Can be specified as a single value or an array for different sides. |
-| `lineHeight` | number | No | The line height multiplier. A value of `1.0` is normal line height, `1.5` is one-and-a-half spacing, etc. |
-| `lineSpacing` | number | No | Additional spacing between lines in points. This is added to the standard line height. |
-| `lineLimit` | integer | No | The maximum number of lines before truncating. If `nil`, text is not line-limited. |
-| `strokeWidth` | number | No | The text stroke (outline) width. Positive values create an outline; negative values create a filled stroke effect. Typically ranges from -3 to 3. |
-| `strokeColor` | string | No | The color of the text stroke/outline. Specified as a hex color string. Only visible when `strokeWidth` is set. |
-| `paragraphSpacing` | number | No | Spacing after each paragraph in points. Applied to multi-paragraph text blocks. |
-| `paragraphSpacingBefore` | number | No | Spacing before each paragraph in points. Applied to multi-paragraph text blocks. |
-| `paragraphHeadIndent` | number | No | The indentation of the first line of each paragraph in points. Positive values indent, negative values outdent (hanging indent). |
+| `divider` | `boolean` | No | Useful for headings and section titles. Defaults to `false`. |
+| `color` | `string` | No | The text color. Specified as a hex color string (e.g., `"#000000"`). Use `uicolor` to get the parsed `UIColor`. |
+| `tintColor` | `string` | No | An accent or tint color for the text. Specified as a hex color string. Used for special highlighting or emphasis. |
+| `bgColor` | `string` | No | The background color behind the text. Specified as a hex color string. Use `uibgcolor` to get the parsed `UIColor`. |
+| `padding` | Array&lt;`number`&gt; | No | Internal padding around the text. Can be specified as a single value or an array for different sides. |
+| `lineHeight` | `number` | No | The line height multiplier. A value of `1.0` is normal line height, `1.5` is one-and-a-half spacing, etc. |
+| `lineSpacing` | `number` | No | Additional spacing between lines in points. This is added to the standard line height. |
+| `lineLimit` | `integer` | No | The maximum number of lines before truncating. If `nil`, text is not line-limited. |
+| `strokeWidth` | `number` | No | The text stroke (outline) width. Positive values create an outline; negative values create a filled stroke effect. Typically ranges from -3 to 3. |
+| `strokeColor` | `string` | No | The color of the text stroke/outline. Specified as a hex color string. Only visible when `strokeWidth` is set. |
+| `paragraphSpacing` | `number` | No | Spacing after each paragraph in points. Applied to multi-paragraph text blocks. |
+| `paragraphSpacingBefore` | `number` | No | Spacing before each paragraph in points. Applied to multi-paragraph text blocks. |
+| `paragraphHeadIndent` | `number` | No | The indentation of the first line of each paragraph in points. Positive values indent, negative values outdent (hanging indent). |
 | `traits` | Array&lt;[TextTrait](#texttrait)&gt; | No | Typographic traits to apply to the text. Multiple traits can be combined (e.g., `[.bold, .italic]`). |
-| `traitStyles` | Object&lt;string&gt; | No | Custom styling applied to specific trait markers in text. Maps trait identifiers to style names for dynamic text formatting. Example: `["emphasis": "italic", "strong": "bold"]` |
+| `traitStyles` | Object&lt;`string`&gt; | No | Custom styling applied to specific trait markers in text. Maps trait identifiers to style names for dynamic text formatting. Example: `["emphasis": "italic", "strong": "bold"]` |
 | `case` | [TextCase](#textcase) | No | Text case transformation. Automatically converts text to uppercase or lowercase. |
-| `prefix` | string | No | Text to prepend before the content. Example: `"Chapter "`, `"• "` for bullet points |
-| `suffix` | string | No | Text to append after the content. Example: `" ft"` for feet units, `":"` after labels |
-| `caps` | boolean | No | Whether to use small caps font variant. When `true`, applies typographic small capitals if available in the font. |
+| `prefix` | `string` | No | Text to prepend before the content. Example: `"Chapter "`, `"• "` for bullet points |
+| `suffix` | `string` | No | Text to append after the content. Example: `" ft"` for feet units, `":"` after labels |
+| `caps` | `boolean` | No | Whether to use small caps font variant. When `true`, applies typographic small capitals if available in the font. |

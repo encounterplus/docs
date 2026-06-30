@@ -11,12 +11,12 @@ A page
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `name` | string | Yes |  |
-| `slug` | string | Yes |  |
-| `content` | string | Yes |  |
-| `parentId` | string | Yes |  |
-| `rank` | integer | Yes |  |
+| `id` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `slug` | `string` | Yes |  |
+| `content` | `string` | Yes |  |
+| `parentId` | `string` | Yes |  |
+| `rank` | `integer` | Yes |  |
 
 ## HtmlData
 

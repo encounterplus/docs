@@ -9,9 +9,9 @@ description: "Game"
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `started` | boolean | Yes |  |
-| `round` | integer | Yes |  |
-| `turn` | integer | Yes |  |
-| `combatantId` | string | Yes |  |
-| `initiativeId` | string | Yes |  |
+| `started` | `boolean` | Yes |  |
+| `round` | `integer` | Yes |  |
+| `turn` | `integer` | Yes |  |
+| `combatantId` | `string` | Yes |  |
+| `initiativeId` | `string` | Yes |  |
 | `combatants` | Array&lt;[Combatant](/reference/schema/combatant/)&gt; | Yes |  |

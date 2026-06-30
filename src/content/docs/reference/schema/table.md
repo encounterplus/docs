@@ -9,21 +9,21 @@ description: "Table"
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `name` | string | Yes |  |
-| `slug` | string | Yes |  |
-| `descr` | string | Yes |  |
-| `notes` | string | Yes |  |
-| `type` | any | Yes |  |
+| `id` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `slug` | `string` | Yes |  |
+| `descr` | `string` | Yes |  |
+| `notes` | `string` | Yes |  |
+| `type` | `any` | Yes |  |
 | `columns` | Array&lt;[TableColumn](/reference/schema/shared/#tablecolumn)&gt; | Yes |  |
-| `rows` | string | Yes |  |
-| `rollMode` | string | Yes |  |
-| `rolls` | string | Yes |  |
-| `moduleId` | any | Yes |  |
-| `campaignId` | any | Yes |  |
-| `parentId` | any | Yes |  |
+| `rows` | `string` | Yes |  |
+| `rollMode` | `string` | Yes |  |
+| `rolls` | `string` | Yes |  |
+| `moduleId` | `any` | Yes |  |
+| `campaignId` | `any` | Yes |  |
+| `parentId` | `any` | Yes |  |
 | `sources` | Array&lt;[Source](/reference/schema/shared/#source)&gt; | Yes |  |
-| `tags` | Array&lt;string&gt; | Yes |  |
+| `tags` | Array&lt;`string`&gt; | Yes |  |
 
 ## RollMode
 

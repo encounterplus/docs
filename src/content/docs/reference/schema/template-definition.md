@@ -9,5 +9,5 @@ description: "TemplateDefinition"
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `title` | string | No |  |
-| `template` | string | No |  |
+| `title` | `string` | No |  |
+| `template` | `string` | No |  |

@@ -91,6 +91,47 @@ def escape_cell(text: str) -> str:
     return text.replace("|", "\\|").replace("\n\n", " ").replace("\n", " ").strip()
 
 
+def flatten_description(text: str) -> str:
+    """Flatten a multi-line schema description into one table-cell-safe line.
+
+    Descriptions follow a convention of a summary paragraph, optional elaboration
+    paragraphs, and trailing bullet lists (`- ...`) or notes. Markdown tables hold
+    no block content, so this folds everything inline: paragraphs/lines join with
+    spaces, and each run of consecutive bullets collapses to a single `; `-joined
+    clause — semicolons (not the naive newline→space) keep items whose own text
+    contains commas distinguishable. Returns a pipe-escaped single line."""
+    chunks: list[str] = []
+    bullets: list[str] = []
+
+    def flush() -> None:
+        if bullets:
+            chunks.append("; ".join(bullets))
+            bullets.clear()
+
+    for raw in text.split("\n"):
+        line = raw.strip()
+        if not line:
+            flush()
+            continue
+        heading = re.match(r"#{1,6}\s+(.*)", line)
+        if heading:
+            # `## Examples` etc. become an inline `Examples:` lead-in for the
+            # content that follows, rather than a stray `##` in the cell.
+            flush()
+            chunks.append("<br>**" + heading.group(1).strip().rstrip(":") + ":**")
+            continue
+        m = re.match(r"[-*]\s+(.*)", line)
+        if m:
+            bullets.append(m.group(1).strip())
+        else:
+            flush()
+            chunks.append(line)
+    flush()
+
+    one_line = " ".join(chunks)
+    return one_line.replace("|", "\\|").strip()
+
+
 def yaml_str(text: str) -> str:
     """Double-quote a string for a YAML front-matter value.
 
@@ -211,7 +252,11 @@ def render_ref(ref: str) -> str:
 
 
 def render_type(entry: dict) -> str:
-    """Human-readable type label (with links) for a property's schema fragment."""
+    """Human-readable type label for a property's schema fragment.
+
+    Leaf type names render as inline-code "chips" for at-a-glance scanning; refs
+    stay as plain links (a code span can't hold a link), and generics keep their
+    `Array<…>` / `Object<…>` wrapper as text around the already-chipped element."""
     if "$ref" in entry:
         return render_ref(entry["$ref"])
     t = entry.get("type")
@@ -221,14 +266,16 @@ def render_type(entry: dict) -> str:
         ap = entry.get("additionalProperties")
         if ap not in (None, False):
             inner = render_type(ap) if isinstance(ap, dict) and ap else "Any"
-            return f"Object&lt;{inner}&gt;" if inner != "Any" else "Object"
-        return "Object"
+            return f"Object&lt;{inner}&gt;" if inner != "Any" else "`Object`"
+        return "`Object`"
     if "enum" in entry:
-        return f"{t or 'string'} (enum)"
+        return f"`{t or 'string'} (enum)`"
+    if isinstance(t, list):  # JSON Schema type array = a union
+        return "`" + " | ".join(t) + "`"
     if t:
         fmt = entry.get("format")
-        return f"{t} ({fmt})" if fmt else t
-    return "any"
+        return f"`{t} ({fmt})`" if fmt else f"`{t}`"
+    return "`any`"
 
 
 # --------------------------------------------------------------------------- #
@@ -244,7 +291,7 @@ def property_table(schema: dict) -> list[str]:
              "| --- | --- | --- | --- |"]
     for name, entry in props.items():
         req = "Yes" if name in required else "No"
-        desc = escape_cell(entry.get("description", ""))
+        desc = flatten_description(entry.get("description", ""))
         lines.append(f"| `{name}` | {render_type(entry)} | {req} | {desc} |")
     lines.append("")
     return lines

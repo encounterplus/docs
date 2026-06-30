@@ -11,22 +11,22 @@ description: "Shared reference."
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `shape` | string | Yes |  |
-| `color` | string | Yes |  |
-| `x` | integer | Yes |  |
-| `y` | integer | Yes |  |
-| `zIndex` | integer | Yes |  |
-| `opacity` | number | Yes |  |
-| `angle` | number | Yes |  |
-| `radius` | number | Yes |  |
-| `length` | number | Yes |  |
-| `width` | number | Yes |  |
+| `id` | `string` | Yes |  |
+| `shape` | `string` | Yes |  |
+| `color` | `string` | Yes |  |
+| `x` | `integer` | Yes |  |
+| `y` | `integer` | Yes |  |
+| `zIndex` | `integer` | Yes |  |
+| `opacity` | `number` | Yes |  |
+| `angle` | `number` | Yes |  |
+| `radius` | `number` | Yes |  |
+| `length` | `number` | Yes |  |
+| `width` | `number` | Yes |  |
 | `asset` | [Asset](#asset) | Yes |  |
 | `source` | [Token](#token) | Yes |  |
-| `reference` | string | Yes |  |
-| `hidden` | boolean | Yes |  |
-| `locked` | boolean | Yes |  |
+| `reference` | `string` | Yes |  |
+| `hidden` | `boolean` | Yes |  |
+| `locked` | `boolean` | Yes |  |
 | `components` | Array&lt;[Component](#component)&gt; | Yes |  |
 
 ### AreaEffect.Shape
@@ -46,16 +46,16 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `name` | string | Yes |  |
-| `slug` | string | Yes |  |
-| `type` | string | Yes |  |
-| `resource` | string | Yes |  |
-| `parameters` | Object | Yes |  |
+| `id` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `slug` | `string` | Yes |  |
+| `type` | `string` | Yes |  |
+| `resource` | `string` | Yes |  |
+| `parameters` | `Object` | Yes |  |
 | `components` | Array&lt;[Component](#component)&gt; | Yes |  |
-| `rank` | integer | Yes |  |
-| `tags` | Array&lt;string&gt; | Yes |  |
-| `parentId` | string | Yes |  |
+| `rank` | `integer` | Yes |  |
+| `tags` | Array&lt;`string`&gt; | Yes |  |
+| `parentId` | `string` | Yes |  |
 
 ## Aura
 
@@ -63,14 +63,14 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `enabled` | boolean | Yes |  |
-| `name` | string | Yes |  |
-| `color` | string | Yes |  |
-| `opacity` | number | Yes |  |
-| `radius` | number | Yes |  |
+| `id` | `string` | Yes |  |
+| `enabled` | `boolean` | Yes |  |
+| `name` | `string` | Yes |  |
+| `color` | `string` | Yes |  |
+| `opacity` | `number` | Yes |  |
+| `radius` | `number` | Yes |  |
 | `asset` | [Asset](#asset) | Yes |  |
-| `reference` | string | Yes |  |
+| `reference` | `string` | Yes |  |
 | `components` | Array&lt;[Component](#component)&gt; | Yes |  |
 
 ## Campaign
@@ -79,19 +79,19 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `system` | string | Yes |  |
-| `name` | string | Yes |  |
-| `slug` | string | Yes |  |
-| `descr` | string | Yes |  |
-| `shortDescr` | string | Yes |  |
-| `image` | string | Yes |  |
-| `banner` | string | Yes |  |
-| `tags` | Array&lt;string&gt; | Yes |  |
-| `references` | Array&lt;string&gt; | Yes |  |
-| `data` | Object | Yes |  |
-| `attributes` | ['string', 'number', 'boolean'] | Yes |  |
-| `systemVersion` | string | Yes |  |
+| `id` | `string` | Yes |  |
+| `system` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `slug` | `string` | Yes |  |
+| `descr` | `string` | Yes |  |
+| `shortDescr` | `string` | Yes |  |
+| `image` | `string` | Yes |  |
+| `banner` | `string` | Yes |  |
+| `tags` | Array&lt;`string`&gt; | Yes |  |
+| `references` | Array&lt;`string`&gt; | Yes |  |
+| `data` | `Object` | Yes |  |
+| `attributes` | `string | number | boolean` | Yes |  |
+| `systemVersion` | `string` | Yes |  |
 
 ## Component
 
@@ -99,17 +99,17 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `type` | string | Yes |  |
-| `enabled` | boolean | Yes |  |
-| `hue` | any | Yes |  |
-| `saturation` | any | Yes |  |
-| `brightness` | any | Yes |  |
-| `color` | any | Yes |  |
-| `from` | any | Yes |  |
-| `to` | any | Yes |  |
-| `repeat` | any | Yes |  |
-| `duration` | any | Yes |  |
-| `autoreverse` | any | Yes |  |
+| `type` | `string` | Yes |  |
+| `enabled` | `boolean` | Yes |  |
+| `hue` | `any` | Yes |  |
+| `saturation` | `any` | Yes |  |
+| `brightness` | `any` | Yes |  |
+| `color` | `any` | Yes |  |
+| `from` | `any` | Yes |  |
+| `to` | `any` | Yes |  |
+| `repeat` | `any` | Yes |  |
+| `duration` | `any` | Yes |  |
+| `autoreverse` | `any` | Yes |  |
 
 ## ControlState
 
@@ -129,16 +129,16 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `enabled` | boolean | Yes |  |
-| `radiusMin` | integer | Yes |  |
-| `radiusMax` | integer | Yes |  |
-| `color` | string | Yes |  |
-| `opacity` | number | Yes |  |
-| `alwaysVisible` | boolean | Yes |  |
-| `x` | integer | Yes |  |
-| `y` | integer | Yes |  |
-| `sight` | any | Yes |  |
+| `id` | `string` | Yes |  |
+| `enabled` | `boolean` | Yes |  |
+| `radiusMin` | `integer` | Yes |  |
+| `radiusMax` | `integer` | Yes |  |
+| `color` | `string` | Yes |  |
+| `opacity` | `number` | Yes |  |
+| `alwaysVisible` | `boolean` | Yes |  |
+| `x` | `integer` | Yes |  |
+| `y` | `integer` | Yes |  |
+| `sight` | `any` | Yes |  |
 
 ## Marker
 
@@ -146,18 +146,18 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `label` | string | Yes |  |
-| `color` | string | Yes |  |
-| `shape` | string | Yes |  |
-| `size` | string | Yes |  |
-| `name` | string | Yes |  |
-| `descr` | string | Yes |  |
-| `reference` | string | Yes |  |
-| `hidden` | boolean | Yes |  |
-| `locked` | boolean | Yes |  |
-| `x` | integer | Yes |  |
-| `y` | integer | Yes |  |
+| `id` | `string` | Yes |  |
+| `label` | `string` | Yes |  |
+| `color` | `string` | Yes |  |
+| `shape` | `string` | Yes |  |
+| `size` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `descr` | `string` | Yes |  |
+| `reference` | `string` | Yes |  |
+| `hidden` | `boolean` | Yes |  |
+| `locked` | `boolean` | Yes |  |
+| `x` | `integer` | Yes |  |
+| `y` | `integer` | Yes |  |
 
 ## Measurement
 
@@ -165,11 +165,11 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `type` | string | Yes |  |
-| `color` | string | Yes |  |
-| `hidden` | boolean | Yes |  |
-| `data` | Array&lt;integer&gt; | Yes |  |
+| `id` | `string` | Yes |  |
+| `type` | `string` | Yes |  |
+| `color` | `string` | Yes |  |
+| `hidden` | `boolean` | Yes |  |
+| `data` | Array&lt;`integer`&gt; | Yes |  |
 
 ### Measurement.MeasurementType
 
@@ -184,12 +184,12 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `enabled` | boolean | Yes |  |
-| `name` | string | Yes |  |
+| `id` | `string` | Yes |  |
+| `enabled` | `boolean` | Yes |  |
+| `name` | `string` | Yes |  |
 | `mode` | [Mode](#modifiermode) | Yes |  |
-| `attribute` | string | Yes |  |
-| `value` | string | Yes |  |
+| `attribute` | `string` | Yes |  |
+| `value` | `string` | Yes |  |
 | `scope` | [Scope](#modifierscope) | Yes |  |
 
 ### Modifier.Mode
@@ -216,25 +216,25 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `system` | string | Yes |  |
-| `name` | string | Yes |  |
-| `slug` | string | Yes |  |
-| `version` | string | Yes |  |
-| `descr` | string | Yes |  |
-| `shortDescr` | string | Yes |  |
-| `acronym` | string | Yes |  |
-| `author` | string | Yes |  |
-| `category` | string | Yes |  |
-| `website` | string | Yes |  |
-| `repository` | string | Yes |  |
-| `package` | string | Yes |  |
-| `image` | string | Yes |  |
-| `banner` | string | Yes |  |
-| `tags` | Array&lt;string&gt; | Yes |  |
-| `data` | Object | Yes |  |
-| `attributes` | ['string', 'number', 'boolean'] | Yes |  |
-| `systemVersion` | string | Yes |  |
+| `id` | `string` | Yes |  |
+| `system` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `slug` | `string` | Yes |  |
+| `version` | `string` | Yes |  |
+| `descr` | `string` | Yes |  |
+| `shortDescr` | `string` | Yes |  |
+| `acronym` | `string` | Yes |  |
+| `author` | `string` | Yes |  |
+| `category` | `string` | Yes |  |
+| `website` | `string` | Yes |  |
+| `repository` | `string` | Yes |  |
+| `package` | `string` | Yes |  |
+| `image` | `string` | Yes |  |
+| `banner` | `string` | Yes |  |
+| `tags` | Array&lt;`string`&gt; | Yes |  |
+| `data` | `Object` | Yes |  |
+| `attributes` | `string | number | boolean` | Yes |  |
+| `systemVersion` | `string` | Yes |  |
 
 ## Role
 
@@ -252,8 +252,8 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `name` | string | Yes |  |
-| `page` | integer | Yes |  |
+| `name` | `string` | Yes |  |
+| `page` | `integer` | Yes |  |
 
 ## StatusEffect
 
@@ -261,23 +261,23 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `name` | string | Yes |  |
-| `type` | string | Yes |  |
-| `reference` | string | Yes |  |
-| `duration` | number | Yes |  |
-| `durationUnit` | string | Yes |  |
-| `durationType` | string | Yes |  |
-| `descr` | string | Yes |  |
-| `notes` | string | Yes |  |
-| `color` | string | Yes |  |
-| `icon` | string | Yes |  |
-| `source` | string | Yes |  |
-| `roundStart` | integer | Yes |  |
-| `turnStart` | integer | Yes |  |
-| `enabled` | boolean | Yes |  |
-| `data` | Object | Yes |  |
-| `attributes` | ['string', 'number', 'boolean'] | Yes |  |
+| `id` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `type` | `string` | Yes |  |
+| `reference` | `string` | Yes |  |
+| `duration` | `number` | Yes |  |
+| `durationUnit` | `string` | Yes |  |
+| `durationType` | `string` | Yes |  |
+| `descr` | `string` | Yes |  |
+| `notes` | `string` | Yes |  |
+| `color` | `string` | Yes |  |
+| `icon` | `string` | Yes |  |
+| `source` | `string` | Yes |  |
+| `roundStart` | `integer` | Yes |  |
+| `turnStart` | `integer` | Yes |  |
+| `enabled` | `boolean` | Yes |  |
+| `data` | `Object` | Yes |  |
+| `attributes` | `string | number | boolean` | Yes |  |
 | `modifiers` | Array&lt;[Modifier](#modifier)&gt; | Yes |  |
 
 ### StatusEffect.DurationType
@@ -305,9 +305,9 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `name` | string | Yes |  |
-| `alignment` | string | Yes |  |
-| `size` | number | Yes |  |
+| `name` | `string` | Yes |  |
+| `alignment` | `string` | Yes |  |
+| `size` | `number` | Yes |  |
 
 ### TableColumn.Alignment
 
@@ -323,21 +323,21 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `x` | integer | Yes |  |
-| `y` | integer | Yes |  |
-| `width` | integer | Yes |  |
-| `height` | integer | Yes |  |
-| `rotation` | integer | Yes |  |
-| `opacity` | number | Yes |  |
-| `scale` | number | Yes |  |
-| `layer` | string | Yes |  |
-| `zIndex` | integer | Yes |  |
-| `hidden` | boolean | Yes |  |
-| `locked` | boolean | Yes |  |
+| `id` | `string` | Yes |  |
+| `x` | `integer` | Yes |  |
+| `y` | `integer` | Yes |  |
+| `width` | `integer` | Yes |  |
+| `height` | `integer` | Yes |  |
+| `rotation` | `integer` | Yes |  |
+| `opacity` | `number` | Yes |  |
+| `scale` | `number` | Yes |  |
+| `layer` | `string` | Yes |  |
+| `zIndex` | `integer` | Yes |  |
+| `hidden` | `boolean` | Yes |  |
+| `locked` | `boolean` | Yes |  |
 | `asset` | [Asset](#asset) | Yes |  |
 | `light` | [Light](#light) | Yes |  |
-| `reference` | string | Yes |  |
+| `reference` | `string` | Yes |  |
 | `components` | Array&lt;[Component](#component)&gt; | Yes |  |
 
 ## Token
@@ -346,29 +346,29 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `name` | string | Yes |  |
-| `label` | string | Yes |  |
-| `role` | string | Yes |  |
-| `x` | integer | Yes |  |
-| `y` | integer | Yes |  |
-| `scale` | number | Yes |  |
-| `width` | integer | Yes |  |
-| `height` | integer | Yes |  |
-| `style` | string | Yes |  |
-| `rotation` | integer | Yes |  |
-| `elevation` | integer | Yes |  |
-| `hidden` | boolean | Yes |  |
+| `id` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `label` | `string` | Yes |  |
+| `role` | `string` | Yes |  |
+| `x` | `integer` | Yes |  |
+| `y` | `integer` | Yes |  |
+| `scale` | `number` | Yes |  |
+| `width` | `integer` | Yes |  |
+| `height` | `integer` | Yes |  |
+| `style` | `string` | Yes |  |
+| `rotation` | `integer` | Yes |  |
+| `elevation` | `integer` | Yes |  |
+| `hidden` | `boolean` | Yes |  |
 | `asset` | [Asset](#asset) | Yes |  |
 | `vision` | [Vision](#vision) | Yes |  |
-| `reference` | string | Yes |  |
+| `reference` | `string` | Yes |  |
 | `auras` | Array&lt;[Aura](#aura)&gt; | Yes |  |
-| `entityId` | any | Yes |  |
-| `trackingId` | integer | Yes |  |
-| `image` | any | Yes |  |
-| `path` | any | Yes |  |
+| `entityId` | `any` | Yes |  |
+| `trackingId` | `integer` | Yes |  |
+| `image` | `any` | Yes |  |
+| `path` | `any` | Yes |  |
 | `combatant` | [Combatant](/reference/schema/combatant/) | Yes |  |
-| `player` | any | Yes |  |
+| `player` | `any` | Yes |  |
 
 ## TokenStyle
 
@@ -385,17 +385,17 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `enabled` | boolean | Yes |  |
-| `light` | boolean | Yes |  |
-| `lightRadiusMin` | number | Yes |  |
-| `lightRadiusMax` | number | Yes |  |
-| `lightColor` | string | Yes |  |
-| `lightOpacity` | number | Yes |  |
-| `dark` | boolean | Yes |  |
-| `darkRadiusMin` | number | Yes |  |
-| `darkRadiusMax` | number | Yes |  |
-| `sight` | any | Yes |  |
+| `id` | `string` | Yes |  |
+| `enabled` | `boolean` | Yes |  |
+| `light` | `boolean` | Yes |  |
+| `lightRadiusMin` | `number` | Yes |  |
+| `lightRadiusMax` | `number` | Yes |  |
+| `lightColor` | `string` | Yes |  |
+| `lightOpacity` | `number` | Yes |  |
+| `dark` | `boolean` | Yes |  |
+| `darkRadiusMin` | `number` | Yes |  |
+| `darkRadiusMax` | `number` | Yes |  |
+| `sight` | `any` | Yes |  |
 
 ## Wall
 
@@ -403,13 +403,13 @@ Type: `string` — one of:
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `data` | Array&lt;number&gt; | Yes |  |
-| `color` | string | No |  |
+| `id` | `string` | Yes |  |
+| `data` | Array&lt;`number`&gt; | Yes |  |
+| `color` | `string` | No |  |
 | `type` | [WallType](#walltype) | No |  |
 | `side` | [Side](#wallside) | No |  |
 | `door` | [DoorState](#walldoorstate) | No |  |
-| `generated` | boolean | No |  |
+| `generated` | `boolean` | No |  |
 
 ### Wall.Side
 

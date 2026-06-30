@@ -9,22 +9,22 @@ description: "Combatant"
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `label` | string | Yes |  |
-| `name` | string | Yes |  |
+| `id` | `string` | Yes |  |
+| `label` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
 | `role` | [Role](/reference/schema/shared/#role) | Yes |  |
-| `hidden` | boolean | Yes |  |
-| `notes` | string | Yes |  |
+| `hidden` | `boolean` | Yes |  |
+| `notes` | `string` | Yes |  |
 | `initiative` | Array&lt;[Initiative](/reference/schema/initiative/)&gt; | Yes |  |
-| `data` | Object | Yes |  |
-| `attributes` | ['string', 'number', 'boolean'] | Yes |  |
-| `reference` | string | Yes |  |
+| `data` | `Object` | Yes |  |
+| `attributes` | `string | number | boolean` | Yes |  |
+| `reference` | `string` | Yes |  |
 | `modifiers` | Array&lt;[Modifier](/reference/schema/shared/#modifier)&gt; | Yes |  |
 | `effects` | Array&lt;[StatusEffect](/reference/schema/shared/#statuseffect)&gt; | Yes |  |
-| `bloodied` | any | Yes |  |
-| `defeated` | any | Yes |  |
-| `player` | any | Yes |  |
-| `image` | any | Yes |  |
-| `entityId` | string | Yes |  |
-| `entityType` | any | Yes |  |
-| `tokenId` | any | Yes |  |
+| `bloodied` | `any` | Yes |  |
+| `defeated` | `any` | Yes |  |
+| `player` | `any` | Yes |  |
+| `image` | `any` | Yes |  |
+| `entityId` | `string` | Yes |  |
+| `entityType` | `any` | Yes |  |
+| `tokenId` | `any` | Yes |  |

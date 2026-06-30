@@ -11,22 +11,22 @@ An Encounter
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `name` | string | Yes |  |
-| `slug` | string | Yes |  |
-| `descr` | string | Yes |  |
-| `combatants` | Array&lt;Object&gt; | Yes |  |
-| `parentId` | string | Yes |  |
-| `rank` | integer | Yes |  |
+| `id` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `slug` | `string` | Yes |  |
+| `descr` | `string` | Yes |  |
+| `combatants` | Array&lt;`Object`&gt; | Yes |  |
+| `parentId` | `string` | Yes |  |
+| `rank` | `integer` | Yes |  |
 
 ## Combatant
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `label` | string | No |  |
-| `name` | string | No |  |
+| `label` | `string` | No |  |
+| `name` | `string` | No |  |
 | `role` | [Role](/reference/schema/shared/#role) | No |  |
-| `reference` | string | No |  |
-| `x` | integer | No |  |
-| `y` | integer | No |  |
-| `center` | any | Yes |  |
+| `reference` | `string` | No |  |
+| `x` | `integer` | No |  |
+| `y` | `integer` | No |  |
+| `center` | `any` | Yes |  |

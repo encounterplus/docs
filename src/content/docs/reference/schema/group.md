@@ -11,8 +11,8 @@ A Group
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `name` | string | Yes |  |
-| `slug` | string | Yes |  |
-| `parentId` | string | Yes |  |
-| `rank` | integer | Yes |  |
+| `id` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `slug` | `string` | Yes |  |
+| `parentId` | `string` | Yes |  |
+| `rank` | `integer` | Yes |  |

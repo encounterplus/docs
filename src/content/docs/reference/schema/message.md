@@ -9,13 +9,13 @@ description: "Message"
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `type` | string | Yes |  |
-| `source` | string | Yes |  |
-| `color` | string | Yes |  |
-| `creature` | string | Yes |  |
-| `content` | string | Yes |  |
-| `created` | string (date-time) | Yes |  |
+| `id` | `string` | Yes |  |
+| `type` | `string` | Yes |  |
+| `source` | `string` | Yes |  |
+| `color` | `string` | Yes |  |
+| `creature` | `string` | Yes |  |
+| `content` | `string` | Yes |  |
+| `created` | `string (date-time)` | Yes |  |
 
 ## MessageType
 

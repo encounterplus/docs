@@ -9,7 +9,7 @@ description: "DataTransform"
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `debug` | boolean | No |  |
-| `attributes` | Array&lt;Object&gt; | No |  |
-| `references` | Array&lt;string&gt; | No |  |
-| `modifiers` | Array&lt;string&gt; | No |  |
+| `debug` | `boolean` | No |  |
+| `attributes` | Array&lt;`Object`&gt; | No |  |
+| `references` | Array&lt;`string`&gt; | No |  |
+| `modifiers` | Array&lt;`string`&gt; | No |  |

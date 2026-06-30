@@ -15,12 +15,12 @@ sections, and fields, with conditional visibility and custom rendering options.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `title` | string | No | The display title for the form. This appears at the top of the form interface and helps users identify the purpose of the form. For example: "Character Sheet", "Inventory", "Spell List". |
-| `icon` | string | No | An optional SF Symbol name or image identifier for the form. Used to provide visual identification in tab bars, navigation, and form headers. Examples: "person.fill", "bag.fill", "star.fill" |
-| `tabs` | Array&lt;FormDefinition&gt; | No | Child form definitions for tabbed interfaces. When present, creates a tabbed interface where each tab contains its own form definition. Useful for organizing complex character sheets with separate tabs for stats, inventory, spells, etc. - Note: If `tabs` is set, `sections` is typically `nil` at the root level, as content is organized within tabs. |
+| `title` | `string` | No | The display title for the form. This appears at the top of the form interface and helps users identify the purpose of the form. For example: "Character Sheet", "Inventory", "Spell List". |
+| `icon` | `string` | No | An optional SF Symbol name or image identifier for the form. Used to provide visual identification in tab bars, navigation, and form headers. Examples: "person.fill", "bag.fill", "star.fill" |
+| `tabs` | Array&lt;FormDefinition&gt; | No | Child form definitions for tabbed interfaces. When present, creates a tabbed interface where each tab contains its own form definition. Useful for organizing complex character sheets with separate tabs for stats, inventory, spells, etc. Note: If `tabs` is set, `sections` is typically `nil` at the root level, as content is organized within tabs. |
 | `sections` | Array&lt;FormDefinition&gt; | No | The sections that make up this form. Sections provide logical grouping of related fields (e.g., "Ability Scores", "Skills", "Equipment"). Each section can have its own type, conditional visibility, and nested fields. |
-| `partial` | string | No | A template string for partial rendering. Used for custom rendering scenarios where the form needs to include dynamically generated content based on character data. Templates use mustache-style syntax: `{{ attribute }}`. |
-| `error` | string | No | An error message to display if form loading or validation fails. This can be set when a form definition is invalid, missing required data, or encounters system-specific errors during initialization. |
+| `partial` | `string` | No | A template string for partial rendering. Used for custom rendering scenarios where the form needs to include dynamically generated content based on character data. Templates use mustache-style syntax: `{{ attribute }}`. |
+| `error` | `string` | No | An error message to display if form loading or validation fails. This can be set when a form definition is invalid, missing required data, or encounters system-specific errors during initialization. |
 
 ## Section
 
@@ -32,16 +32,16 @@ complex data structures.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes | A unique identifier for this section. Automatically generated using `UUID().uuidString` if not provided. |
-| `title` | string | No | Examples: "Ability Scores", "Skills", "Equipment", "Spellcasting" |
-| `units` | string | No | Optional units label for numeric fields in this section. Examples: "ft", "lb", "gp" (for feet, pounds, gold pieces) |
+| `id` | `string` | Yes | A unique identifier for this section. Automatically generated using `UUID().uuidString` if not provided. |
+| `title` | `string` | No | Examples: "Ability Scores", "Skills", "Equipment", "Spellcasting" |
+| `units` | `string` | No | Optional units label for numeric fields in this section. Examples: "ft", "lb", "gp" (for feet, pounds, gold pieces) |
 | `type` | [SectionType](#sectiontype) | No | The presentation type for this section. Defaults to `.group` if not specified. |
-| `attribute` | string | No | The data model path for this section's primary value. Uses dot notation to reference nested properties (e.g., "stats.strength", "inventory.items"). For list sections, this typically points to an array in the data model. |
-| `attributeType` | string | No | The expected type of data for this section's attribute. Used for validation and type coercion. Common values include: - "String", "Int", "Double", "Bool" - "[String]", "[Item]" for arrays - Custom type names for complex objects |
-| `defaultValue` | any | No | The default value to use when initializing new instances. Particularly useful for list sections where new items need default values. For example, a new inventory item might default to `["name": "", "quantity": 1]`. |
-| `visibleIf` | string | No | A template condition determining when this section should be visible. Supports two formats: 1. Template expressions: `"{{ hasSpellcasting }}"` - Shows section if value is truthy 2. Conditional expressions: `"level >= 3"` - Shows section if condition evaluates to true See `isVisible(data:)` for evaluation details. |
-| `hiddenIf` | string | No | A template condition determining when this section should be hidden. Opposite of `visibleIf`. Supports the same formats: 1. Template expressions: `"{{ isNPC }}"` - Hides section if value is truthy 2. Conditional expressions: `"level < 3"` - Hides section if condition evaluates to true |
-| `custom` | Object | No | Custom key-value pairs for section-specific metadata. Allows extensions and plugins to attach additional configuration without modifying the core structure. For example, a game system plugin might store `["systemId": "dnd5e", "version": "2024"]`. |
+| `attribute` | `string` | No | The data model path for this section's primary value. Uses dot notation to reference nested properties (e.g., "stats.strength", "inventory.items"). For list sections, this typically points to an array in the data model. |
+| `attributeType` | `string` | No | The expected type of data for this section's attribute. Used for validation and type coercion. Common values include: "String", "Int", "Double", "Bool"; "[String]", "[Item]" for arrays; Custom type names for complex objects |
+| `defaultValue` | `any` | No | The default value to use when initializing new instances. Particularly useful for list sections where new items need default values. For example, a new inventory item might default to `["name": "", "quantity": 1]`. |
+| `visibleIf` | `string` | No | A template condition determining when this section should be visible. Supports two formats: 1. Template expressions: `"{{ hasSpellcasting }}"` - Shows section if value is truthy 2. Conditional expressions: `"level >= 3"` - Shows section if condition evaluates to true See `isVisible(data:)` for evaluation details. |
+| `hiddenIf` | `string` | No | A template condition determining when this section should be hidden. Opposite of `visibleIf`. Supports the same formats: 1. Template expressions: `"{{ isNPC }}"` - Hides section if value is truthy 2. Conditional expressions: `"level < 3"` - Hides section if condition evaluates to true |
+| `custom` | `Object` | No | Custom key-value pairs for section-specific metadata. Allows extensions and plugins to attach additional configuration without modifying the core structure. For example, a game system plugin might store `["systemId": "dnd5e", "version": "2024"]`. |
 | `fields` | Array&lt;FormDefinition&gt; | No | The fields contained within this section. For `.group` sections, these are displayed in order. For `.list` sections, this is typically empty and the `form` property defines list item structure instead. |
 | `form` | FormDefinition | No | An embedded form definition for complex section items. Primarily used for `.list` sections where each item has multiple fields. For example, an inventory list might use a form with fields for item name, quantity, weight, and value. |
 
@@ -69,21 +69,21 @@ and custom rendering.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes | A unique identifier for this field. Automatically generated using `UUID().uuidString` if not provided. |
-| `title` | string | No | Examples: "Character Name", "Armor Class", "Hit Points" |
-| `units` | string | No | Optional units label for numeric fields. Displayed alongside the field value. Examples: "ft", "lb", "gp" |
-| `detail` | string | No | Supplementary text providing additional context. Displayed below the field title. Examples: "Your character's current hit points", "Base AC before adding modifiers" |
-| `placeholder` | string | No | Placeholder text shown when the field is empty. Examples: "Enter character name", "Select a class" |
+| `id` | `string` | Yes | A unique identifier for this field. Automatically generated using `UUID().uuidString` if not provided. |
+| `title` | `string` | No | Examples: "Character Name", "Armor Class", "Hit Points" |
+| `units` | `string` | No | Optional units label for numeric fields. Displayed alongside the field value. Examples: "ft", "lb", "gp" |
+| `detail` | `string` | No | Supplementary text providing additional context. Displayed below the field title. Examples: "Your character's current hit points", "Base AC before adding modifiers" |
+| `placeholder` | `string` | No | Placeholder text shown when the field is empty. Examples: "Enter character name", "Select a class" |
 | `type` | [FieldType](#fieldtype) | No | The input type for this field. Defaults to `.text` if not specified. |
-| `attribute` | string | No | The data model path this field binds to. Uses dot notation for nested properties: "stats.strength", "inventory.gold" |
-| `attributeType` | string | No | The expected type of data for this field's attribute. Used for validation and type coercion. Common values: - "String", "Int", "Double", "Bool" - "[String]" for arrays - Custom type names for complex objects |
-| `filter` | string | No | A filter expression for limiting selection options. Used with reference, picker, and multiPicker fields to filter available choices. Example: `"type == 'Weapon' && rarity == 'Common'"` for filtering items |
-| `defaultValue` | any | No | The default value when creating new instances. Used when initializing new forms or adding list items. |
+| `attribute` | `string` | No | The data model path this field binds to. Uses dot notation for nested properties: "stats.strength", "inventory.gold" |
+| `attributeType` | `string` | No | The expected type of data for this field's attribute. Used for validation and type coercion. Common values: "String", "Int", "Double", "Bool"; "[String]" for arrays; Custom type names for complex objects |
+| `filter` | `string` | No | A filter expression for limiting selection options. Used with reference, picker, and multiPicker fields to filter available choices. Example: `"type == 'Weapon' && rarity == 'Common'"` for filtering items |
+| `defaultValue` | `any` | No | The default value when creating new instances. Used when initializing new forms or adding list items. |
 | `alignment` | [Alignment](/reference/schema/view-definition/#alignment) | No | The text alignment for this field's content. Examples: `.leading`, `.center`, `.trailing` |
-| `text` | string | No | Static text content for display-only fields. Used with certain field types to show non-editable text or labels. |
-| `visibleIf` | string | No | A template condition determining when this field should be visible. Same format as `Section/visibleIf`. Examples: - `"{{ class == 'Wizard' }}"` - Show for wizards only - `"level >= 5"` - Show at level 5 or higher |
-| `hiddenIf` | string | No | A template condition determining when this field should be hidden. Opposite of `visibleIf`. Same format and evaluation rules. |
-| `custom` | Object | No | Custom key-value pairs for field-specific metadata. Allows extensions and plugins to attach additional configuration. |
+| `text` | `string` | No | Static text content for display-only fields. Used with certain field types to show non-editable text or labels. |
+| `visibleIf` | `string` | No | A template condition determining when this field should be visible. Same format as `Section/visibleIf`. Examples: `"{{ class == 'Wizard' }}"` - Show for wizards only; `"level >= 5"` - Show at level 5 or higher |
+| `hiddenIf` | `string` | No | A template condition determining when this field should be hidden. Opposite of `visibleIf`. Same format and evaluation rules. |
+| `custom` | `Object` | No | Custom key-value pairs for field-specific metadata. Allows extensions and plugins to attach additional configuration. |
 | `form` | FormDefinition | No | An embedded form definition for complex fields. Used with `.form` field type to nest complete forms within a field. |
 | `fields` | Array&lt;FormDefinition&gt; | No | Child fields for container field types. Used with `.hStack` to define fields that should be laid out horizontally. |
 

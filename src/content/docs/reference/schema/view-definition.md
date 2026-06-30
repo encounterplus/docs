@@ -15,21 +15,21 @@ server-driven rendering, or any scenario where UI structure needs to be defined 
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes | Unique identifier for this view definition. Automatically generated UUID string. |
-| `title` | string | No | The title or name of this layout. Used for documentation, debugging, or display in development tools. |
-| `type` | [LayoutType](#layouttype) | No | Determines how child views are arranged. - SeeAlso: `LayoutType` |
-| `alignment` | [Alignment](#alignment) | No | - SeeAlso: `Alignment` |
-| `spacing` | number | No | Spacing between root-level views in points. |
-| `padding` | Array&lt;number&gt; | No | Padding around the entire layout. Can specify: - Single value: `[20]` - all sides - Two values: `[16, 20]` - vertical, horizontal - Three values: `[16, 20, 24]` - top, horizontal, bottom - Four values: `[10, 15, 20, 15]` - top, right, bottom, left |
-| `bgColor` | string | No | Background color for the entire layout. |
-| `bgImage` | string | No | Background image path for the entire layout. |
-| `width` | number | No | Fixed width for the layout in points. |
-| `height` | number | No | Fixed height for the layout in points. |
-| `frame` | [Frame](#frame) | No | Frame constraints for the entire layout. - SeeAlso: `Frame` |
-| `custom` | Object | No | Custom properties for extension and specialized behavior. Allows passing arbitrary configuration data. |
+| `id` | `string` | Yes | Unique identifier for this view definition. Automatically generated UUID string. |
+| `title` | `string` | No | The title or name of this layout. Used for documentation, debugging, or display in development tools. |
+| `type` | [LayoutType](#layouttype) | No | Determines how child views are arranged. SeeAlso: `LayoutType` |
+| `alignment` | [Alignment](#alignment) | No | SeeAlso: `Alignment` |
+| `spacing` | `number` | No | Spacing between root-level views in points. |
+| `padding` | Array&lt;`number`&gt; | No | Padding around the entire layout. Can specify: Single value: `[20]` - all sides; Two values: `[16, 20]` - vertical, horizontal; Three values: `[16, 20, 24]` - top, horizontal, bottom; Four values: `[10, 15, 20, 15]` - top, right, bottom, left |
+| `bgColor` | `string` | No | Background color for the entire layout. |
+| `bgImage` | `string` | No | Background image path for the entire layout. |
+| `width` | `number` | No | Fixed width for the layout in points. |
+| `height` | `number` | No | Fixed height for the layout in points. |
+| `frame` | [Frame](#frame) | No | Frame constraints for the entire layout. SeeAlso: `Frame` |
+| `custom` | `Object` | No | Custom properties for extension and specialized behavior. Allows passing arbitrary configuration data. |
 | `views` | Array&lt;ViewDefinition&gt; | No | The main content views to render. These views are rendered in the foreground according to the `type` layout. |
 | `bgViews` | Array&lt;ViewDefinition&gt; | No | Background views rendered behind the main content. Useful for creating layered effects, background images, or decorative elements. |
-| `debug` | boolean | No | Enable debug mode for development and troubleshooting. When `true`, may display: - View boundaries - Layout guides - Data binding information - Performance metrics |
+| `debug` | `boolean` | No | Enable debug mode for development and troubleshooting. When `true`, may display: View boundaries; Layout guides; Data binding information; Performance metrics |
 
 ## LayoutType
 
@@ -87,15 +87,15 @@ and layout behavior.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `width` | number | No | Fixed width in points. When set, the view will have exactly this width. |
-| `height` | number | No | Fixed height in points. When set, the view will have exactly this height. |
-| `minWidth` | number | No | Minimum width constraint in points. The view will never be smaller than this width. |
-| `maxWidth` | number | No | Maximum width constraint in points. The view will never be larger than this width. |
-| `minHeight` | number | No | Minimum height constraint in points. The view will never be smaller than this height. |
-| `maxHeight` | number | No | Maximum height constraint in points. The view will never be larger than this height. |
-| `aspectFit` | number | No | Aspect ratio for fitting content (width / height). When set, the view maintains this aspect ratio while fitting within constraints. |
-| `aspectFill` | number | No | Aspect ratio for filling content (width / height). When set, the view maintains this aspect ratio while filling its container. |
-| `layoutPriority` | number | No | Layout priority for resolving conflicts. Higher values mean the view is less flexible. Used when multiple views compete for space. |
+| `width` | `number` | No | Fixed width in points. When set, the view will have exactly this width. |
+| `height` | `number` | No | Fixed height in points. When set, the view will have exactly this height. |
+| `minWidth` | `number` | No | Minimum width constraint in points. The view will never be smaller than this width. |
+| `maxWidth` | `number` | No | Maximum width constraint in points. The view will never be larger than this width. |
+| `minHeight` | `number` | No | Minimum height constraint in points. The view will never be smaller than this height. |
+| `maxHeight` | `number` | No | Maximum height constraint in points. The view will never be larger than this height. |
+| `aspectFit` | `number` | No | Aspect ratio for fitting content (width / height). When set, the view maintains this aspect ratio while fitting within constraints. |
+| `aspectFill` | `number` | No | Aspect ratio for filling content (width / height). When set, the view maintains this aspect ratio while filling its container. |
+| `layoutPriority` | `number` | No | Layout priority for resolving conflicts. Higher values mean the view is less flexible. Used when multiple views compete for space. |
 
 ## View
 
@@ -107,33 +107,33 @@ conditional visibility.
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes | Unique identifier for this view. Automatically generated UUID string. Used for tracking, animations, and list identification. |
-| `title` | string | No | The title or label for this view. Used as: - Label text - Tab titles - Button text |
-| `value` | string | No | Static value or template string for this view. The interpretation depends on `type`: - For `.text`: The text to display - For `.image`: The image path or URL |
-| `type` | [ViewType](#viewtype) | No | Determines how this view is displayed and what properties are relevant. - SeeAlso: `ViewType` |
-| `attribute` | string | No | Data binding path for dynamic content. Specifies which property from the data context to display or bind to. Uses dot notation to access nested properties. ## Example ``json // Simple property "attribute": "data.level" // Nested property "attribute: "data.character.abilities.strength" `` |
-| `attributeType` | string | No | SystemType or Entity for the attribute value. Helps renderers format and validate data appropriately. |
-| `context` | [ContextType](#contexttype) | No | The data context scope for attribute resolution. - SeeAlso: `ContextType` |
-| `style` | string | No | Style identifier for this view. References a theme style definition that controls typography, colors, spacing, and other visual properties. |
-| `link` | string | No | Navigation link When tapped, navigates to the specified destination. |
-| `alignment` | [Alignment](#alignment) | No | Content alignment within this view's bounds. - SeeAlso: `Alignment` |
-| `spacing` | number | No | Spacing between child views in points. Only relevant for stack layouts (vStack, hStack, etc.). |
-| `padding` | Array&lt;number&gt; | No | Padding around the view's content. Can specify: - Single value: `[20]` - all sides - Two values: `[16, 20]` - vertical, horizontal - Three values: `[16, 20, 24]` - top, horizontal, bottom - Four values: `[10, 15, 20, 15]` - top, right, bottom, left |
-| `color` | string | No | Text or foreground color. Supports hex colors |
-| `bgColor` | string | No | Background color. Supports hex colors |
-| `bgImage` | string | No | Background image path |
-| `borderWidth` | number | No | Draws a border of this thickness around the view. |
-| `borderColor` | string | No | Border color. |
-| `borderEdges` | Array&lt;string&gt; | No | Which edges should display the border. Array of edge identifiers: `"top"`, `"right"`, `"bottom"`, `"left"`. |
-| `cornerRadius` | number | No | Corner radius in points for rounded corners. |
-| `imageResizeMode` | [ImageResizeMode](#imageresizemode) | No | How images should be scaled within this view. Only relevant for image-based views. - SeeAlso: `ImageResizeMode` |
-| `width` | number | No | Fixed width in points. Overrides the default width calculation. |
-| `height` | number | No | Fixed height in points. Overrides the default height calculation. |
-| `frame` | [Frame](#frame) | No | Frame constraints for this view. Provides fine-grained control over sizing and layout behavior. - SeeAlso: `Frame` |
-| `visibleIf` | string | No | Condition for visibility - view shown when this evaluates to true. Expression string evaluated against the data context. ## Example ``json "visibleIf": "data.hp > 0" "visibleIf": "data.level >= 5" "visibleIf": "data.equipment.count > 0" `` |
-| `hiddenIf` | string | No | Condition for hiding - view hidden when this evaluates to true. Expression string evaluated against the data context. ## Example ``json "hiddenIf": "data.isGM == false" "hiddenIf": "data.inventory.length == 0" `` |
-| `custom` | Object | No | Custom properties for extension and specialized rendering. Allows passing arbitrary configuration data to custom renderers or view types. |
-| `action` | Object | No | Action configuration for interactive views. Defines what happens when the view is interacted with (tapped, submitted, etc.). |
+| `id` | `string` | Yes | Unique identifier for this view. Automatically generated UUID string. Used for tracking, animations, and list identification. |
+| `title` | `string` | No | The title or label for this view. Used as: Label text; Tab titles; Button text |
+| `value` | `string` | No | Static value or template string for this view. The interpretation depends on `type`: For `.text`: The text to display; For `.image`: The image path or URL |
+| `type` | [ViewType](#viewtype) | No | Determines how this view is displayed and what properties are relevant. SeeAlso: `ViewType` |
+| `attribute` | `string` | No | Data binding path for dynamic content. Specifies which property from the data context to display or bind to. Uses dot notation to access nested properties. <br>**Example:** ``json // Simple property "attribute": "data.level" // Nested property "attribute: "data.character.abilities.strength" `` |
+| `attributeType` | `string` | No | SystemType or Entity for the attribute value. Helps renderers format and validate data appropriately. |
+| `context` | [ContextType](#contexttype) | No | The data context scope for attribute resolution. SeeAlso: `ContextType` |
+| `style` | `string` | No | Style identifier for this view. References a theme style definition that controls typography, colors, spacing, and other visual properties. |
+| `link` | `string` | No | Navigation link When tapped, navigates to the specified destination. |
+| `alignment` | [Alignment](#alignment) | No | Content alignment within this view's bounds. SeeAlso: `Alignment` |
+| `spacing` | `number` | No | Spacing between child views in points. Only relevant for stack layouts (vStack, hStack, etc.). |
+| `padding` | Array&lt;`number`&gt; | No | Padding around the view's content. Can specify: Single value: `[20]` - all sides; Two values: `[16, 20]` - vertical, horizontal; Three values: `[16, 20, 24]` - top, horizontal, bottom; Four values: `[10, 15, 20, 15]` - top, right, bottom, left |
+| `color` | `string` | No | Text or foreground color. Supports hex colors |
+| `bgColor` | `string` | No | Background color. Supports hex colors |
+| `bgImage` | `string` | No | Background image path |
+| `borderWidth` | `number` | No | Draws a border of this thickness around the view. |
+| `borderColor` | `string` | No | Border color. |
+| `borderEdges` | Array&lt;`string`&gt; | No | Which edges should display the border. Array of edge identifiers: `"top"`, `"right"`, `"bottom"`, `"left"`. |
+| `cornerRadius` | `number` | No | Corner radius in points for rounded corners. |
+| `imageResizeMode` | [ImageResizeMode](#imageresizemode) | No | How images should be scaled within this view. Only relevant for image-based views. SeeAlso: `ImageResizeMode` |
+| `width` | `number` | No | Fixed width in points. Overrides the default width calculation. |
+| `height` | `number` | No | Fixed height in points. Overrides the default height calculation. |
+| `frame` | [Frame](#frame) | No | Frame constraints for this view. Provides fine-grained control over sizing and layout behavior. SeeAlso: `Frame` |
+| `visibleIf` | `string` | No | Condition for visibility - view shown when this evaluates to true. Expression string evaluated against the data context. <br>**Example:** ``json "visibleIf": "data.hp > 0" "visibleIf": "data.level >= 5" "visibleIf": "data.equipment.count > 0" `` |
+| `hiddenIf` | `string` | No | Condition for hiding - view hidden when this evaluates to true. Expression string evaluated against the data context. <br>**Example:** ``json "hiddenIf": "data.isGM == false" "hiddenIf": "data.inventory.length == 0" `` |
+| `custom` | `Object` | No | Custom properties for extension and specialized rendering. Allows passing arbitrary configuration data to custom renderers or view types. |
+| `action` | `Object` | No | Action configuration for interactive views. Defines what happens when the view is interacted with (tapped, submitted, etc.). |
 | `views` | Array&lt;ViewDefinition&gt; | No | Child views nested within this view. Forms a tree structure for complex layouts. |
 
 ## ViewType

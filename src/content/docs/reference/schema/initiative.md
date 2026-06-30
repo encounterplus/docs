@@ -9,7 +9,7 @@ description: "Initiative"
 
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | Yes |  |
-| `name` | string | Yes |  |
-| `value` | ['string', 'number', 'boolean'] | Yes |  |
-| `order` | integer | Yes |  |
+| `id` | `string` | Yes |  |
+| `name` | `string` | Yes |  |
+| `value` | `string | number | boolean` | Yes |  |
+| `order` | `integer` | Yes |  |
