@@ -5,8 +5,7 @@ description: App interface chrome, housekeeping actions, and the local database 
 
 **Settings → Advanced Settings.**
 
-These configure the app itself rather than the game you are running, which is why they sit one push
-away from everything else.
+These configure the app itself rather than the game you are running.
 
 ## Interface
 

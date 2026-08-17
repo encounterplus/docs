@@ -37,6 +37,10 @@ The formula used to derive a monster's hit points when it is loaded.
 | **Minimum** | Use minimum hit points. |
 | **Maximum** | Use maximum hit points. |
 
+This only works when the monster's hit points are given as a dice formula — either on its own
+(`2d8 + 2`) or in parentheses after a fixed value (`11 (2d8 + 2)`). If there is no formula to work
+from, the value is used as written and this setting has no effect.
+
 This applies at load time, so it does not change creatures already in the encounter.
 
 ## Interface
@@ -50,6 +54,9 @@ The size and behaviour of the initiative window.
 | **Standard** *(default)* | Standard window size. |
 | **Compact** | Compact window size. |
 | **Combined** | Compact window size only in combat. |
+
+The compact style trims each row down to the combatant's image, its status icons and — if
+**Include Name in Compact Style** is on — its name.
 
 ### Include Name in Compact Style
 

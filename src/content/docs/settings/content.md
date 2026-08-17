@@ -23,7 +23,7 @@ Three buttons in a single row.
 
 ### Import
 
-Opens the import sheet, for bringing in a module, campaign, pack, compendium or system file, a map
+Opens the import sheet, for bringing in a `.module`, `.campaign`,  or `.system` file, a map
 in `.dd2vtt` / `.uvtt` format, a CSV, or images. See
 [Import and Export](/guides/import-and-export/).
 
@@ -46,7 +46,8 @@ Deletes content in bulk, after asking what to remove:
 | **Everything** | Deletes all database content along with the campaign, module and system directories, then recreates and loads the generic system. |
 
 :::danger
-These cannot be undone. Take a backup first — **Settings → Advanced Settings → Local Database →
+These cannot be undone. Take a backup first — either [export](#export) the content you want to keep,
+or at least back up the database with **Settings → Advanced Settings → Local Database →
 [Backup](/settings/advanced/#backup)**.
 :::
 

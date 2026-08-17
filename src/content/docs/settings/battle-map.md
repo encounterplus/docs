@@ -27,8 +27,8 @@ The style applied to newly created tokens. Existing tokens keep the style they w
 
 | Option | Effect |
 | --- | --- |
-| **TopDown** *(default)* | Top-down artwork drawn as-is, which reads correctly when the token is rotated. |
-| **Circle** | A circular portrait, cropped and ringed by the token's role colour. |
+| **Circle** *(default)* | A circular portrait, cropped and ringed by the token's role colour. |
+| **TopDown** | Top-down artwork drawn as-is, which reads correctly when the token is rotated. |
 
 ### Double Tap Action
 
@@ -36,9 +36,9 @@ What a double tap on the map does.
 
 | Option | Effect |
 | --- | --- |
-| **Point** *(default)* | Place a pointer at the tapped location. |
+| **Point** *(default)* | Play a pointer animation — a ripple effect — at the tapped location. |
 | **Camera Move** | Move the players' camera to the tapped location. |
-| **Camera Point** | Move the players' camera and place a pointer there. |
+| **Camera Point** | Play the same pointer ripple and move the players' camera to it. |
 
 The camera actions affect the external screen and the web client, so they are the ones to use when
 you want to direct your players' attention.
@@ -81,11 +81,12 @@ See the [Line of Sight guide](/guides/battle-maps/line-of-sight/) for what these
 
 ### Only Update on Drop
 
-Recomputes line of sight once the token is dropped, rather than continuously while it is dragged. On
-by default.
+Recomputes line of sight once the token is dropped, rather than continuously while it is dragged. Off
+by default, so the visible area updates live as a token moves.
 
-Leaving this on keeps dragging smooth on large maps. Turn it off if you want the visible area to
-update live as a token moves.
+Turn it on if you run into performance problems or are on an older device — the app then only has to
+recompute line of sight once per move instead of on every step of the drag, which keeps dragging
+smooth on large maps.
 
 ### Soft Edges
 

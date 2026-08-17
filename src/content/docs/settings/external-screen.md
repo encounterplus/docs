@@ -88,6 +88,10 @@ The physical display: how large it is, and how much of it the app may draw on.
 Draws the map at physical scale, for a screen laid flat in the table with miniatures on it. Off by
 default.
 
+With it on, the app locks the map to a fixed zoom so that the map grid matches real-world size — one
+grid tile on the screen measures one inch on the table, the same as a standard miniature's base. Free
+zooming on the external screen is disabled as a result.
+
 It depends on the physical width below being correct — that is what the scale is computed against.
 
 ### Physical Width
