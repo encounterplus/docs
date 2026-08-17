@@ -89,8 +89,10 @@ version and system ID.
 From there the work is editing the system's files. The whole folder is visible in the Files app under
 Encounter+, so you can edit it on the device or on a computer and reload.
 
-The formats are documented in the [schema reference](/reference/schema/) — entity definitions, form
-definitions, view definitions and theme definitions are the four you will spend the most time in.
+From there it is a developer job, and it has its own section:
+[Custom System](/system-development/) covers the folder layout, entity definitions, forms,
+views, templates, themes and packaging. The underlying formats are listed in the
+[schema reference](/reference/schema/).
 
 :::note
 A `.system` archive should not contain macOS packaging leftovers. Strip `__MACOSX` folders and
@@ -117,4 +119,5 @@ Yes. Install as many as you like and switch between them. Only one is loaded at 
 
 - [How it works](/guides/how-it-works/) — where systems sit in the app.
 - [Import and Export](/guides/import-and-export/) — installing `.system` files.
+- [Custom System](/system-development/) — building a system of your own.
 - [Schema reference](/reference/schema/) — the definition formats, for building a system.
