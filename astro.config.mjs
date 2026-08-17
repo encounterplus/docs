@@ -6,6 +6,8 @@ import schemaReference from './src/schema-sidebar.json' with { type: 'json' };
 
 // https://astro.build/config
 export default defineConfig({
+	// Canonical origin, used for sitemap and absolute URLs. Must match the Pages custom domain.
+	site: 'https://docs.encounter.plus',
 	// Retired pages, plus the flat v4 paths that shipped app builds still open. Those arrive here
 	// through the host-level help.encounter.plus/* → docs.encounter.plus/* redirect.
 	redirects: {
