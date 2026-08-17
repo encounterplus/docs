@@ -245,6 +245,9 @@ A browser page your players open to see the map and move their own tokens, serve
 built into the app. Nothing to install on their side — any modern browser on any device works, and
 they do not need Encounter+ or an Apple device.
 
+On your side it is installed once: the client is versioned separately from the app and downloaded
+from **Settings → Remote Play → Web Client**, so do that before the session rather than during it.
+
 Remote play is part of the **Premium subscription**. See the
 [Remote Play guide](/guides/remote-play/) and
 [Remote Play Settings](/settings/remote-play/).
@@ -263,10 +266,21 @@ That is up to you: **All** lets anyone move anything, **Token** limits each play
 are assigned, and **None** makes it view-only. *Token* is the usual choice. See
 [Interactions](/settings/remote-play/#interactions).
 
+### How do players get the link?
+
+**Settings → Remote Play → Web Server → Local Access** shows the client URL and a QR code you can
+share straight into Messages, Discord or mail. It is your own device's address, of the form
+`http://192.168.1.42:8080/client/`.
+
+Older versions sent players to a hosted page at `client.encounter.plus` with a `?remoteHost=`
+parameter. That is no longer used — the app serves the client itself, so the only address players
+need is the one the app shows you.
+
 ### It is not connecting — what now?
 
-See the [Web Client FAQ](/guides/web-client-faq/), which covers the common failures: the wrong
-address, browsers forcing `https`, and tokens not appearing.
+See [Troubleshooting](/guides/remote-play/#troubleshooting) in the Remote Play guide, which covers
+the common failures: no web client installed, the wrong address, browsers forcing `https`, and
+tokens not appearing.
 
 ## Still stuck?
 

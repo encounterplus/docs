@@ -6,8 +6,8 @@ description: The built-in web server, the web client, and what connected players
 **Settings → Remote Play.**
 
 The whole section requires a **Premium subscription**; without it these rows are not shown. For
-setting up a remote session end to end, see the [Remote Play guide](/guides/remote-play/) and the
-[Web Client FAQ](/guides/web-client-faq/).
+setting up a remote session end to end — including troubleshooting — see the
+[Remote Play guide](/guides/remote-play/).
 
 ## Web Server
 
@@ -70,7 +70,9 @@ you can install the web client, update it when a new release is available, brows
 delete the installed copy.
 
 The web client is the page your players open in their browser, so a copy must be installed for
-remote play to work.
+remote play to work. It is versioned separately from the app and downloaded on demand, so this is
+the one part of remote play that needs an internet connection — install or update it before a
+session, not during one.
 
 ## Interactions
 

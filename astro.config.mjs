@@ -6,6 +6,11 @@ import schemaReference from './src/schema-sidebar.json' with { type: 'json' };
 
 // https://astro.build/config
 export default defineConfig({
+	// Retired pages and the address the app's in-app Help button still uses.
+	redirects: {
+		'/guides/web-client-faq': '/guides/remote-play/',
+		'/remote-play': '/guides/remote-play/',
+	},
 	integrations: [
 		starlight({
 			title: 'Encounter+ Docs',
@@ -43,6 +48,7 @@ export default defineConfig({
               ],
             },
             { label: "Import and Export", link: "/guides/import-and-export/" },
+            { label: "Remote Play", link: "/guides/remote-play/" },
             { label: "Tips and Tricks", link: "/guides/tips-and-tricks/" },
             { label: "Tutorials", link: "/guides/tutorials/" },
             { label: "Special Thanks", link: "/guides/special-thanks/" },
@@ -60,13 +66,6 @@ export default defineConfig({
 						{ label: 'Remote Play', link: '/settings/remote-play/' },
 						{ label: 'Advanced', link: '/settings/advanced/' },
 						{ label: 'Purchases', link: '/settings/purchases/' },
-					],
-				},
-				{
-					label: 'Web Client',
-					items: [
-						{ label: 'Remote Play', link: '/guides/remote-play/' },
-						{ label: 'FAQ', link: '/guides/web-client-faq/' },
 					],
 				},
 				{
