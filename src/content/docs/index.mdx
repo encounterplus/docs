@@ -1,10 +1,10 @@
 ---
-title: Welcome to Encounter+
-description: Get started building your docs site with Starlight.
+title: Encounter+ Documentation
+description: Guides, settings reference and file formats for Encounter+, the game master's toolkit for iPhone, iPad and Mac.
 template: splash # Remove or comment out this line to display the site sidebar on this page.
 hero:
   title: ENCOUNTER+
-  tagline: Documentation project
+  tagline: Run your table from your iPhone, iPad or Mac — library, encounters, initiative, battle maps and a player-facing screen in one app.
   image:
     file: ../../assets/icon.webp
   actions:
@@ -12,33 +12,54 @@ hero:
       link: /guides/quick-start/
       icon: right-arrow
       variant: primary
-    - text: Learn more
+    - text: What is Encounter+?
       link: /about/intro/
       icon: open-book
-    - text: Get source
-      link: https://github.com/encounterplus/docs
-      icon: github
+    - text: Download on the App Store
+      link: https://apps.apple.com/app/id1170693487
+      icon: apple
+      variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+## Start here
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+	<Card title="Quick start" icon="rocket">
+		Set up your first encounter and run it — the fastest path from installing the app to rolling
+		initiative. [Quick start](/guides/quick-start/)
 	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
+	<Card title="Your library" icon="open-book">
+		Where creatures, spells, items and notes live, and how to find, edit and create them.
+		[Library](/guides/library/)
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	<Card title="Battle maps" icon="star">
+		Maps, tokens, walls and lighting, plus [line of sight](/guides/battle-maps/line-of-sight/) and
+		fog of war. [Battle maps](/guides/battle-map/)
 	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
+	<Card title="Play remotely" icon="laptop">
+		Let players open the map in a browser and move their own tokens from anywhere.
+		[Remote play](/guides/remote-play/)
 	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	<Card title="Every setting explained" icon="setting">
+		One page per settings screen, from combat and dice to the external screen.
+		[Settings overview](/settings/overview/)
+	</Card>
+	<Card title="Import & export" icon="cloud-download">
+		Bring in modules, campaigns, systems and maps, and get your own content back out.
+		[Import and export](/guides/import-and-export/)
 	</Card>
 </CardGrid>
+
+## For developers
+
+Building content or tooling for Encounter+? The [schema reference](/reference/schema/) documents the
+JSON format used for every import and export, [Legacy XML](/reference/legacy-xml/overview/) covers
+the older import-only format, and the [URL scheme](/reference/url-scheme/) covers linking into the
+app.
+
+## Need help?
+
+Check the [FAQ](/about/faq/), then ask on [Discord](https://discord.gg/psWk84h) or
+[r/EncounterPlus](https://www.reddit.com/r/EncounterPlus/).
