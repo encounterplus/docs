@@ -6,10 +6,12 @@ import schemaReference from './src/schema-sidebar.json' with { type: 'json' };
 
 // https://astro.build/config
 export default defineConfig({
-	// Retired pages and the address the app's in-app Help button still uses.
+	// Retired pages, plus the flat v4 paths that shipped app builds still open. Those arrive here
+	// through the host-level help.encounter.plus/* → docs.encounter.plus/* redirect.
 	redirects: {
 		'/guides/web-client-faq': '/guides/remote-play/',
 		'/remote-play': '/guides/remote-play/',
+		'/special-thanks': '/guides/special-thanks/',
 	},
 	integrations: [
 		starlight({

@@ -8,9 +8,9 @@ holds and where it comes from.
 
 ## Resources
 
-### Help Center
+### Documentation
 
-Opens this documentation site.
+Opens this documentation site, [docs.encounter.plus](https://docs.encounter.plus), inside the app.
 
 ### Package Manager
 
