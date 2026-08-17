@@ -2,29 +2,36 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Game.schema.json",
   "title": "Game",
-  "x-group": "API/",
+  "x-group": "API",
   "type": "object",
+  "description": "The live combat state of a `Campaign`.\n\nA `Game` is the initiative tracker: it owns the `Combatant` list, tracks whose turn it is,\nand counts rounds. Exactly one game belongs to a campaign, and it is pushed to the player\ndisplay and the web client whenever it changes.\n\nTurn order is not stored on the game itself \u2014 each combatant holds one or more `Initiative`\nentries whose `order` positions them in the round. `sortInitiative()` assigns those orders,\nand `turnedCombatant` / `turnedInitiative` resolve the current turn.\n\n- SeeAlso: `Campaign`, `Combatant`, `Initiative`",
   "properties": {
     "started": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether combat is currently running.\n\nWhile stopped, `round` and `turn` are not advanced and the player display shows no\ninitiative order."
     },
     "round": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The current combat round, counting from `1`.\n\nIncremented each time turn order wraps back to the first combatant."
     },
     "turn": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The current position within the round, counting from `1`.\n\nMatches the `Initiative/order` of the acting entry."
     },
     "combatantId": {
-      "type": "string"
+      "type": "string",
+      "description": "The identifier of the combatant whose turn it is.\n\n`nil` before the first turn is taken. Cleared by `validateTurn()` if it no longer\nresolves to a combatant in this game.\n\n- SeeAlso: `turnedCombatant`"
     },
     "initiativeId": {
-      "type": "string"
+      "type": "string",
+      "description": "The identifier of the initiative entry currently acting.\n\nA combatant may hold several initiative entries and act more than once per round, so the\nacting entry is tracked alongside `combatantId`.\n\n- SeeAlso: `turnedInitiative`"
     },
     "combatants": {
       "type": "array",
       "items": {
         "$ref": "Combatant.schema.json"
-      }
+      },
+      "description": "Everyone taking part in this combat.\n\nIncludes combatants that have not rolled initiative yet \u2014 those are inactive until they\nhold an initiative entry with an assigned order.\n\n- Note: Use `addCombatant(_:)` and `removeCombatant(_:)` rather than mutating the list\n  directly; they assign labels and clean up shared combatants and their tokens.\n\n- SeeAlso: `Combatant`, `activeCombatants`"
     }
   },
   "required": [

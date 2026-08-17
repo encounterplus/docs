@@ -2,14 +2,17 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Component.schema.json",
   "title": "Component",
-  "x-group": "Shared",
+  "x-merge": "Asset",
   "type": "object",
+  "description": "A filter or animation applied to a map object's artwork.\n\nComponents are how one `Asset` yields many variations: tint a torch flame blue, desaturate a\ndoor to read as ruined, or set a banner rotating. Rather than requiring separate artwork, the\nsame resource is modified at render time.\n\nThey attach to an `Asset` \u2014 where they apply everywhere it is used \u2014 or to an individual\n`Tile`, `AreaEffect` or `Aura`, where they apply to that placement alone.\n\n- SeeAlso: `Asset`, `Tile`, `AreaEffect`, `Aura`",
   "properties": {
     "type": {
-      "type": "string"
+      "type": "string",
+      "description": "What this component does, as the raw value of a `ComponentType`.\n\nUse `typeValue` for the typed form.\n\n## Examples\n- `\"filter.hsb\"`, `\"animation.rotation\"`"
     },
     "enabled": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the component is applied.\n\nLets an effect be switched off without removing its configuration."
     },
     "hue": {},
     "saturation": {},

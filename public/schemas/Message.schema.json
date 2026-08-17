@@ -2,30 +2,38 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Message.schema.json",
   "title": "Message",
-  "x-group": "API/",
+  "x-group": "API",
   "type": "object",
+  "description": "One entry in a campaign's chat and dice log.\n\nA `Message` is whatever appears in the log: player chat, a dice roll, a roll on a table, or a\nslash command typed by a user. Messages are exchanged with the browser player client over the\nWebSocket connection and stored per campaign.\n\nThe `content` field is polymorphic \u2014 plain text for chat, a JSON-encoded payload for rolls \u2014\nso read it through `diceRoll` or `tableRoll` rather than directly. A message that arrives\nas a `command` is rewritten in place by `process()` into the message it produces.\n\n- SeeAlso: `Campaign`, `DiceRoll`, `TableRoll`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this message.\n\nA UUID string automatically generated when the message is created. This serves as the\nprimary key in the Realm database."
     },
     "type": {
-      "type": "string"
+      "type": "string",
+      "description": "The kind of message, as the raw value of a `MessageType`.\n\nUse `typeValue` for the typed form; unrecognized values read back as `chat`.\n\n## Examples\n- `\"chat\"`, `\"roll\"`, `\"tableRoll\"`, `\"command\"`"
     },
     "source": {
-      "type": "string"
+      "type": "string",
+      "description": "Who sent the message.\n\nThe connected client's name, or `nil` for the game master \u2014 which is why it renders as\n`\"Dungeon Master\"` when absent.\n\n## Examples\n- `\"Alice\"`"
     },
     "color": {
-      "type": "string"
+      "type": "string",
+      "description": "The sender's accent color.\n\nAn RGB string used for the bullet marking the message, letting each player be recognised\nat a glance.\n\n## Examples\n- `\"#ff6600\"`\n\n- SeeAlso: `colorValue`"
     },
     "creature": {
-      "type": "string"
+      "type": "string",
+      "description": "The creature the message was sent on behalf of.\n\nSet when a player speaks or rolls as a specific character, and shown before `source` in\nthe message heading.\n\n## Examples\n- `\"Thorin Ironforge\"`"
     },
     "content": {
-      "type": "string"
+      "type": "string",
+      "description": "The message payload.\n\nIts meaning depends on `type`: markdown text for `chat` and `command`, and a\nJSON-encoded roll for `roll` and `tableRoll`.\n\n- Note: Prefer `diceRoll` and `tableRoll`, which decode the payload and guard against\n  reading it as the wrong type."
     },
     "created": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "When the message was sent.\n\nAutomatically set to the current date and time when the message is first instantiated.\nOrders the log."
     }
   },
   "required": [
@@ -37,6 +45,7 @@
   "$defs": {
     "MessageType": {
       "title": "MessageType",
+      "description": "What kind of entry a `Message` is.",
       "type": "string",
       "enum": [
         "chat",

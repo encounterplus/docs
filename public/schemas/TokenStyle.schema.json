@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "TokenStyle.schema.json",
+  "title": "TokenStyle",
+  "x-merge": "Token",
+  "description": "How a `Token`'s artwork is presented on the map.",
+  "type": "string",
+  "enum": [
+    "circle",
+    "topdown"
+  ]
+}

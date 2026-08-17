@@ -2,34 +2,41 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Encounter.schema.json",
   "title": "Encounter",
-  "x-group": "Content/",
+  "x-group": "Content",
   "type": "object",
-  "description": "An Encounter",
+  "description": "A prepared fight, ready to be loaded into combat.\n\nAn `Encounter` is a roster: which creatures take part, how many of each, whose side they are\non, and \u2014 optionally \u2014 where they stand. It is authored ahead of time as part of a module or\ncampaign, and starting it turns each entry into a live `Combatant` in the `Game`.\n\nThe entries are `Encounter/Combatant` values, not the Realm `Combatant` used during play.\nThat separation is the point: the encounter is a reusable template that survives the fight,\nwhile the combatants carry the damage and conditions and are discarded with it. The same\nencounter can be run twice.\n\nEntries reference creatures softly, by app URL, so an encounter can be distributed in a module\nthat does not itself contain the monsters.\n\n- SeeAlso: `Game`, `Combatant`, `Module`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this encounter.\n\nA UUID string automatically generated when the encounter is created. This serves as the\nprimary key in the Realm database."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the encounter.\n\n## Examples\n- `\"Goblin Ambush\"`"
     },
     "slug": {
-      "type": "string"
+      "type": "string",
+      "description": "A URL-friendly identifier for the encounter.\n\nUsed to link to the encounter as `/encounter/goblin-ambush`.\n\n## Examples\n- `\"goblin-ambush\"`"
     },
     "descr": {
-      "type": "string"
+      "type": "string",
+      "description": "The description of the encounter.\n\nSetup notes, tactics, or read-aloud text for when the fight begins."
     },
     "combatants": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": true
-      }
+      },
+      "description": "The roster, stored as JSON.\n\nEach entry names a creature and, optionally, where it starts on the map. Kept encoded\nrather than as Realm objects because the roster is a template read and written whole.\n\n- SeeAlso: `Encounter/Combatant`"
     },
     "parentId": {
-      "type": "string"
+      "type": "string",
+      "description": "The identifier of the `Group` containing this encounter in the library tree.\n\nEmpty for an encounter at the top level of its container."
     },
     "rank": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The manual sort position among its siblings.\n\nLower values sort first."
     }
   },
   "required": [
@@ -45,27 +52,35 @@
     "Combatant": {
       "title": "Combatant",
       "type": "object",
+      "description": "One entry in an `Encounter`'s roster.\n\nA template for a creature that will take part, not the creature itself and not the live\n`Combatant` it becomes when the fight starts. It records only what is decided in advance:\nwhich creature, what to call it, whose side it is on, and where it stands.\n\n- SeeAlso: `Encounter`, `Combatant`",
       "properties": {
         "label": {
-          "type": "string"
+          "type": "string",
+          "description": "The label distinguishing this entry from identical ones.\n\n## Examples\n- `\"G1\"`, `\"G2\"`"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "A name overriding the referenced creature's own.\n\nLets one monster entry appear as a named NPC.\n\n## Examples\n- `\"Klarg\"` \u2014 for a bugbear"
         },
         "role": {
-          "$ref": "Role.schema.json"
+          "$ref": "Role.schema.json",
+          "description": "Which side the creature is on; `nil` is treated as hostile.\n\n- SeeAlso: `Role`"
         },
         "reference": {
-          "type": "string"
+          "type": "string",
+          "description": "The app URL of the creature this entry represents.\n\nA soft link, so an encounter can be distributed without the creatures it uses.\n\n## Examples\n- `\"/monster/goblin\"`\n\n- SeeAlso: `referenceURL`, `entity`"
         },
         "x": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The creature's starting horizontal position in map coordinates.\n\nLets an encounter place its creatures as well as list them.\n\n- Note: `nil` or `-1` means unplaced \u2014 see `center`."
         },
         "y": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The creature's starting vertical position in map coordinates."
         },
         "center": {
-          "$comment": "unmapped Swift type: CGPoint"
+          "$comment": "unmapped Swift type: CGPoint",
+          "description": "The creature's starting position, or `nil` if it has none.\n\nBoth `nil` and `-1` coordinates read as unplaced, so an entry saved by an older version\nstill behaves correctly."
         }
       },
       "additionalProperties": false

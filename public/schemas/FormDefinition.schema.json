@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "FormDefinition.schema.json",
   "title": "FormDefinition",
-  "x-group": "Definitions/",
+  "x-group": "Definitions",
   "type": "object",
   "description": "A comprehensive definition structure for building dynamic, configurable forms\n\n`FormDefinition` provides a flexible framework for creating character sheets, spell lists, inventory screens,\nand other data entry forms common in tabletop RPG systems. It supports hierarchical organization through tabs,\nsections, and fields, with conditional visibility and custom rendering options.",
   "properties": {

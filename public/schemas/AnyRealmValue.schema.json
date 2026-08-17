@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "AnyRealmValue.schema.json",
+  "title": "AnyRealmValue",
+  "x-group": "Shared",
+  "description": "A enum for storing and retrieving values associated with an `AnyRealmValue` property.\n`AnyRealmValue` can also store a collection (List, Dictionary) of `AnyRealmValue`, meaning that you can have\nnested collections inside a `AnyRealmValue`.",
+  "type": "string",
+  "enum": [
+    "none",
+    "int(_:)",
+    "bool(_:)",
+    "float(_:)",
+    "double(_:)",
+    "string(_:)",
+    "data(_:)",
+    "date(_:)",
+    "object(_:)",
+    "objectId(_:)",
+    "decimal128(_:)",
+    "uuid(_:)",
+    "dictionary(_:)",
+    "list(_:)"
+  ]
+}

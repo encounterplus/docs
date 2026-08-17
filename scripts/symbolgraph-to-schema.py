@@ -21,13 +21,32 @@ Tag a type for the docs by adding a `- SchemaGroup:` line to its doc comment:
 
     /// A battle map and everything placed on it.
     ///
-    /// - SchemaGroup: Content/Maps
+    /// - SchemaGroup: Content
     struct Map: Codable { ... }
 
-The value is written to the schema as `x-group` (and stripped from the
-description). Only tagged types — plus everything they transitively `$ref` — are
-emitted; untagged, unreferenced Codable types are dropped. If no type is tagged,
-all Codable types are emitted (unfiltered), preserving the pre-tag behavior.
+The value is a single section name (written to the schema as `x-group` and
+stripped from the description). It only decides which section/sidebar group the
+type is listed under — it no longer carries layout meaning (no trailing slash, no
+nested `A/B` paths; a slash-bearing value is collapsed to its first segment).
+
+Concatenate several types onto one shared page with a `- SchemaMerge:` line:
+
+    /// - SchemaMerge: Map
+    struct Marker: Codable { ... }
+
+Every type sharing a `SchemaMerge` value renders as a `##` section of one page
+named after that value (written as `x-merge`, stripped from the description).
+
+Only tagged types — those with `SchemaGroup` or `SchemaMerge`, plus everything
+they transitively `$ref` — are emitted; untagged, unreferenced Codable types are
+dropped. If no type is tagged, all Codable types are emitted (unfiltered),
+preserving the pre-tag behavior.
+
+Add a `- SchemaAllOptional: true` line to mark a type whose every field is optional
+— for types with hand-written Codable conformance that decodes via `decodeIfPresent`,
+where a property being non-optional in Swift no longer implies its key is required.
+The type's `required` array is then omitted. (Whether a property is `?` is invisibly
+decoupled from key presence here, so this can't be inferred from the symbol graph.)
 
 Types with a `ViewModel` path component (e.g. `Foo.ViewModel`) are skipped — they
 are app-internal and not part of the exported format (see SKIP_PATH_COMPONENTS).
@@ -92,10 +111,24 @@ def warn(msg: str) -> None:
     print(f"warning: {msg}", file=sys.stderr)
 
 
-# A `- SchemaGroup: <path>` doc-comment line tags a type for the docs taxonomy.
-# It drives both filtering (only tagged types and what they reach are emitted)
-# and grouping (the value becomes the schema's `x-group`). See README/CLAUDE.md.
+# A `- SchemaGroup: <section>` doc-comment line tags a type for the docs taxonomy.
+# It drives filtering (only tagged types and what they reach are emitted) and
+# placement (the value becomes the schema's `x-group` — a single section name).
+# See README/CLAUDE.md.
 SCHEMA_GROUP_RE = re.compile(r"^\s*-\s*SchemaGroup\s*:\s*(.+?)\s*$", re.IGNORECASE)
+
+# A `- SchemaMerge: <page>` doc-comment line concatenates every type sharing the
+# value onto one page (written as `x-merge`). Also counts as a tag for filtering.
+SCHEMA_MERGE_RE = re.compile(r"^\s*-\s*SchemaMerge\s*:\s*(.+?)\s*$", re.IGNORECASE)
+
+# A `- SchemaAllOptional: true` doc-comment line marks a type whose every field is
+# optional. Use it for types with hand-written Codable conformance that decodes
+# with `decodeIfPresent` (whether a property is `?` in Swift then says nothing
+# about whether the key must be present), which the symbol graph can't see.
+SCHEMA_ALL_OPTIONAL_RE = re.compile(r"^\s*-\s*SchemaAllOptional\s*:\s*(.*?)\s*$", re.IGNORECASE)
+
+# Every recognized schema tag; stripped from descriptions so it never renders.
+SCHEMA_TAG_RES = (SCHEMA_GROUP_RE, SCHEMA_MERGE_RE, SCHEMA_ALL_OPTIONAL_RE)
 
 # Group assigned to a type that is reached from a tagged root but isn't tagged
 # itself, so every emitted schema is self-describing and lands on a page.
@@ -119,41 +152,94 @@ def doc_text(symbol: dict) -> str | None:
     dc = symbol.get("docComment")
     if not dc:
         return None
-    # Drop the `- SchemaGroup:` tag line(s) — that metadata is carried in `x-group`,
-    # not the human-readable description.
-    lines = [l["text"] for l in dc["lines"] if not SCHEMA_GROUP_RE.match(l["text"])]
+    # Drop schema tag line(s) (`- SchemaGroup:`, `- SchemaMerge:`,
+    # `- SchemaAllOptional:`) — that metadata drives generation, it is not part of
+    # the human-readable description.
+    lines = [l["text"] for l in dc["lines"]
+             if not any(r.match(l["text"]) for r in SCHEMA_TAG_RES)]
     text = "\n".join(lines).strip()
     if not text:
         return None
-    text = re.sub(r"``([^`]+)``", r"`\1`", text)
-    return text
+    return _docc_links_to_code(text)
+
+
+def _docc_links_to_code(text: str) -> str:
+    """Normalize DocC double-backtick symbol links (``Foo`` -> `Foo`) for Markdown,
+    without disturbing fenced code blocks. The match is confined to a single line
+    (no newline in the span) and skipped entirely inside ```-fenced blocks, so a
+    ```json … ``` example is never collapsed to two backticks."""
+    out: list[str] = []
+    in_fence = False
+    for line in text.split("\n"):
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+        elif not in_fence:
+            line = re.sub(r"``([^`\n]+)``", r"`\1`", line)
+        out.append(line)
+    return "\n".join(out)
 
 
 def extract_group(symbol: dict) -> str | None:
-    """The `- SchemaGroup:` value from a symbol's doc comment, or None."""
+    """The `- SchemaGroup:` value from a symbol's doc comment, or None.
+
+    The value is a single section name. Slashes carry no meaning anymore, so a
+    slash-bearing value is collapsed to its first segment (with a warning)."""
     dc = symbol.get("docComment")
     if not dc:
         return None
     for line in dc["lines"]:
         m = SCHEMA_GROUP_RE.match(line["text"])
         if m:
+            value = m.group(1).strip()
+            if "/" in value:
+                first = value.strip("/").split("/", 1)[0]
+                warn(f"SchemaGroup {value!r} contains '/': sections are single "
+                     f"segments now; using {first!r}")
+                return first
+            return value
+    return None
+
+
+def extract_merge(symbol: dict) -> str | None:
+    """The `- SchemaMerge:` value from a symbol's doc comment, or None."""
+    dc = symbol.get("docComment")
+    if not dc:
+        return None
+    for line in dc["lines"]:
+        m = SCHEMA_MERGE_RE.match(line["text"])
+        if m:
             return m.group(1).strip()
     return None
 
 
-def with_group(schema: dict, group: str) -> dict:
-    """Return schema with `x-group` inserted right after its title for readable diffs."""
+def extract_all_optional(symbol: dict) -> bool:
+    """Whether the type is tagged `- SchemaAllOptional:` with a truthy value. A bare
+    or `true`/`yes`/`1` value enables it; `false`/`no`/`0` disables it (as does the
+    tag's absence)."""
+    dc = symbol.get("docComment")
+    if not dc:
+        return False
+    for line in dc["lines"]:
+        m = SCHEMA_ALL_OPTIONAL_RE.match(line["text"])
+        if m:
+            return m.group(1).strip().lower() not in ("false", "no", "0")
+    return False
+
+
+def with_field(schema: dict, key: str, value: str) -> dict:
+    """Return schema with `key` inserted right after its title/description for
+    readable diffs (existing occurrences of `key` are dropped and re-placed)."""
     out: dict = {}
     placed = False
     for k, v in schema.items():
-        if k == "x-group":
+        if k == key:
             continue
         out[k] = v
         if not placed and k in ("title", "description"):
-            out["x-group"] = group
+            out[key] = value
             placed = True
     if not placed:
-        out["x-group"] = group
+        out[key] = value
     return out
 
 
@@ -177,12 +263,19 @@ def ref_filenames(node) -> set[str]:
 def filter_to_tagged(files: dict[str, dict]) -> None:
     """Keep only tagged roots and everything they transitively `$ref`; drop the rest.
 
-    Untagged-but-reachable schemas are stamped with the default group so every
-    emitted file is self-describing. If nothing is tagged (e.g. the app source
-    has no `- SchemaGroup:` yet), leave all files untouched."""
-    tagged = {fn for fn, s in files.items() if "x-group" in s}
+    A schema is a tagged root if it carries `x-group` or `x-merge`. Reached-but-
+    fully-untagged schemas (neither tag) are stamped with the default group so
+    every emitted file lands on a page. A schema with only `x-merge` keeps its
+    group unset — it is folded into its merge page and not listed separately. If
+    nothing is tagged (e.g. the app source has no tags yet), leave all files
+    untouched."""
+    def is_tagged(s: dict) -> bool:
+        return "x-group" in s or "x-merge" in s
+
+    tagged = {fn for fn, s in files.items() if is_tagged(files[fn])}
     if not tagged:
-        warn("no `- SchemaGroup:` tags found; emitting all Codable types unfiltered")
+        warn("no `- SchemaGroup:`/`- SchemaMerge:` tags found; emitting all "
+             "Codable types unfiltered")
         return
 
     keep = set(tagged)
@@ -196,9 +289,9 @@ def filter_to_tagged(files: dict[str, dict]) -> None:
     dropped = sorted(set(files) - keep)
     for fn in dropped:
         del files[fn]
-    untagged_kept = sorted(fn for fn in keep if "x-group" not in files[fn])
+    untagged_kept = sorted(fn for fn in keep if not is_tagged(files[fn]))
     for fn in untagged_kept:
-        files[fn] = with_group(files[fn], DEFAULT_GROUP)
+        files[fn] = with_field(files[fn], "x-group", DEFAULT_GROUP)
     if untagged_kept:
         warn(f"reached but untagged, assigned to {DEFAULT_GROUP!r}: "
              f"{', '.join(file_part[:-12] for file_part in untagged_kept)}")
@@ -477,11 +570,22 @@ def map_type(frags: list[dict], graph: "SymbolGraph", resolver) -> dict:
 
     # Generic containers: Array<T>, Set<T>, Dictionary<K,V>, Optional<T>, and the
     # RealmSwift List<T> (array) / Map<K,V> (object) / MutableSet<T> (matched by USR).
-    if re.match(r"^\w+\s*<", text) and type_ids:
-        base = type_ids[0]
+    # The base may be module-qualified (`RealmSwift.List<Tile>`), so split the type
+    # identifiers at the first `<`: the base is the last identifier before it (which
+    # skips a module qualifier that itself surfaces as an identifier), and the
+    # generic arguments are the identifiers after it.
+    if "<" in text and text.endswith(">") and type_ids:
+        before, after, seen_lt = [], [], False
+        for f in frags:
+            if f["kind"] == "text" and "<" in f["spelling"]:
+                seen_lt = True
+            elif f["kind"] == "typeIdentifier":
+                (after if seen_lt else before).append(f)
+        base = before[-1] if before else type_ids[0]
+        arg_ids = after if before else type_ids[1:]
         kind = _collection_kind(base["spelling"], base.get("preciseIdentifier", ""))
         if kind:
-            inner = type_ids[1:]  # generic argument type identifiers
+            inner = arg_ids  # generic argument type identifiers
             if kind == "array":
                 return {"type": "array", "items": _tid_schema(inner[0] if inner else None, graph, resolver)}
             if kind == "set":
@@ -532,6 +636,10 @@ class SymbolGraph:
             simple = path[-1]
             if simple in JSON_CONTAINERS or simple == "CodingKeys":
                 continue  # opaque container / coding-keys helper: not emitted
+            if usr in _REALM_COLLECTION_USRS:
+                continue  # RealmSwift List/Map/MutableSet: rendered as inline array/
+                # object containers (see _collection_kind), never their own schema file.
+                # Their names would otherwise collide with app model types (e.g. Map).
             if SKIP_PATH_COMPONENTS.intersection(path):
                 continue  # e.g. a `.ViewModel` type: app-internal, not exported
             if s["kind"]["identifier"] in ("swift.struct", "swift.enum", "swift.class") and self.is_codable(usr):
@@ -637,7 +745,10 @@ def build(graph: SymbolGraph, draft: str) -> dict[str, dict]:
         }
         group = extract_group(selected[root_usr])
         if group:
-            schema = with_group(schema, group)
+            schema = with_field(schema, "x-group", group)
+        merge = extract_merge(selected[root_usr])
+        if merge:
+            schema = with_field(schema, "x-merge", merge)
         defs: dict[str, dict] = {}
         for usr in members:
             if usr == root_usr:
@@ -731,7 +842,9 @@ def object_schema(s: dict, graph: SymbolGraph, resolver) -> dict:
                 required.append(prop["names"]["title"])
 
     schema["properties"] = properties
-    if required:
+    # A `- SchemaAllOptional:` type has hand-written coding that may omit any key,
+    # so per-property optionality is meaningless — drop `required` entirely.
+    if required and not extract_all_optional(s):
         schema["required"] = required
     schema["additionalProperties"] = False
     return schema

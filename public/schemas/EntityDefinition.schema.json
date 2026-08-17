@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "EntityDefinition.schema.json",
   "title": "EntityDefinition",
-  "x-group": "Definitions/",
+  "x-group": "Definitions",
   "type": "object",
   "description": "`EntityDefinition` describes the structure, behavior, and resources associated with a type of game entity\nsuch as characters, monsters, spells, items, or custom game objects. It provides the blueprint for how\nentities are stored, displayed, edited, and organized within the application.",
   "properties": {

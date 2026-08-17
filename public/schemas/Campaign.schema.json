@@ -2,58 +2,71 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Campaign.schema.json",
   "title": "Campaign",
-  "x-group": "Shared",
+  "x-group": "Container",
   "type": "object",
+  "description": "A container for an ongoing game run by the user.\n\nA `Campaign` groups the content and live state of one table: its own pages, maps,\nencounters and entities, plus the currently running `Game`, the map on screen and the\nset of loaded maps. Exactly one campaign is `primary` at a time \u2014 that is the campaign\nthe battle map and player display are driving.\n\nWhere a `Module` is authored content that is distributed, a campaign is the user's own\nworking container; content can belong to either, or to both.\n\nEach campaign owns a directory under `URL.campaigns/<id>` (see `dataURL`) holding its\nimages and other resources.\n\n- SeeAlso: `Module`, `Game`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this campaign.\n\nA UUID string automatically generated when the campaign is created. This serves as the\nprimary key in the Realm database and names the campaign's data directory on disk."
     },
     "system": {
-      "type": "string"
+      "type": "string",
+      "description": "The game system this campaign is played with.\n\nIdentifies which game system or ruleset the campaign's content targets. Should be lowercased.\nA `nil` value marks the campaign as system-agnostic.\n\n## Examples\n- `\"dnd5e\"`\n- `\"pf2e\"`\n\n- SeeAlso: `System`"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the campaign.\n\nThe primary human-readable identifier shown in the library and campaign switcher.\n\n## Examples\n- `\"The Sunless Citadel\"`"
     },
     "slug": {
-      "type": "string"
+      "type": "string",
+      "description": "A URL-friendly identifier for the campaign.\n\nA simplified, lowercase version of the name suitable for use in URLs, file paths,\nor as a readable unique identifier. Used to resolve links such as\n`/campaign/the-sunless-citadel/map/entrance`.\n\n## Examples\n- `\"the-sunless-citadel\"`"
     },
     "descr": {
-      "type": "string"
+      "type": "string",
+      "description": "The full description of the campaign.\n\nContains the premise, running notes, or overview of the campaign. Displayed in detail views."
     },
     "shortDescr": {
-      "type": "string"
+      "type": "string",
+      "description": "A condensed one-line description of the campaign.\n\nA brief summary used where the full `descr` is too long, such as list rows and cards."
     },
     "image": {
-      "type": "string"
+      "type": "string",
+      "description": "The file path to the campaign's cover image.\n\nThe main visual asset shown for the campaign in the library.\n\n- Note: Relative file paths are resolved against the campaign's `dataURL`.\n\n## Examples\n- `\"cover.jpg\"`"
     },
     "banner": {
-      "type": "string"
+      "type": "string",
+      "description": "The file path to the campaign's banner image.\n\nA wide image used as a header behind the campaign's title.\n\n- Note: Relative file paths are resolved against the campaign's `dataURL`.\n\n## Typical Specifications\n- Wide aspect ratio (roughly 3:1)\n- At least 1200 pixels wide"
     },
     "tags": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Custom tags for categorization and filtering.\n\nA flexible tagging system allowing users to organize campaigns with custom labels.\n\n## Example Tags\n- `\"active\"`, `\"archived\"`, `\"one-shot\"`"
     },
     "references": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Additional reference links pinned to this campaign.\n\nStores URLs to content the game master wants quick access to during play \u2014 pages,\nentities, rules references.\n\n## Examples\n- `\"/module/lost-mine-of-phandelver/page/goblin-ambush\"`\n- `\"/monster/goblin\"`"
     },
     "data": {
       "type": "object",
-      "additionalProperties": true
+      "additionalProperties": true,
+      "description": "Flexible JSON storage for system-specific or arbitrary structured data.\n\nStores metadata that does not fit the standard schema, allowing campaigns to carry\nsystem-specific information without schema modifications.\n\n- Note: The structure of this data varies by `system`."
     },
     "attributes": {
-      "type": [
-        "string",
-        "number",
-        "boolean"
-      ]
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "AnyRealmValue.schema.json"
+      },
+      "description": "Dynamic attribute storage supporting various data types.\n\nA flexible key-value store for attributes and properties that need to be\nqueryable or frequently accessed. Supports multiple data types through RealmAny.\n\n## Common Attributes\n- Custom fields defined by the loaded system."
     },
     "systemVersion": {
-      "type": "string"
+      "type": "string",
+      "description": "The game system version this campaign's content was authored against.\n\nRecords the system version to support data migration, debugging, and\ncompatibility tracking across game system updates.\n\n## Format\nSemantic versioning: `\"1.2.3\"`\n\n- Note: Useful for identifying campaigns created with older system versions that may need migration."
     }
   },
   "required": [

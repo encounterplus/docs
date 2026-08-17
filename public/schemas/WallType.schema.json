@@ -2,7 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "WallType.schema.json",
   "title": "WallType",
-  "x-group": "Shared",
+  "x-merge": "Map",
+  "description": "What a `Wall` segment blocks.\n\nVision and movement are blocked independently, which is what lets a window stop a creature but\nnot its line of sight, and a curtain do the reverse.",
   "type": "string",
   "enum": [
     "normal",

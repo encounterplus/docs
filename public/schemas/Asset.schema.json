@@ -2,45 +2,56 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Asset.schema.json",
   "title": "Asset",
-  "x-group": "Shared",
+  "x-group": "Map",
   "type": "object",
+  "description": "A reusable piece of artwork placed on a `Map`.\n\nAssets are the shared image layer behind `Token`, `Tile`, `AreaEffect` and `Aura` \u2014\neach of those points at one rather than carrying its own file, so the same door or token art\ncan be dropped onto a map many times at no extra cost.\n\nAn asset is more than a file path. Its `type` decides how the resource is interpreted \u2014 a\nstill image, a tiling pattern, a sprite sheet to animate, or an animated file \u2014 with the\ndetails in `parameters`, and `components` can tint or animate it further.\n\nAssets are library content in their own right: they belong to a module, campaign or system and\nare browsable and taggable like any other entity.\n\n- SeeAlso: `Token`, `Tile`, `AreaEffect`, `Component`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this asset.\n\nA UUID string automatically generated when the asset is created. This serves as the\nprimary key in the Realm database."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the asset.\n\n## Examples\n- `\"Wooden Door\"`"
     },
     "slug": {
-      "type": "string"
+      "type": "string",
+      "description": "A URL-friendly identifier for the asset.\n\nUsed to link to the asset as `/asset/wooden-door`.\n\n## Examples\n- `\"wooden-door\"`"
     },
     "type": {
-      "type": "string"
+      "type": "string",
+      "description": "How the resource is interpreted, as the raw value of an `AssetType`.\n\nUse `typeValue` for the typed form.\n\n## Examples\n- `\"image\"`, `\"pattern\"`, `\"spriteSheet\"`, `\"animatedImage\"`"
     },
     "resource": {
-      "type": "string"
+      "type": "string",
+      "description": "The file path of the artwork.\n\n- Note: Resolved against the asset's container \u2014 its module, campaign or system directory.\n\n## Examples\n- `\"assets/img/wooden-door.png\"`"
     },
     "parameters": {
       "type": "object",
-      "additionalProperties": true
+      "additionalProperties": true,
+      "description": "The decoded contents of `params`."
     },
     "components": {
       "type": "array",
       "items": {
         "$ref": "Component.schema.json"
-      }
+      },
+      "description": "Filters and animations baked into the asset.\n\nApplied wherever the asset is used, unlike the components on an individual `Tile`.\n\n- SeeAlso: `Component`"
     },
     "rank": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The manual sort position of the asset.\n\nLower values sort first."
     },
     "tags": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Custom tags for categorization and filtering.\n\n## Example Tags\n- `\"dungeon\"`, `\"furniture\"`, `\"token\"`"
     },
     "parentId": {
-      "type": "string"
+      "type": "string",
+      "description": "The identifier of the group containing this asset in the library tree."
     }
   },
   "required": [

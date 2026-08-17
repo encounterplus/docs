@@ -2,27 +2,33 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Page.schema.json",
   "title": "Page",
-  "x-group": "Content/",
+  "x-group": "Content",
   "type": "object",
-  "description": "A page",
+  "description": "A page of written content \u2014 the prose half of an adventure.\n\nWhere an `Entity` is structured data rendered from a system's definitions, a `Page` is\nauthored HTML stored verbatim: room descriptions, read-aloud text, handouts, session notes.\nIt is what a module's chapters are made of.\n\nPages are self-contained documents rather than references to other records. Their `content`\ncarries its own images, resolved against the owning container's directory and deleted with the\npage, and its own headings, which `headings` extracts to build a table of contents. Links to\nother content are written inline in the HTML.\n\nLike the other content entities a page belongs to exactly one container \u2014 a module, campaign or\nsystem \u2014 and sits somewhere in that container's library tree via `parentId`.\n\n- SeeAlso: `Module`, `Group`, `Reference`, `Heading`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this page.\n\nA UUID string automatically generated when the page is created. This serves as the\nprimary key in the Realm database."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the page.\n\n## Examples\n- `\"Goblin Ambush\"`"
     },
     "slug": {
-      "type": "string"
+      "type": "string",
+      "description": "A URL-friendly identifier for the page.\n\nUsed to link to the page from other content, as `/page/goblin-ambush`.\n\n## Examples\n- `\"goblin-ambush\"`"
     },
     "content": {
-      "type": "string"
+      "type": "string",
+      "description": "The page body, as HTML.\n\nAuthored markup stored verbatim and rendered in a web view, styled by the owning module's\nstylesheets. Image `src` attributes are relative to `dataURL`.\n\n- SeeAlso: `headings`, `images`"
     },
     "parentId": {
-      "type": "string"
+      "type": "string",
+      "description": "The identifier of the `Group` containing this page in the library tree.\n\nEmpty for a page at the top level of its container."
     },
     "rank": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The manual sort position among its siblings.\n\nLower values sort first."
     }
   },
   "required": [

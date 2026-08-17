@@ -2,26 +2,32 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Measurement.schema.json",
   "title": "Measurement",
-  "x-group": "Shared",
+  "x-group": "Map",
   "type": "object",
+  "description": "A distance measurement drawn on a `Map`.\n\nMeasurements are the persistent form of the ruler tool \u2014 a path left on the map so a planned\nmove or a spell's reach stays visible. Their `type` decides how the distance along that path\nis counted.\n\n- SeeAlso: `Map`, `MeasurementType`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this measurement.\n\nA UUID string automatically generated when the measurement is created. This serves as the\nprimary key in the Realm database."
     },
     "type": {
-      "type": "string"
+      "type": "string",
+      "description": "How the distance is counted, as the raw value of a `MeasurementType`.\n\nUse `typeValue` for the typed form.\n\n## Examples\n- `\"grid\"`, `\"precise\"`"
     },
     "color": {
-      "type": "string"
+      "type": "string",
+      "description": "The measurement's color, as an RGB string."
     },
     "hidden": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the measurement is concealed from the players."
     },
     "data": {
       "type": "array",
       "items": {
         "type": "integer"
-      }
+      },
+      "description": "The measured path's vertices, as a flat list of alternating x and y coordinates.\n\nStored flat rather than as points, matching `Wall/data`.\n\n## Examples\n- `[100, 200, 340, 200]` \u2014 a straight measurement between two points\n\n- SeeAlso: `points`"
     }
   },
   "required": [
@@ -35,6 +41,7 @@
   "$defs": {
     "MeasurementType": {
       "title": "MeasurementType",
+      "description": "How a `Measurement`'s distance is counted.",
       "type": "string",
       "enum": [
         "grid",

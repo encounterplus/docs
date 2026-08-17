@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Compatibility.schema.json",
+  "title": "Compatibility",
+  "x-merge": "Package",
+  "type": "object",
+  "description": "The range of app versions a `Package` supports.\n\nBoth bounds are optional and inclusive; an omitted bound means unbounded in that direction.\nA package with no compatibility declaration is treated as compatible with every version.",
+  "properties": {
+    "minimum": {
+      "type": "string",
+      "description": "The oldest supported app version.\n\n## Format\nSemantic versioning, optionally with a build number: `\"5.2.0\"`, `\"5.2.0+1234\"`\n\n- Note: When a build number is present it is compared as well, so a package can require\n  a specific build of an app version."
+    },
+    "maximum": {
+      "type": "string",
+      "description": "The newest supported app version.\n\n## Format\nSemantic versioning, optionally with a build number: `\"6.0.0\"`, `\"6.0.0+2000\"`"
+    }
+  },
+  "additionalProperties": false
+}

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Entity.schema.json",
   "title": "Entity",
-  "x-group": "Content/Entity",
+  "x-group": "Entity",
   "type": "object",
   "description": "A flexible, game-agnostic entity representation for tabletop RPG content.\n\n`Entity` serves as the core data model for representing various game elements such as characters,\nmonsters, items, spells and others across multiple game systems.",
   "properties": {
@@ -56,11 +56,10 @@
       "description": "Flexible JSON storage for system-specific or arbitrary structured data.\n\nStores game mechanics, statistics, abilities, and other structured information\nthat doesn't fit into the standard schema. This enables support for diverse\ngame systems without schema modifications.\n\n## Usage Examples\n- Character ability scores and skills\n- Monster stat blocks\n- Item properties and effects\n- Spell components and mechanics\n\n- Note: The structure of this data varies by `system` and `kind`."
     },
     "attributes": {
-      "type": [
-        "string",
-        "number",
-        "boolean"
-      ],
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "AnyRealmValue.schema.json"
+      },
       "description": "Dynamic attribute storage supporting various data types.\n\nA flexible key-value store for attributes and properties that need to be\nqueryable or frequently accessed. Supports multiple data types through RealmAny.\n\n## Common Attributes\n- Custom fields."
     },
     "modifiers": {

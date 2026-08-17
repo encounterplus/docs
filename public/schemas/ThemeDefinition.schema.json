@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "ThemeDefinition.schema.json",
   "title": "ThemeDefinition",
-  "x-group": "Definitions/",
+  "x-group": "Definitions",
   "type": "object",
   "description": "A comprehensive theming system for customizing the visual appearance of native views\n\n`ThemeDefinition` provides a flexible, hierarchical theming framework that allows complete visual customization\nof RPG character sheets, compendiums, and related interfaces. It supports color schemes, typography, component\nstyling, and game-system-specific visual elements.",
   "properties": {

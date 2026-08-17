@@ -111,7 +111,7 @@ conditional visibility.
 | `title` | `string` | No | The title or label for this view. Used as: Label text; Tab titles; Button text |
 | `value` | `string` | No | Static value or template string for this view. The interpretation depends on `type`: For `.text`: The text to display; For `.image`: The image path or URL |
 | `type` | [ViewType](#viewtype) | No | Determines how this view is displayed and what properties are relevant. SeeAlso: `ViewType` |
-| `attribute` | `string` | No | Data binding path for dynamic content. Specifies which property from the data context to display or bind to. Uses dot notation to access nested properties. <br>**Example:** ``json // Simple property "attribute": "data.level" // Nested property "attribute: "data.character.abilities.strength" `` |
+| `attribute` | `string` | No | Data binding path for dynamic content. Specifies which property from the data context to display or bind to. Uses dot notation to access nested properties. <br>**Example:** ```json // Simple property "attribute": "data.level" // Nested property "attribute: "data.character.abilities.strength" ``` |
 | `attributeType` | `string` | No | SystemType or Entity for the attribute value. Helps renderers format and validate data appropriately. |
 | `context` | [ContextType](#contexttype) | No | The data context scope for attribute resolution. SeeAlso: `ContextType` |
 | `style` | `string` | No | Style identifier for this view. References a theme style definition that controls typography, colors, spacing, and other visual properties. |
@@ -130,8 +130,8 @@ conditional visibility.
 | `width` | `number` | No | Fixed width in points. Overrides the default width calculation. |
 | `height` | `number` | No | Fixed height in points. Overrides the default height calculation. |
 | `frame` | [Frame](#frame) | No | Frame constraints for this view. Provides fine-grained control over sizing and layout behavior. SeeAlso: `Frame` |
-| `visibleIf` | `string` | No | Condition for visibility - view shown when this evaluates to true. Expression string evaluated against the data context. <br>**Example:** ``json "visibleIf": "data.hp > 0" "visibleIf": "data.level >= 5" "visibleIf": "data.equipment.count > 0" `` |
-| `hiddenIf` | `string` | No | Condition for hiding - view hidden when this evaluates to true. Expression string evaluated against the data context. <br>**Example:** ``json "hiddenIf": "data.isGM == false" "hiddenIf": "data.inventory.length == 0" `` |
+| `visibleIf` | `string` | No | Condition for visibility - view shown when this evaluates to true. Expression string evaluated against the data context. <br>**Example:** ```json "visibleIf": "data.hp > 0" "visibleIf": "data.level >= 5" "visibleIf": "data.equipment.count > 0" ``` |
+| `hiddenIf` | `string` | No | Condition for hiding - view hidden when this evaluates to true. Expression string evaluated against the data context. <br>**Example:** ```json "hiddenIf": "data.isGM == false" "hiddenIf": "data.inventory.length == 0" ``` |
 | `custom` | `Object` | No | Custom properties for extension and specialized rendering. Allows passing arbitrary configuration data to custom renderers or view types. |
 | `action` | `Object` | No | Action configuration for interactive views. Defines what happens when the view is interacted with (tapped, submitted, etc.). |
 | `views` | Array&lt;ViewDefinition&gt; | No | Child views nested within this view. Forms a tree structure for complex layouts. |

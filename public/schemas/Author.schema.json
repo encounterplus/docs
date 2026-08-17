@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Author.schema.json",
+  "title": "Author",
+  "x-merge": "Package",
+  "type": "object",
+  "description": "A person or organization credited on a `Package`.",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The author's display name.\n\n## Examples\n- `\"Encounter+ Dev Team\"`"
+    },
+    "url": {
+      "type": "string",
+      "description": "The author's homepage, as an absolute URL string."
+    },
+    "email": {
+      "type": "string",
+      "description": "The author's contact email address."
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "additionalProperties": false
+}

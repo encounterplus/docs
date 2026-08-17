@@ -2,32 +2,40 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Wall.schema.json",
   "title": "Wall",
-  "x-group": "Shared",
+  "x-merge": "Map",
   "type": "object",
+  "description": "One segment chain of a `Map`'s vision and movement mesh.\n\nWalls are what make line of sight work: each is a polyline whose `type` says whether it stops\nvision, movement, or both. Doors additionally carry a `door` state that can change during\nplay, so opening one changes what the party can see.\n\nUnlike the other map objects a wall is a plain `Codable` value, not a Realm object \u2014 the whole\nmesh is stored encoded in `Map/walls` because a detailed map carries thousands of segments\nand they are always loaded together. The derived geometry (`points`, `path`, `hitPath`,\nwall segments) is cached and must be discarded with `invalidate()` after editing `data`.\n\n- SeeAlso: `Map/walls`, `Map/lineOfSight`, `WallType`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this wall.\n\nA UUID string generated when the wall is created."
     },
     "data": {
       "type": "array",
       "items": {
         "type": "number"
-      }
+      },
+      "description": "The wall's vertices, as a flat list of alternating x and y coordinates.\n\nStored flat rather than as points to keep the encoded mesh compact.\n\n## Examples\n- `[100, 200, 340, 200]` \u2014 a single segment from (100, 200) to (340, 200)\n\n- Note: Edit through `update(_:)`, which also invalidates the cached geometry.\n- SeeAlso: `points`"
     },
     "color": {
-      "type": "string"
+      "type": "string",
+      "description": "An override for the color the wall is drawn in while editing.\n\nDefaults to the color of its `type` when absent."
     },
     "type": {
-      "$ref": "WallType.schema.json"
+      "$ref": "WallType.schema.json",
+      "description": "What this wall blocks.\n\n`nil` behaves as `WallType/normal`.\n\n- SeeAlso: `WallType`"
     },
     "side": {
-      "$ref": "#/$defs/Side"
+      "$ref": "#/$defs/Side",
+      "description": "Which side of the wall blocks; `nil` behaves as `Side/both`."
     },
     "door": {
-      "$ref": "#/$defs/DoorState"
+      "$ref": "#/$defs/DoorState",
+      "description": "The door's state, for walls of type `WallType/door` or `WallType/secretDoor`.\n\n- SeeAlso: `DoorState`"
     },
     "generated": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether this wall was produced by automatic wall detection rather than drawn by hand.\n\nLets generated walls be cleared in bulk without disturbing the user's own."
     }
   },
   "required": [
@@ -38,6 +46,7 @@
   "$defs": {
     "Side": {
       "title": "Side",
+      "description": "Which side of a wall blocks.\n\nA one-sided wall lets a creature see out but not in \u2014 useful for balconies, cliff edges and\none-way windows.",
       "type": "string",
       "enum": [
         "both",
@@ -47,6 +56,7 @@
     },
     "DoorState": {
       "title": "DoorState",
+      "description": "The state of a door wall.",
       "type": "string",
       "enum": [
         "closed",

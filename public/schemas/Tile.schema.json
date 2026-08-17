@@ -2,59 +2,76 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Tile.schema.json",
   "title": "Tile",
-  "x-group": "Shared",
+  "x-group": "Map",
   "type": "object",
+  "description": "A piece of scenery placed on a `Map`.\n\nWhere a `Token` is a creature, a tile is everything else drawn on the map: furniture, doors,\nprops, decals, overlays. Tiles are free-form \u2014 positioned and sized in pixels rather than grid\ncells, layered by `layer` and `zIndex`, and optionally animated or tinted through\n`components`.\n\nA tile can also carry a `light`, which is how a torch sconce or brazier both appears on the\nmap and illuminates it, and a `reference`, which makes it tappable to open a page or entity.\n\n- SeeAlso: `Map`, `Asset`, `Component`, `Light`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this tile.\n\nA UUID string automatically generated when the tile is created. This serves as the\nprimary key in the Realm database."
     },
     "x": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The tile's horizontal position in map coordinates.\n\n- SeeAlso: `position`"
     },
     "y": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The tile's vertical position in map coordinates."
     },
     "width": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The tile's width in pixels.\n\n- Note: Tiles are sized freely rather than snapped to the grid."
     },
     "height": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The tile's height in pixels."
     },
     "rotation": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The tile's rotation, in degrees."
     },
     "opacity": {
-      "type": "number"
+      "type": "number",
+      "description": "The tile's opacity, from `0` to `1`."
     },
     "scale": {
-      "type": "number"
+      "type": "number",
+      "description": "A uniform scale applied to the tile's artwork."
     },
     "layer": {
-      "type": "string"
+      "type": "string",
+      "description": "Which map layer the tile is drawn on, as the raw value of a `BattleMapLayer`.\n\nDetermines whether the tile sits under the tokens (floor scenery) or over them (roofs,\noverlays). Use `layerValue` for the typed form."
     },
     "zIndex": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The tile's draw order within its layer.\n\nHigher values draw on top."
     },
     "hidden": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the tile is concealed from the players."
     },
     "locked": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the tile is protected from being moved or edited on the map."
     },
     "asset": {
-      "$ref": "Asset.schema.json"
+      "$ref": "Asset.schema.json",
+      "description": "The artwork drawn for this tile.\n\n- SeeAlso: `Asset`"
     },
     "light": {
-      "$ref": "Light.schema.json"
+      "$ref": "Light.schema.json",
+      "description": "A light source attached to this tile.\n\nLets scenery illuminate the map \u2014 a torch that both looks and behaves like one.\n\n- SeeAlso: `Light`"
     },
     "reference": {
-      "type": "string"
+      "type": "string",
+      "description": "A soft link to content this tile opens when tapped.\n\n## Examples\n- `\"/page/goblin-ambush\"`\n- `\"/map/cragmaw-hideout\"`\n\n- SeeAlso: `referenceURL`, `linkedObject`"
     },
     "components": {
       "type": "array",
       "items": {
         "$ref": "Component.schema.json"
-      }
+      },
+      "description": "Filters and animations applied to the tile's artwork.\n\n- SeeAlso: `Component`"
     }
   },
   "required": [

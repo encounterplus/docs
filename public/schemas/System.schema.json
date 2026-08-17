@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "System.schema.json",
+  "title": "System",
+  "x-group": "Container",
+  "type": "object",
+  "description": "An installed game system \u2014 the ruleset that defines what content looks like.\n\nA `System` is the top-level container in the app. It does not hold content itself; it\ndescribes it. The installed system directory (see `dataURL`) supplies the entity\ndefinitions, forms, views, filters, themes, icons, fonts, localizations and migration\nscripts that drive the entire UI, so adding a content type is a system change rather than\na code change.\n\nExactly one system is `primary` at a time; `SystemManager` loads it at launch and caches\nevery definition it contains. Systems are installed from `.system` archives or downloaded\nas a `Package`.\n\n## Examples\n- `\"dnd5e\"` \u2014 D&D 5th Edition\n- `\"generic\"` \u2014 the system-agnostic default\n\n- SeeAlso: `Module`, `Campaign`, `Package`",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for this system.\n\nUnlike most models this is an author-chosen, stable, lowercase slug rather than a UUID.\nIt serves as the Realm primary key, names the system's directory on disk, and is the\nvalue stored in the `system` field of every `Entity`, `Module` and `Campaign`.\n\n## Examples\n- `\"dnd5e\"`\n- `\"pf2e\"`"
+    },
+    "name": {
+      "type": "string",
+      "description": "The display name of the system.\n\nThe full human-readable title shown in the system browser and settings.\n\n## Examples\n- `\"Dungeons & Dragons 5th Edition\"`"
+    },
+    "version": {
+      "type": "string",
+      "description": "The system's own content version.\n\nSet by the system author. Entities record the version they were authored against in\ntheir `systemVersion` field, and the JavaScript migrations under `migrations/` are run\nto bring older entities up to this version.\n\n## Format\nSemantic versioning: `\"1.2.3\"`\n\n- SeeAlso: `migrations`, `migrateData(realm:)`"
+    },
+    "descr": {
+      "type": "string",
+      "description": "The full description of the system.\n\nContains the author's overview of what the system covers. Displayed in detail views."
+    },
+    "shortDescr": {
+      "type": "string",
+      "description": "A condensed one-line description of the system.\n\nA brief summary used where the full `descr` is too long, such as list rows and cards."
+    },
+    "author": {
+      "type": "string",
+      "description": "The author or publisher of the system.\n\n## Examples\n- `\"Encounter+ Dev Team\"`"
+    },
+    "shortName": {
+      "type": "string",
+      "description": "An abbreviated name for the system.\n\nUsed where the full `name` does not fit, such as sidebar labels and compact headers.\n\n## Examples\n- `\"D&D 5e\"`\n- `\"Generic\"`"
+    },
+    "website": {
+      "type": "string",
+      "description": "The system's homepage.\n\nAn absolute URL string pointing to the product page, author's site, or documentation."
+    },
+    "repository": {
+      "type": "string",
+      "description": "The source repository hosting the system.\n\nAn absolute URL string, typically to a Git repository the system is developed in.\n\n## Examples\n- `\"https://github.com/example/dnd5e-system\"`"
+    },
+    "package": {
+      "type": "string",
+      "description": "The package manifest this system was installed from.\n\nAn absolute URL string pointing to the JSON manifest describing the system and its\ndownloadable versions. Used to check for and install updates.\n\n- SeeAlso: `Package`, `packageURL`"
+    },
+    "image": {
+      "type": "string",
+      "description": "The file path to the system's cover image.\n\nThe main visual asset shown for the system in the system browser.\n\n- Note: Relative file paths are resolved against the system's `dataURL`.\n\n## Examples\n- `\"cover.jpg\"`"
+    },
+    "banner": {
+      "type": "string",
+      "description": "The file path to the system's banner image.\n\nA wide image used as a header behind the system's title.\n\n- Note: Relative file paths are resolved against the system's `dataURL`.\n\n## Typical Specifications\n- Wide aspect ratio (roughly 3:1)\n- At least 1200 pixels wide"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Flexible JSON storage for system-specific or arbitrary structured data.\n\nStores author-defined metadata that does not fit the standard schema."
+    },
+    "attributes": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "AnyRealmValue.schema.json"
+      },
+      "description": "Dynamic attribute storage supporting various data types.\n\nA flexible key-value store for attributes and properties that need to be\nqueryable or frequently accessed. Supports multiple data types through RealmAny."
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "version",
+    "attributes"
+  ],
+  "additionalProperties": false
+}

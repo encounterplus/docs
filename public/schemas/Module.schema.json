@@ -2,73 +2,92 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Module.schema.json",
   "title": "Module",
-  "x-group": "Shared",
+  "x-group": "Container",
   "type": "object",
+  "description": "A container for a distributable body of game content.\n\nA `Module` groups together everything shipped as one unit \u2014 pages, maps, encounters,\ngroups, references, assets and entities. Modules are imported from `.module` archives\nor downloaded as a `Package`, and every piece of content they own is deleted with them.\n\nEach module owns a directory under `URL.modules/<id>` (see `dataURL`) holding its\nimages, page assets, fonts and other resources.\n\n- SeeAlso: `Campaign`, `Package`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this module.\n\nA UUID string automatically generated when the module is created. This serves as the\nprimary key in the Realm database and names the module's data directory on disk."
     },
     "system": {
-      "type": "string"
+      "type": "string",
+      "description": "The game system this module was authored for.\n\nIdentifies which game system or ruleset the module's content targets. Should be lowercased.\nA `nil` value marks the module as system-agnostic.\n\n## Examples\n- `\"dnd5e\"`\n- `\"pf2e\"`\n\n- SeeAlso: `System`"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the module.\n\nThe primary human-readable identifier shown in the library and content browser.\n\n## Examples\n- `\"Lost Mine of Phandelver\"`"
     },
     "slug": {
-      "type": "string"
+      "type": "string",
+      "description": "A URL-friendly identifier for the module.\n\nA simplified, lowercase version of the name suitable for use in URLs, file paths,\nor as a readable unique identifier. Used to resolve links such as\n`/module/lost-mine-of-phandelver/page/goblin-ambush`.\n\n## Examples\n- `\"lost-mine-of-phandelver\"`"
     },
     "version": {
-      "type": "string"
+      "type": "string",
+      "description": "The module's own content version.\n\nSet by the module author and used to detect available updates against the published\n`Package` version.\n\n## Format\nSemantic versioning: `\"1.2.3\"`\n\n- Note: Defaults to `\"1.0.0\"` for modules that do not declare a version."
     },
     "descr": {
-      "type": "string"
+      "type": "string",
+      "description": "The full description of the module.\n\nContains the marketing copy, back-cover blurb, or author's overview of the module's\ncontent. Displayed in detail views."
     },
     "shortDescr": {
-      "type": "string"
+      "type": "string",
+      "description": "A condensed one-line description of the module.\n\nA brief summary used where the full `descr` is too long, such as list rows and cards."
     },
     "acronym": {
-      "type": "string"
+      "type": "string",
+      "description": "A short code identifying the module.\n\nAn abbreviation, typically 2\u20135 uppercase characters, used where the full name does not\nfit and to attribute content sources.\n\n## Examples\n- `\"LMOP\"`\n- `\"CoS\"`"
     },
     "author": {
-      "type": "string"
+      "type": "string",
+      "description": "The author or publisher of the module.\n\n## Examples\n- `\"Wizards of the Coast\"`\n- `\"Jane Doe\"`"
     },
     "category": {
-      "type": "string"
+      "type": "string",
+      "description": "The broad classification of this module.\n\nStored as the raw value of a `ModuleCategory`; use `categoryValue` for the typed form.\nArbitrary strings are tolerated for legacy content.\n\n## Examples\n- `\"adventure\"`, `\"pack\"`, `\"rules\"`, `\"compendium\"`, `\"other\"`\n\n- SeeAlso: `ModuleCategory`"
     },
     "website": {
-      "type": "string"
+      "type": "string",
+      "description": "The module's homepage.\n\nAn absolute URL string pointing to the product page, author's site, or documentation.\n\n## Examples\n- `\"https://example.com/modules/lost-mine\"`"
     },
     "repository": {
-      "type": "string"
+      "type": "string",
+      "description": "The source repository hosting the module.\n\nAn absolute URL string, typically to a Git repository the module is developed in.\n\n## Examples\n- `\"https://github.com/example/lost-mine\"`"
     },
     "package": {
-      "type": "string"
+      "type": "string",
+      "description": "The package manifest this module was installed from.\n\nAn absolute URL string pointing to the JSON manifest describing the module and its\ndownloadable versions. Used to check for and install updates.\n\n- SeeAlso: `Package`, `packageURL`"
     },
     "image": {
-      "type": "string"
+      "type": "string",
+      "description": "The file path to the module's cover image.\n\nThe main visual asset shown for the module in the library.\n\n- Note: Relative file paths are resolved against the module's `dataURL`.\n\n## Examples\n- `\"cover.jpg\"`"
     },
     "banner": {
-      "type": "string"
+      "type": "string",
+      "description": "The file path to the module's banner image.\n\nA wide image used as a header behind the module's title.\n\n- Note: Relative file paths are resolved against the module's `dataURL`.\n\n## Typical Specifications\n- Wide aspect ratio (roughly 3:1)\n- At least 1200 pixels wide"
     },
     "tags": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Custom tags for categorization and filtering.\n\nA flexible tagging system allowing users to organize modules with custom labels.\n\n## Example Tags\n- `\"official\"`, `\"homebrew\"`, `\"third-party\"`\n- `\"low-level\"`, `\"horror\"`"
     },
     "data": {
       "type": "object",
-      "additionalProperties": true
+      "additionalProperties": true,
+      "description": "Flexible JSON storage for system-specific or arbitrary structured data.\n\nStores metadata that does not fit the standard schema, allowing modules to carry\nsystem-specific information without schema modifications.\n\n- Note: The structure of this data varies by `system`."
     },
     "attributes": {
-      "type": [
-        "string",
-        "number",
-        "boolean"
-      ]
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "AnyRealmValue.schema.json"
+      },
+      "description": "Dynamic attribute storage supporting various data types.\n\nA flexible key-value store for attributes and properties that need to be\nqueryable or frequently accessed. Supports multiple data types through RealmAny.\n\n## Common Attributes\n- Custom fields defined by the loaded system."
     },
     "systemVersion": {
-      "type": "string"
+      "type": "string",
+      "description": "The game system version this module's content was authored against.\n\nRecords the system version to support data migration, debugging, and\ncompatibility tracking across game system updates.\n\n## Format\nSemantic versioning: `\"1.2.3\"`\n\n- Note: Useful for identifying modules created with older system versions that may need migration."
     }
   },
   "required": [

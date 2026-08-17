@@ -2,38 +2,48 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Aura.schema.json",
   "title": "Aura",
-  "x-group": "Shared",
+  "x-group": "Map",
   "type": "object",
+  "description": "A radial area drawn around a `Token`, moving with it.\n\nAuras cover anything a creature projects around itself \u2014 a paladin's aura of protection, a\ndragon's frightful presence, reach, or simply a colored ring marking threat range. Unlike an\n`AreaEffect`, which is anchored to the map, an aura follows its token.\n\n- SeeAlso: `Token`, `AreaEffect`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this aura.\n\nA UUID string generated when the aura is created. Embedded objects have no primary key,\nso this is indexed instead."
     },
     "enabled": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the aura is drawn.\n\nLets an aura be switched off without deleting it, for abilities that come and go."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The aura's display name.\n\n## Examples\n- `\"Aura of Protection\"`\n- `\"Reach\"`"
     },
     "color": {
-      "type": "string"
+      "type": "string",
+      "description": "The aura's color, as an RGB string.\n\n## Examples\n- `\"#ff0000\"`"
     },
     "opacity": {
-      "type": "number"
+      "type": "number",
+      "description": "The aura's opacity, from `0` to `1`."
     },
     "radius": {
-      "type": "number"
+      "type": "number",
+      "description": "The aura's radius, in grid units, measured from the token's edge.\n\n## Examples\n- `10` \u2014 a ten-foot aura"
     },
     "asset": {
-      "$ref": "Asset.schema.json"
+      "$ref": "Asset.schema.json",
+      "description": "Artwork drawn in place of a plain colored disc.\n\n- SeeAlso: `Asset`"
     },
     "reference": {
-      "type": "string"
+      "type": "string",
+      "description": "A soft link to the content this aura comes from.\n\n## Examples\n- `\"/spell/spirit-guardians\"`\n\n- SeeAlso: `linkURL`, `linkedObject()`"
     },
     "components": {
       "type": "array",
       "items": {
         "$ref": "Component.schema.json"
-      }
+      },
+      "description": "Filters and animations applied to the aura's artwork.\n\n- SeeAlso: `Component`"
     }
   },
   "required": [

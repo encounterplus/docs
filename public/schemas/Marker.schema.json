@@ -2,44 +2,57 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Marker.schema.json",
   "title": "Marker",
-  "x-group": "Shared",
+  "x-group": "Map",
   "type": "object",
+  "description": "A point of interest pinned to a `Map`.\n\nMarkers are how a map is annotated and connected to the rest of the content: a numbered pin on\na dungeon room that opens the page describing it, a note to the game master, or a link to the\nnext map. Tapping one follows its `reference`.\n\nMarkers default to `hidden`, so annotations do not leak to the players until deliberately\nrevealed.\n\n- SeeAlso: `Map`, `MarkerShape`, `MarkerStyle`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this marker.\n\nA UUID string automatically generated when the marker is created. This serves as the\nprimary key in the Realm database."
     },
     "label": {
-      "type": "string"
+      "type": "string",
+      "description": "The short text drawn on the marker itself.\n\n## Examples\n- `\"1\"`, `\"2a\"` \u2014 keyed room numbers"
     },
     "color": {
-      "type": "string"
+      "type": "string",
+      "description": "The marker's color, as an RGB string.\n\n## Examples\n- `\"#ff0000\"`"
     },
     "shape": {
-      "type": "string"
+      "type": "string",
+      "description": "The marker's shape, as the raw value of a `MarkerShape`.\n\nUse `shapeValue` for the typed form.\n\n## Examples\n- `\"pin\"`, `\"marker\"`, `\"circle\"`, `\"label\"`"
     },
     "size": {
-      "type": "string"
+      "type": "string",
+      "description": "The marker's size, as the raw value of a `MarkerSize`.\n\nUse `sizeValue` for the typed form.\n\n## Examples\n- `\"tiny\"`, `\"small\"`, `\"medium\"`, `\"large\"`, `\"huge\"`"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The marker's title, shown when it is opened.\n\n## Examples\n- `\"Goblin Ambush\"`"
     },
     "descr": {
-      "type": "string"
+      "type": "string",
+      "description": "The marker's description.\n\nRead-aloud text or notes shown when the marker is tapped, for markers that carry their\ncontent inline rather than linking elsewhere."
     },
     "reference": {
-      "type": "string"
+      "type": "string",
+      "description": "A soft link to the content this marker opens.\n\nMay be an app link or an external web address.\n\n## Examples\n- `\"/page/goblin-ambush\"`\n- `\"/map/cragmaw-hideout\"`\n- `\"https://example.com\"`\n\n- SeeAlso: `referenceURL`, `externalReferenceURL`"
     },
     "hidden": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the marker is concealed from the players.\n\n- Note: Defaults to `true` \u2014 markers are the game master's annotations until shared."
     },
     "locked": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the marker is protected from being moved or edited on the map."
     },
     "x": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The marker's horizontal position in map coordinates."
     },
     "y": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The marker's vertical position in map coordinates."
     }
   },
   "required": [

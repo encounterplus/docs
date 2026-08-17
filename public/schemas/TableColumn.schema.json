@@ -2,17 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "TableColumn.schema.json",
   "title": "TableColumn",
-  "x-group": "Shared",
+  "x-merge": "Table",
   "type": "object",
+  "description": "One column header of a `Table`.\n\nCarries the header text and how the column is laid out. The first column of a table is\nsignificant beyond presentation: when its `name` is a dice formula such as `\"d100\"`, the\ntable matches rolls against ranges in that column rather than by row position.\n\n- SeeAlso: `Table`",
   "properties": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The column header text.\n\n## Examples\n- `\"d100\"` \u2014 marks the first column as holding result ranges\n- `\"Magic Item\"`"
     },
     "alignment": {
-      "type": "string"
+      "type": "string",
+      "description": "How cells in this column are aligned, as the raw value of an `Alignment`.\n\nUse `alignmentValue` for the typed form. A `nil` value falls back to centered for\nformula columns and leading otherwise.\n\n## Examples\n- `\"left\"`, `\"right\"`, `\"center\"`"
     },
     "size": {
-      "type": "number"
+      "type": "number",
+      "description": "The column's width.\n\nInterpreted by magnitude: `0` means size to content, a value up to `1` is a fraction of\nthe table width, and anything larger is an absolute width in points.\n\n## Examples\n- `0` \u2014 dynamic\n- `0.25` \u2014 a quarter of the table\n- `120` \u2014 120 points\n\n- SeeAlso: `sizeTitle(for:)`"
     }
   },
   "required": [
@@ -22,6 +26,7 @@
   "$defs": {
     "Alignment": {
       "title": "Alignment",
+      "description": "How cells in a `TableColumn` are aligned.",
       "type": "string",
       "enum": [
         "left",

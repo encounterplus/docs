@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "TableRoll.schema.json",
+  "title": "TableRoll",
+  "x-merge": "Table",
+  "type": "object",
+  "description": "The outcome of rolling on a `Table`.\n\nA roll records what was rolled and what it produced: the `formula`, the `result`, and one\n`TableRollDetail` per cell of the matched row. Rolls nest \u2014 a detail whose cell referenced\nanother table carries that table's own rolls \u2014 so a single roll can be a tree several levels\ndeep, which is what the rendering methods here flatten into indented text.\n\nUnlike the other table types this is a plain `Codable` value, not a Realm object. It is\nserialized into `Table/rolls` for history, into `Message/content` for the chat log, and\nsent to the web client.\n\n- SeeAlso: `Table`, `TableRollDetail`, `Message`",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for this roll.\n\nA UUID string generated when the roll is created, used to identify it in lists and in the\nchat log."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the table that was rolled on.\n\n## Examples\n- `\"Magic Item Table A\"`"
+    },
+    "formula": {
+      "type": "string",
+      "description": "The dice expression that was rolled.\n\n## Examples\n- `\"d100\"`\n- `\"Multiple rolls\"` \u2014 produced by `Table/RollMode/eachRow`, which rolls no dice"
+    },
+    "result": {
+      "type": "integer",
+      "description": "The rolled result that selected the row.\n\nFor tables matched by position this is the one-based row number. In\n`Table/RollMode/noRepeat` it may be the row's own value rather than the number actually\nrolled, when the rolled row was already taken."
+    },
+    "details": {
+      "type": "array",
+      "items": {
+        "$ref": "TableRollDetail.schema.json"
+      },
+      "description": "The content of the matched row, one entry per cell.\n\nThe range column is excluded, since it holds the lookup key rather than content.\n\n- SeeAlso: `TableRollDetail`"
+    },
+    "reference": {
+      "type": "string",
+      "format": "uri",
+      "description": "A link back to the table this roll came from.\n\nMakes the table name tappable in the chat log and lets `reroll()` find the table again.\n\n## Examples\n- `\"/table/6195ae04-cc85-526b-8456-56d0ab36adc2\"`"
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "additionalProperties": false
+}

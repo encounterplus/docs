@@ -2,159 +2,224 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Map.schema.json",
   "title": "Map",
-  "x-group": "Content/Map",
+  "x-group": "Content",
   "type": "object",
-  "description": "A battle map and everything related",
+  "description": "A battle map \u2014 the playing surface and everything placed on it.\n\nA `Map` is a background image or video, a grid describing how that background maps to game\ndistances, and layers of objects on top: `tokens` for creatures, `tiles` for scenery,\n`walls` for the vision and movement mesh, `lights`, `areaEffects`, `markers`,\n`drawings` and `measurements`.\n\nTwo systems make maps more than pictures. Fog of war (`fogOfWar`) hides the map from the\nplayers until revealed, and line of sight (`lineOfSight`) computes what each token can\nactually see from the wall mesh and the light sources \u2014 which is why walls carry types\ndistinguishing what blocks vision from what blocks movement.\n\nThe map the game master edits and the map the players see are the same object rendered\ndifferently: `dmDarkness` and `dmMarkerStyle` control only the GM's view.\n\n## JSON Example\n\nA map with a background image, fog of war and line of sight enabled, one wall segment and one\ntoken. Object collections that are empty are shown here for completeness; the elements of each\nfollow their own model's schema.\n\n```json\n{\n  \"id\" : \"8C2F1A9E-5B3D-4E6F-9A1C-2D7E4F8B0C13\",\n  \"name\" : \"Cragmaw Hideout\",\n  \"slug\" : \"cragmaw-hideout\",\n  \"descr\" : \"A goblin lair in a cave beside a stream.\",\n  \"gridSize\" : 50,\n  \"gridOffsetX\" : 0,\n  \"gridOffsetY\" : 0,\n  \"gridColor\" : \"#cccccc\",\n  \"gridVisible\" : true,\n  \"gridScale\" : 5,\n  \"gridUnits\" : \"ft\",\n  \"gridType\" : \"square\",\n  \"gridStyle\" : \"solid\",\n  \"gridOpacity\" : 1,\n  \"scale\" : 1,\n  \"x\" : 1024,\n  \"y\" : 1024,\n  \"zoom\" : 1,\n  \"width\" : 2048,\n  \"height\" : 2048,\n  \"image\" : \"cragmaw-hideout_a1b2c3.jpg\",\n  \"snapshot\" : \"cragmaw-hideout-snapshot_d4e5f6.jpg\",\n  \"fogOfWar\" : true,\n  \"fogExploration\" : true,\n  \"fog\" : \"cragmaw-hideout-fog_a1b2c3.png\",\n  \"lineOfSight\" : true,\n  \"losDaylight\" : 0,\n  \"losVisionLimit\" : -1,\n  \"weatherType\" : \"rain\",\n  \"weatherIntensity\" : 0.5,\n  \"dmDarkness\" : 0.6,\n  \"parentId\" : \"\",\n  \"rank\" : 0,\n  \"version\" : 1,\n  \"walls\" : [\n    {\n      \"id\" : \"1F0A6B4C-7D8E-4A2B-9C3D-5E6F7A8B9C0D\",\n      \"data\" : [ 100, 100, 100, 400 ],\n      \"type\" : \"door\",\n      \"door\" : \"closed\"\n    }\n  ],\n  \"tokens\" : [\n    {\n      \"id\" : \"3B7E2D1F-9A4C-4E8B-8D6A-1C2F3E4D5B6A\",\n      \"name\" : \"Goblin\",\n      \"x\" : 300,\n      \"y\" : 250,\n      \"width\" : 50,\n      \"height\" : 50\n    }\n  ],\n  \"markers\" : [],\n  \"tiles\" : [],\n  \"areaEffects\" : [],\n  \"lights\" : [],\n  \"measurements\" : [],\n  \"drawings\" : []\n}\n```\n\n- SeeAlso: `Token`, `Tile`, `Wall`, `Light`, `Marker`, `AreaEffect`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this map.\n\nA UUID string automatically generated when the map is created. This serves as the\nprimary key in the Realm database and names the map's resource directory on disk."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the map.\n\n## Examples\n- `\"Cragmaw Hideout\"`"
     },
     "slug": {
-      "type": "string"
+      "type": "string",
+      "description": "A URL-friendly identifier for the map.\n\nUsed to link to the map from page content, as `/map/cragmaw-hideout`.\n\n## Examples\n- `\"cragmaw-hideout\"`"
     },
     "descr": {
-      "type": "string"
+      "type": "string",
+      "description": "The description of the map.\n\nRead-aloud text or the game master's notes on the location."
     },
     "gridSize": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The length of one grid cell in image pixels.\n\nThe core calibration value: it ties the background artwork to game distances, so a\n50-pixel cell at a `gridScale` of `5` means 50 pixels is five feet."
     },
     "gridOffsetX": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The horizontal offset of the grid origin, in pixels.\n\nShifts the grid to line up with artwork that was not drawn flush to the image edge."
     },
     "gridOffsetY": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The vertical offset of the grid origin, in pixels."
     },
     "gridColor": {
-      "type": "string"
+      "type": "string",
+      "description": "The color of the grid lines, as an RGB string.\n\n## Examples\n- `\"#cccccc\"`"
     },
     "gridVisible": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the grid is drawn at all."
     },
     "gridScale": {
-      "type": "number"
+      "type": "number",
+      "description": "The in-game distance one grid cell represents, in `gridUnits`.\n\n## Examples\n- `5` \u2014 five feet per square, the D&D convention\n- `1.5` \u2014 with `gridUnits` of `\"m\"`"
     },
     "gridUnits": {
-      "type": "string"
+      "type": "string",
+      "description": "The unit `gridScale` is expressed in.\n\nShown alongside measured distances.\n\n## Examples\n- `\"ft\"`, `\"m\"`, `\"sq\"`"
     },
     "gridType": {
-      "type": "string"
+      "type": "string",
+      "description": "The grid geometry, as the raw value of a `GridType`.\n\nUse `gridTypeValue` for the typed form.\n\n## Examples\n- `\"square\"`, `\"hexFlat\"`, `\"hexPointy\"`"
     },
     "gridStyle": {
-      "type": "string"
+      "type": "string",
+      "description": "How grid lines are drawn, as the raw value of a `GridStyle`.\n\nUse `gridStyleValue` for the typed form.\n\n## Examples\n- `\"solid\"`, `\"corners\"`"
     },
     "gridOpacity": {
-      "type": "number"
+      "type": "number",
+      "description": "The opacity of the grid lines, from `0` to `1`."
     },
     "image": {
-      "type": "string"
+      "type": "string",
+      "description": "The file name of the background image.\n\n- Note: Resolved against the map's `dataURL`.\n\n## Examples\n- `\"map.jpg\"`"
     },
     "video": {
-      "type": "string"
+      "type": "string",
+      "description": "The file name of the background video, for animated maps.\n\nTakes the place of `image` when present.\n\n## Examples\n- `\"map.mp4\"`"
     },
     "scale": {
-      "type": "number"
+      "type": "number",
+      "description": "A uniform scale applied to the background.\n\nLets a map be enlarged or reduced without re-exporting the artwork; `scaledSize` is the\nresult."
     },
     "x": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The horizontal center of the saved viewport, in map coordinates.\n\nRestores where the game master was looking when the map is reopened.\n\n- SeeAlso: `center`"
     },
     "y": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The vertical center of the saved viewport, in map coordinates."
     },
     "zoom": {
-      "type": "number"
+      "type": "number",
+      "description": "The saved zoom level of the viewport."
     },
     "width": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The map width in pixels.\n\nUsually derived from the background rather than set directly \u2014 see `size`."
     },
     "height": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The map height in pixels."
     },
     "canvas": {
-      "type": "string"
+      "type": "string",
+      "description": "The file name of the freehand drawing layer raster.\n\n- Note: Distinct from `drawings`, which holds vector shapes."
     },
     "snapshot": {
-      "type": "string"
+      "type": "string",
+      "description": "The file name of the generated thumbnail.\n\nA rendered preview of the map with its objects, shown in map lists."
     },
     "floor": {
-      "type": "string"
+      "type": "string",
+      "description": "The file name of an image drawn beneath the background.\n\nShows through wherever the background is transparent."
     },
     "fogOfWar": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the map is covered by fog of war.\n\nWhile enabled the players see only what the game master has revealed.\n\n- SeeAlso: `fog`, `fogExploration`"
     },
     "fogExploration": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether moving tokens reveal fog as they go.\n\nTurns fog of war from something the game master paints manually into something the party\nuncovers by exploring."
     },
     "fog": {
-      "type": "string"
+      "type": "string",
+      "description": "The file name of the fog-of-war mask.\n\nA raster recording which parts of the map have been revealed."
     },
     "lineOfSight": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether dynamic line of sight is computed.\n\nWhen enabled, each token's visible area is derived from the `walls` mesh and the\navailable light, and the player display is masked to it.\n\n- SeeAlso: `Wall`, `Vision`, `Light`"
     },
     "losDaylight": {
-      "type": "number"
+      "type": "number",
+      "description": "How much ambient light the map has, from `0` (pitch dark) to `1` (full daylight).\n\nAt `0` tokens see only what their own vision and placed lights illuminate."
     },
     "losVisionLimit": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The maximum sight distance in grid units, or `-1` for unlimited.\n\nCaps vision regardless of light \u2014 for fog, mist, or simply to bound the computation on\nvery large maps."
     },
     "weatherType": {
-      "type": "string"
+      "type": "string",
+      "description": "The weather overlay, as the raw value of a `WeatherType`.\n\nUse `weatherTypeValue` for the typed form. `nil` means no weather.\n\n## Examples\n- `\"rain\"`, `\"snow\"`, `\"fog\"`"
     },
     "weatherIntensity": {
-      "type": "number"
+      "type": "number",
+      "description": "How heavy the weather effect is, from `0` to `1`."
     },
     "dmDarkness": {
-      "type": "number"
+      "type": "number",
+      "description": "How much the map is dimmed in the game master's view, from `0` to `1`.\n\nDarkens areas outside token vision for the GM without hiding them, so unlit regions stay\nlegible while still reading as dark."
     },
     "dmMarkerStyle": {
-      "type": "string"
+      "type": "string",
+      "description": "How markers appear in the game master's view, as the raw value of a `MarkerStyle`.\n\nUse `dmMarkerStyleValue` for the typed form.\n\n## Examples\n- `\"normal\"`, `\"shape\"`, `\"hidden\"`"
     },
     "parentId": {
-      "type": "string"
+      "type": "string",
+      "description": "The identifier of the group containing this map in the library tree."
     },
     "rank": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The manual sort position of the map.\n\nLower values sort first."
     },
     "version": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The map format version, used when importing and migrating map data."
     },
     "walls": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": true
-      }
+      },
+      "description": "The vision and movement mesh, stored as JSON.\n\nWalls are kept as an encoded array rather than Realm objects because a detailed map can\ncarry thousands of segments and they are always loaded and rendered as a whole.\n\n- Note: Access through `wallsValue`.\n- SeeAlso: `Wall`"
     },
     "drawings": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": true
-      }
+      },
+      "description": "The vector drawing layer, stored as JSON.\n\nKept encoded for the same reason as `walls`.\n\n- Note: Access through `drawingsValue`.\n- SeeAlso: `Drawing`"
     },
     "markers": {
-      "$ref": "Marker.schema.json"
+      "type": "array",
+      "items": {
+        "$ref": "Marker.schema.json"
+      },
+      "description": "Points of interest placed on the map.\n\n- SeeAlso: `Marker`"
     },
     "tiles": {
-      "$ref": "Tile.schema.json"
+      "type": "array",
+      "items": {
+        "$ref": "Tile.schema.json"
+      },
+      "description": "Scenery and props placed on the map.\n\n- SeeAlso: `Tile`"
     },
     "tokens": {
-      "$ref": "Token.schema.json"
+      "type": "array",
+      "items": {
+        "$ref": "Token.schema.json"
+      },
+      "description": "The creatures on the map.\n\n- SeeAlso: `Token`"
     },
     "areaEffects": {
-      "$ref": "AreaEffect.schema.json"
+      "type": "array",
+      "items": {
+        "$ref": "AreaEffect.schema.json"
+      },
+      "description": "Spell templates and other marked-out areas.\n\n- SeeAlso: `AreaEffect`"
     },
     "lights": {
-      "$ref": "Light.schema.json"
+      "type": "array",
+      "items": {
+        "$ref": "Light.schema.json"
+      },
+      "description": "Standalone light sources, independent of any token or tile.\n\n- SeeAlso: `Light`"
     },
     "measurements": {
-      "$ref": "Measurement.schema.json"
+      "type": "array",
+      "items": {
+        "$ref": "Measurement.schema.json"
+      },
+      "description": "Persistent distance measurements drawn on the map.\n\n- SeeAlso: `Measurement`"
     },
     "data": {
       "type": "object",
-      "additionalProperties": true
+      "additionalProperties": true,
+      "description": "Flexible JSON storage for system-specific or arbitrary structured data.\n\n- Note: Access through `dataValue` or `dataJSON`."
     }
   },
   "required": [

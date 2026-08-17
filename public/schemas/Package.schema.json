@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Package.schema.json",
+  "title": "Package",
+  "x-group": "Package",
+  "type": "object",
+  "description": "A downloadable `System` or `Module` listed in the content catalog.\n\nA `Package` is catalog metadata, not installed content: it describes what is available,\nwhere to download it and which app versions it supports. Installing one produces a\n`System` or `Module` whose `package` field points back at the manifest, which is how\nupdates are detected later.\n\nUnlike the Realm-backed containers, `Package` is a plain `Codable` value decoded straight\nfrom the catalog JSON.\n\n- SeeAlso: `System`, `Module`, `Compatibility`",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for this package.\n\nA stable, author-chosen slug. It becomes the `id` of the installed `System` or\n`Module`, and is what update checks match on.\n\n## Examples\n- `\"dnd5e\"`\n- `\"lost-mine-of-phandelver\"`"
+    },
+    "name": {
+      "type": "string",
+      "description": "The display name of the package.\n\n## Examples\n- `\"Dungeons & Dragons 5th Edition\"`"
+    },
+    "type": {
+      "$ref": "#/$defs/PackageType",
+      "description": "Whether this package installs a system or a module.\n\n- SeeAlso: `PackageType`, `contentType`"
+    },
+    "category": {
+      "type": "string",
+      "description": "The catalog category this package is listed under.\n\nFor module packages this mirrors `ModuleCategory`.\n\n## Examples\n- `\"adventure\"`, `\"pack\"`, `\"rules\"`, `\"compendium\"`"
+    },
+    "system": {
+      "type": "string",
+      "description": "The game system this package's content targets.\n\nThe `System/id` of the required system. `nil` for system packages themselves and for\nsystem-agnostic content.\n\n## Examples\n- `\"dnd5e\"`"
+    },
+    "version": {
+      "type": "string",
+      "description": "The version offered by this catalog listing.\n\nCompared against the installed `System/version` or `Module/version` to decide\nwhether an update is available.\n\n## Format\nSemantic versioning: `\"1.2.3\"`"
+    },
+    "download": {
+      "type": "string",
+      "description": "The absolute URL of the archive to download.\n\n## Examples\n- `\"https://example.com/packages/dnd5e-1.2.3.system\"`\n\n- SeeAlso: `downloadURL`"
+    },
+    "compatibility": {
+      "$ref": "Compatibility.schema.json",
+      "description": "The range of app versions this package supports.\n\n`nil` means the package declares no constraint and is treated as compatible with every\napp version.\n\n- SeeAlso: `Compatibility`, `isCompatible`"
+    },
+    "repository": {
+      "type": "string",
+      "description": "The source repository hosting the package, as an absolute URL string.\n\n## Examples\n- `\"https://github.com/example/dnd5e-system\"`"
+    },
+    "website": {
+      "type": "string",
+      "description": "The package's homepage, as an absolute URL string."
+    },
+    "description": {
+      "type": "string",
+      "description": "The full description of the package.\n\nMarketing copy or the author's overview, shown on the package detail screen."
+    },
+    "content": {
+      "type": "string",
+      "description": "A summary of what the package contains.\n\nA human-readable inventory of the content, listed separately from `description`.\n\n## Examples\n- `\"12 maps, 40 pages, 60 monsters\"`"
+    },
+    "authors": {
+      "type": "array",
+      "items": {
+        "$ref": "Author.schema.json"
+      },
+      "description": "The people or organizations credited on this package.\n\n- SeeAlso: `Author`"
+    },
+    "media": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Absolute URLs of the package's promotional images.\n\nEntries are identified by filename: the one containing `cover.` is used as the cover\nimage and the one containing `banner.` as the banner.\n\n- SeeAlso: `imageURL`, `bannerURL`"
+    },
+    "featured": {
+      "type": "boolean",
+      "description": "Whether the catalog highlights this package.\n\nFeatured packages are surfaced at the top of the browse screen."
+    },
+    "modified": {
+      "type": "string",
+      "description": "When the catalog listing was last updated.\n\n## Format\nISO 8601: `\"2024-03-17T09:24:00Z\"`"
+    },
+    "created": {
+      "type": "string",
+      "description": "When the catalog listing was first published.\n\n## Format\nISO 8601: `\"2023-11-02T14:05:00Z\"`"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "type",
+    "version",
+    "download"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "PackageType": {
+      "title": "PackageType",
+      "description": "What kind of content a `Package` installs.",
+      "type": "string",
+      "enum": [
+        "system",
+        "module"
+      ]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "GridStyle.schema.json",
+  "title": "GridStyle",
+  "x-merge": "Map",
+  "description": "How a `Map`'s grid lines are drawn.",
+  "type": "string",
+  "enum": [
+    "solid",
+    "corners"
+  ]
+}

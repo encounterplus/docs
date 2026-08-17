@@ -2,24 +2,29 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Group.schema.json",
   "title": "Group",
-  "x-group": "Content/",
+  "x-group": "Content",
   "type": "object",
-  "description": "A Group",
+  "description": "A folder in a container's library tree.\n\nA `Group` carries no content of its own \u2014 it exists to give a module or campaign structure.\nPages, maps, encounters, references and other groups point at one through their `parentId`,\nwhich is how an adventure gets chapters and a campaign gets sections.\n\nThe tree is built from those pointers rather than from a child list, so a group holds no\nreferences downward. Groups nest by pointing at each other through their own `parentId`.\n\n- Note: Deleting a group does not delete what it contains \u2014 the orphaned items resurface at the\n  top level of their container.\n\n- SeeAlso: `Page`, `Reference`, `Encounter`, `Module`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this group.\n\nA UUID string automatically generated when the group is created. This serves as the\nprimary key in the Realm database, and is what its children carry as their `parentId`."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the group.\n\n## Examples\n- `\"Chapter 1: Goblin Arrows\"`"
     },
     "slug": {
-      "type": "string"
+      "type": "string",
+      "description": "A URL-friendly identifier for the group.\n\nUsed to link to the group as `/group/chapter-1-goblin-arrows`.\n\n## Examples\n- `\"chapter-1-goblin-arrows\"`"
     },
     "parentId": {
-      "type": "string"
+      "type": "string",
+      "description": "The identifier of the parent group, for nesting.\n\nEmpty for a group at the top level of its container."
     },
     "rank": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The manual sort position among its siblings.\n\nLower values sort first."
     }
   },
   "required": [

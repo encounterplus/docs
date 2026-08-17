@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "TableRollDetail.schema.json",
+  "title": "TableRollDetail",
+  "x-merge": "Table",
+  "type": "object",
+  "description": "One cell of the row a `TableRoll` landed on.\n\nPairs the column header with the cell's content, plus any rolls triggered by references inside\nthat content \u2014 which is what makes a roll a tree rather than a flat result.\n\n- SeeAlso: `TableRoll`",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The header of the column this cell came from.\n\n## Examples\n- `\"Magic Item\"`"
+    },
+    "value": {
+      "type": "string",
+      "description": "The cell's content, with any inline dice macros already rolled.\n\n## Examples\n- `\"{#item Bag of holding}\"`\n- `\"3 gems worth 50 gp each\"` \u2014 after a `2d4` macro was resolved"
+    },
+    "rolls": {
+      "type": "array",
+      "items": {
+        "$ref": "TableRoll.schema.json"
+      },
+      "description": "Rolls produced by table references inside `value`.\n\nA reference preceded by a dice expression is rolled that many times, so one cell can yield\nseveral rolls on the same table."
+    }
+  },
+  "required": [
+    "value"
+  ],
+  "additionalProperties": false
+}

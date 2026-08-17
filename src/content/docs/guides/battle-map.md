@@ -7,6 +7,11 @@ description: ow to use the Battle Map in EncounterPlus — tools, layers, fog of
 TODO: update to v5
 :::
 
+:::tip
+For every option on the map's settings screen, see
+[Battle Map Settings](/settings/battle-map/).
+:::
+
 This guide shows how to use the Battle Map in EncounterPlus: toolbar tools (drawing, erasing, move, select, markers), layer purposes (DM, Token, Object, Map, Wall, Floor), token movement and snap-to-grid, Fog of War and Line of Sight, grid/background alignment, marker creation and editing, and useful settings and tips for managing encounters.
 
 [icon-pencil]: ../../../assets/icons/pencil.png 

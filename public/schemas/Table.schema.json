@@ -2,39 +2,49 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Table.schema.json",
   "title": "Table",
-  "x-group": "Content/",
+  "x-group": "Entity",
   "type": "object",
+  "description": "A random table that can be rolled on.\n\nA `Table` is both a piece of formatted content \u2014 a grid of `columns` and rows rendered in\npages and detail views \u2014 and something executable: rolling on it produces a `TableRoll`.\n\nWhich row a roll lands on depends on the first column. When that column is named after a dice\nformula such as `\"d100\"`, its cells are read as ranges (`\"01-50\"`, `\"99\"`, `\"00\"`) and matched\nagainst the result. Otherwise rows are matched by position, one-based, and the formula defaults\nto a die the size of the table.\n\nCells may reference other tables, and those references are rolled recursively as part of the\nparent roll \u2014 so a treasure table can roll on a gems table which rolls on a magic-item table.\nRecursion is capped at `Constants.MAX_NESTED_ROLLS`.\n\n## Examples\nA magic-item table with columns `d100` and `Magic Item`, and rows such as\n`[\"01-50\", \"{#item Potion of healing}\"]`.\n\n- SeeAlso: `TableColumn`, `TableRoll`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this table.\n\nA UUID string automatically generated when the table is created. This serves as the\nprimary key in the Realm database."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the table.\n\nThe primary human-readable identifier, also used as the roll's name in the chat log.\n\n## Examples\n- `\"Magic Item Table A\"`\n- `\"Wilderness Encounters\"`"
     },
     "slug": {
-      "type": "string"
+      "type": "string",
+      "description": "A URL-friendly identifier for the table.\n\nA simplified, lowercase version of the name used to link to the table from page content\nand from other tables' cells, as `/table/magic-item-table-a`.\n\n## Examples\n- `\"magic-item-table-a\"`"
     },
     "descr": {
-      "type": "string"
+      "type": "string",
+      "description": "The description shown above the table.\n\nExplains what the table is for and how to roll on it."
     },
     "notes": {
-      "type": "string"
+      "type": "string",
+      "description": "User-generated notes or GM notes for the table.\n\nStores custom annotations, reminders, or campaign-specific information added by users or\ngame masters."
     },
     "type": {},
     "columns": {
       "type": "array",
       "items": {
         "$ref": "TableColumn.schema.json"
-      }
+      },
+      "description": "The table's column headers, in display order.\n\nThe first column is special: if its name is a dice formula such as `\"d100\"`, its cells are\nread as result ranges and excluded from roll output.\n\n- SeeAlso: `TableColumn`, `firstColumnFormula`"
     },
     "rows": {
-      "type": "string"
+      "type": "string",
+      "description": "The table body, stored as a JSON string.\n\nA JSON array of arrays of strings \u2014 one inner array per row, one entry per column. Kept as\na string rather than a Realm list because tables can be large and are always read whole.\n\n- Note: Access through `rowsData`, which handles encoding and enforces the row limit."
     },
     "rollMode": {
-      "type": "string"
+      "type": "string",
+      "description": "How rolling behaves, as the raw value of a `RollMode`.\n\nUse `rollModeValue` for the typed form. A `nil` value behaves as `normal`.\n\n## Examples\n- `\"normal\"`, `\"noRepeat\"`, `\"eachRow\"`"
     },
     "rolls": {
-      "type": "string"
+      "type": "string",
+      "description": "The history of rolls made on this table, stored as a JSON string.\n\nEncoded `TableRoll` values. Its main purpose is `noRepeat` mode, which reads earlier\nresults from here to avoid producing the same row twice.\n\n- Note: Access through `rollsData`."
     },
     "moduleId": {},
     "campaignId": {},
@@ -43,13 +53,15 @@
       "type": "array",
       "items": {
         "$ref": "Source.schema.json"
-      }
+      },
+      "description": "Source attributions for this table.\n\nTracks which books, supplements, or homebrew collections this table originated from.\n\n- SeeAlso: `Source`"
     },
     "tags": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Custom tags for categorization and filtering.\n\n## Example Tags\n- `\"treasure\"`, `\"random-encounter\"`, `\"loot\"`"
     }
   },
   "required": [
@@ -68,6 +80,7 @@
   "$defs": {
     "RollMode": {
       "title": "RollMode",
+      "description": "How rolling on a `Table` behaves.",
       "type": "string",
       "enum": [
         "normal",

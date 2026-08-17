@@ -2,7 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "ControlState.schema.json",
   "title": "ControlState",
-  "x-group": "Shared",
+  "x-merge": "WSEvent",
+  "description": "The phase of a dragging interaction driven over the WebSocket connection.\n\nA drag on a connected client arrives as a stream of events rather than one message, so the\nreceiving side can animate the movement live and then commit it \u2014 or discard it if the host\nrefuses the move.\n\n- SeeAlso: `WSEvent/Movement`",
   "type": "string",
   "enum": [
     "start",

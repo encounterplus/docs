@@ -2,29 +2,37 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Modifier.schema.json",
   "title": "Modifier",
-  "x-group": "Shared",
+  "x-group": "Entity",
   "type": "object",
+  "description": "A rule modifier that changes an entity attribute.\n\nModifiers describe how a value should be applied to an attribute, such as\nadding a bonus, overriding an existing value, or upgrading a value according\nto game-system rules.",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "A stable unique identifier for this modifier."
     },
     "enabled": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether this modifier is currently active."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the modifier."
     },
     "mode": {
-      "$ref": "#/$defs/Mode"
+      "$ref": "#/$defs/Mode",
+      "description": "The operation used when applying this modifier."
     },
     "attribute": {
-      "type": "string"
+      "type": "string",
+      "description": "The attribute path or key affected by this modifier."
     },
     "value": {
-      "type": "string"
+      "type": "string",
+      "description": "The modifier value.\n\nThe value is stored as text so game systems can interpret numbers,\nformulas, dice expressions, or custom data as needed."
     },
     "scope": {
-      "$ref": "#/$defs/Scope"
+      "$ref": "#/$defs/Scope",
+      "description": "The context in which this modifier applies."
     }
   },
   "required": [
@@ -35,6 +43,7 @@
   "$defs": {
     "Mode": {
       "title": "Mode",
+      "description": "The operation used to apply a modifier to an attribute.",
       "type": "string",
       "enum": [
         "override",
@@ -47,6 +56,7 @@
     },
     "Scope": {
       "title": "Scope",
+      "description": "The context in which a modifier is applied.",
       "type": "string",
       "enum": [
         "self",

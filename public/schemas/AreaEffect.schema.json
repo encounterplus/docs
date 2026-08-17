@@ -2,62 +2,80 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "AreaEffect.schema.json",
   "title": "AreaEffect",
-  "x-group": "Shared",
+  "x-group": "Map",
   "type": "object",
+  "description": "A marked-out area on a `Map` \u2014 a spell template or zone.\n\nArea effects are the geometry side of abilities that cover ground: a fireball's sphere, a\nbreath weapon's cone, a wall of fire's line. Which of `radius`, `length`, `width` and\n`angle` apply depends on the `shape`.\n\nUnlike an `Aura`, an area effect is anchored to the map rather than to a creature \u2014 though it\ncan record the token that produced it in `source`.\n\n- SeeAlso: `Map`, `Aura`, `Shape`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this area effect.\n\nA UUID string automatically generated when the effect is created. This serves as the\nprimary key in the Realm database."
     },
     "shape": {
-      "type": "string"
+      "type": "string",
+      "description": "The effect's geometry, as the raw value of a `Shape`.\n\nDetermines which of the dimension fields apply. Use `shapeValue` for the typed form.\n\n## Examples\n- `\"sphere\"`, `\"cone\"`, `\"line\"`, `\"cube\"`, `\"cylinder\"`, `\"square\"`"
     },
     "color": {
-      "type": "string"
+      "type": "string",
+      "description": "The effect's fill color, as an RGB string.\n\n## Examples\n- `\"#ff6600\"` \u2014 fire"
     },
     "x": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The effect's origin, horizontally, in map coordinates.\n\n- SeeAlso: `start`"
     },
     "y": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The effect's origin, vertically, in map coordinates."
     },
     "zIndex": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The effect's draw order among other area effects.\n\nHigher values draw on top."
     },
     "opacity": {
-      "type": "number"
+      "type": "number",
+      "description": "The effect's opacity, from `0` to `1`."
     },
     "angle": {
-      "type": "number"
+      "type": "number",
+      "description": "The direction the effect is aimed, in radians.\n\nApplies to `Shape/cone` and `Shape/line`."
     },
     "radius": {
-      "type": "number"
+      "type": "number",
+      "description": "The effect's radius, in map coordinates.\n\nApplies to `Shape/sphere` and `Shape/cylinder`."
     },
     "length": {
-      "type": "number"
+      "type": "number",
+      "description": "The effect's reach from its origin, in map coordinates.\n\nApplies to `Shape/cone` and `Shape/line`."
     },
     "width": {
-      "type": "number"
+      "type": "number",
+      "description": "The effect's cross-measure, in map coordinates.\n\nApplies to `Shape/line`, `Shape/cube` and `Shape/square`."
     },
     "asset": {
-      "$ref": "Asset.schema.json"
+      "$ref": "Asset.schema.json",
+      "description": "Artwork drawn in place of a plain filled shape.\n\n- SeeAlso: `Asset`"
     },
     "source": {
-      "$ref": "Token.schema.json"
+      "$ref": "Token.schema.json",
+      "description": "The token that produced this effect, if any.\n\nRecords who cast the spell; the effect itself stays anchored to the map.\n\n- SeeAlso: `Token`"
     },
     "reference": {
-      "type": "string"
+      "type": "string",
+      "description": "A soft link to the content this effect comes from.\n\n## Examples\n- `\"/spell/fireball\"`\n\n- SeeAlso: `referenceURL`"
     },
     "hidden": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the effect is concealed from the players."
     },
     "locked": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the effect is protected from being moved or edited on the map."
     },
     "components": {
       "type": "array",
       "items": {
         "$ref": "Component.schema.json"
-      }
+      },
+      "description": "Filters and animations applied to the effect's artwork.\n\n- SeeAlso: `Component`"
     }
   },
   "required": [
@@ -80,6 +98,7 @@
   "$defs": {
     "Shape": {
       "title": "Shape",
+      "description": "The geometry of an `AreaEffect`.",
       "type": "string",
       "enum": [
         "cone",

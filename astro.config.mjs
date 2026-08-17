@@ -48,6 +48,20 @@ export default defineConfig({
           ],
         },
 				{
+					label: 'Settings',
+					items: [
+						{ label: 'Overview', link: '/settings/overview/' },
+						{ label: 'Content', link: '/settings/content/' },
+						{ label: 'Combat', link: '/settings/combat/' },
+						{ label: 'Dice Roller', link: '/settings/dice-roller/' },
+						{ label: 'Battle Map', link: '/settings/battle-map/' },
+						{ label: 'External Screen', link: '/settings/external-screen/' },
+						{ label: 'Remote Play', link: '/settings/remote-play/' },
+						{ label: 'Advanced', link: '/settings/advanced/' },
+						{ label: 'Purchases', link: '/settings/purchases/' },
+					],
+				},
+				{
 					label: 'Web Client',
 					items: [
 						{ label: 'Remote Play', link: '/guides/remote-play/' },
@@ -57,6 +71,7 @@ export default defineConfig({
 				{
 					label: 'Reference',
 					items: [
+						{ label: 'URL Scheme', link: '/reference/url-scheme/' },
 						{ label: 'Legacy XML', link: '/reference/legacy-xml/overview/' },
 						...schemaReference,
 					],

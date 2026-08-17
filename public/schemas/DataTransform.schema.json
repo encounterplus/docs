@@ -2,30 +2,35 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "DataTransform.schema.json",
   "title": "DataTransform",
-  "x-group": "Definitions/",
+  "x-group": "Definitions",
   "type": "object",
+  "description": "A declarative recipe for enriching an entity's JSON context before it is rendered.\n\nTransforms are loaded by `SystemManager` from the JSON files in a game system's\n`views/transforms` directory, keyed by file name, and looked up per entity type\n(falling back to the parent entity type) via `SystemManager.transform(for:)`.\n\nWhen an entity builds its view context it applies the matching transform in three steps:\nreferenced objects are resolved and inlined, global modifiers are collected from the\nlisted key paths, and finally the dynamic attribute groups are evaluated with those\nmodifiers applied. This is what turns raw stored attributes into the computed values\n(derived scores, formatted text, rolled formulas) that templates and native views read.",
   "properties": {
     "debug": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Enables verbose logging while the transform is evaluated."
     },
     "attributes": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": true
-      }
+      },
+      "description": "Ordered groups of dynamic attributes to compute.\n\nEach group is a JSON object whose keys are destination key paths and whose values are\neither Stencil template strings \u2014 a rendered result prefixed with `#` is evaluated as a\nformula \u2014 or configuration objects describing a query and its operations. An optional\n`modifiers` array in a group lists attribute key paths (a `r/` prefix marks a regular\nexpression); matching modifiers are applied to the context before the group is computed\nand are then consumed, so later groups no longer see them.\n\nGroups are processed in order, so a group may build on values computed by earlier ones."
     },
     "references": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Key paths whose reference values are resolved from Realm and inlined into the context.\n\nApplied before `attributes` are computed, so dynamic attributes can read the\nresolved objects."
     },
     "modifiers": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Key paths from which global modifiers are extracted into the entity's active modifier list.\n\nOnly modifiers that are enabled and have global scope are collected; they are merged with\nthe entity's own active modifiers before `attributes` are computed."
     }
   },
   "additionalProperties": false

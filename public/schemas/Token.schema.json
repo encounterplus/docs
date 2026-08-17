@@ -2,62 +2,80 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Token.schema.json",
   "title": "Token",
-  "x-group": "Shared",
+  "x-group": "Map",
   "type": "object",
+  "description": "A creature placed on a `Map`.\n\nA token is a creature's physical presence on the playing surface: where it stands, how big it\nis, what it looks like, and \u2014 through `vision` \u2014 what it can see. Like a `Combatant` it\ncarries no statistics of its own, pointing at an `Entity` through `reference` instead.\n\nToken and combatant are two views of the same creature at different tables: the token is on\nthe map, the combatant is in the initiative order, and when both exist they are linked through\n`combatant` and kept in sync on name, label, role and visibility.\n\n- SeeAlso: `Map`, `Combatant`, `Vision`, `Aura`, `Entity`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this token.\n\nA UUID string automatically generated when the token is created. This serves as the\nprimary key in the Realm database."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The token's display name.\n\nCopied from the referenced entity when the token is placed, and editable afterwards.\n\n## Examples\n- `\"Goblin\"`"
     },
     "label": {
-      "type": "string"
+      "type": "string",
+      "description": "A short label distinguishing this token from identical ones.\n\nDrawn on the token itself and kept in sync with `Combatant/label`.\n\n## Examples\n- `\"G1\"`, `\"G2\"`"
     },
     "role": {
-      "type": "string"
+      "type": "string",
+      "description": "Which side the creature is on, as the raw value of a `Role`.\n\nDetermines the ring color drawn around the token. Use `roleValue` for the typed form.\n\n## Examples\n- `\"friendly\"`, `\"neutral\"`, `\"hostile\"`"
     },
     "x": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The token's horizontal position in map coordinates.\n\n- SeeAlso: `position`"
     },
     "y": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The token's vertical position in map coordinates."
     },
     "scale": {
-      "type": "number"
+      "type": "number",
+      "description": "A fine adjustment to the token's rendered size.\n\nApplied on top of the whole-cell footprint given by `width` and `height`, so artwork\ncan be nudged to fit without changing the space the creature occupies."
     },
     "width": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The token's width in grid cells.\n\n## Examples\n- `1` \u2014 a medium creature\n- `2` \u2014 a large creature"
     },
     "height": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The token's height in grid cells."
     },
     "style": {
-      "type": "string"
+      "type": "string",
+      "description": "How the artwork is presented, as the raw value of a `TokenStyle`.\n\nUse `styleValue` for the typed form.\n\n## Examples\n- `\"circle\"`, `\"topdown\"`"
     },
     "rotation": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The token's facing, in degrees.\n\nMeaningful mainly for `TokenStyle/topdown` artwork, and used as the origin for\ndirectional vision."
     },
     "elevation": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The token's height above the ground, in grid units.\n\nShown as a badge so flying and burrowing creatures can be tracked on a flat map."
     },
     "hidden": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the token is concealed from the players.\n\nKept in sync with `Combatant/hidden`."
     },
     "asset": {
-      "$ref": "Asset.schema.json"
+      "$ref": "Asset.schema.json",
+      "description": "The artwork drawn for this token.\n\n- SeeAlso: `Asset`"
     },
     "vision": {
-      "$ref": "Vision.schema.json"
+      "$ref": "Vision.schema.json",
+      "description": "What this token can see, when line of sight is enabled.\n\nA token with no vision object neither sees nor illuminates.\n\n- SeeAlso: `Vision`, `Map/lineOfSight`"
     },
     "reference": {
-      "type": "string"
+      "type": "string",
+      "description": "A soft link to the `Entity` this token represents.\n\nStored as an app URL rather than a Realm relationship, matching `Combatant/reference`.\n\n## Examples\n- `\"/monster/goblin\"`\n\n- SeeAlso: `referenceURL`, `entity`"
     },
     "auras": {
       "type": "array",
       "items": {
         "$ref": "Aura.schema.json"
-      }
+      },
+      "description": "Radial areas drawn around the token.\n\nUsed for aura effects, threat range, or any radius that should follow the creature.\n\n- SeeAlso: `Aura`"
     },
     "entityId": {},
     "trackingId": {
@@ -71,7 +89,8 @@
       }
     },
     "combatant": {
-      "$ref": "Combatant.schema.json"
+      "$ref": "Combatant.schema.json",
+      "description": "The combatant this token is bound to, when the creature is in combat.\n\nThe link that keeps the map and the initiative tracker consistent \u2014 name, label, role and\nvisibility propagate across it.\n\n- SeeAlso: `Combatant`"
     },
     "player": {}
   },

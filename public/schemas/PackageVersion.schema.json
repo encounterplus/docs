@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "PackageVersion.schema.json",
+  "title": "PackageVersion",
+  "x-merge": "Package",
+  "type": "object",
+  "description": "One downloadable release of a `Package`.",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "The released version.\n\n## Format\nSemantic versioning: `\"1.2.3\"`"
+    },
+    "download": {
+      "type": "string",
+      "description": "The absolute URL of the archive for this version.\n\n## Examples\n- `\"https://example.com/packages/dnd5e-1.2.3.system\"`"
+    }
+  },
+  "required": [
+    "version",
+    "download"
+  ],
+  "additionalProperties": false
+}

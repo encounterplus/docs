@@ -53,22 +53,40 @@ The developer-facing format/config/template reference is **generated**, not hand
 
 This is **developer** reference on an otherwise end-user site, so the sidebar stays slim. By default (`--sidebar-mode index`) the generator emits a single landing page (`reference/schema/index.md` → `/reference/schema/`) that lists every schema grouped with descriptions + raw-JSON links, and the sidebar fragment is just **one** "Schema" link to it. The per-type detail pages are still generated and reachable from the index and via search — they're just not enumerated in the nav. `--sidebar-mode tree` enumerates the full group tree instead (kept for a possible standalone API-docs build). `astro.config.mjs` imports the fragment and spreads it into the Reference group, so regenerating updates the nav automatically.
 
-### The `- SchemaGroup:` tag
+### The `- SchemaGroup:` and `- SchemaMerge:` tags
 
-Grouping and filtering are driven by a DocC tag on each Swift type:
+Filtering, section placement, and page layout are driven by two independent DocC tags on each Swift type:
 
 ```swift
 /// A battle map and everything placed on it.
 ///
-/// - SchemaGroup: Content/Maps
+/// - SchemaGroup: Content
 struct Map: Codable { ... }
+
+/// A drawing placed on a map, documented on the Map page.
+///
+/// - SchemaGroup: Content
+/// - SchemaMerge: Map
+struct Drawing: Codable { ... }
 ```
 
-- Only **tagged** types — and everything they transitively `$ref` — are emitted. Untagged, unreferenced Codable types are dropped; untagged-but-reached types fall back to the `Shared` group. (If nothing is tagged, all Codable types are emitted unfiltered.)
-- The tag is stored as `x-group` in the schema JSON and stripped from the description.
-- **Trailing slash decides layout:** `Content/Maps` (no slash) = a shared **page** that concatenates every type with that exact tag as a `##` section; `System/Templates/` (trailing slash) = a **group** under which each type gets its own page. A path can't be both a page and a group.
+- **`- SchemaGroup:`** is a **single section name** (stored as `x-group`, stripped from the description). It only decides which section/sidebar group the type is listed under — it carries **no layout meaning**: no trailing slash, no nested `A/B` paths (a slash-bearing value is collapsed to its first segment with a warning). By default each type gets its **own standalone page**.
+- **`- SchemaMerge: <Host>`** (stored as `x-merge`, stripped from the description) folds the type **into `<Host>`'s page** — `<Host>` names another type, whose page then concatenates its mergers as `##` sections. A host and its mergers share one page keyed by the host name (so `Map` + `Drawing` + `Wall` … all render on `map.md`).
+- **Filtering:** only types tagged with `SchemaGroup` **or** `SchemaMerge` — plus everything they transitively `$ref` — are emitted. Untagged, unreferenced Codable types are dropped; reached-but-fully-untagged types fall back to the `Shared` group. (If nothing is tagged, all Codable types are emitted unfiltered.)
+- **Listing:** a merged type with **no `SchemaGroup` of its own** is rendered on its host page but **not listed** on the landing page; give it a `SchemaGroup` too if it should appear there.
 
-Until the app source carries these tags, `public/schemas/*.schema.json` are tagged via an interim hand-maintained mapping; the next tagged app build overwrites them.
+Pages are written **flat** (named after the host type), so the section a type sits in never affects its URL. Until the app source carries these tags, `public/schemas/*.schema.json` are tagged via an interim hand-maintained mapping; the next tagged app build overwrites them.
+
+### The `- SchemaAllOptional:` tag
+
+A separate doc-comment tag that marks a type whose every field is optional:
+
+```swift
+/// - SchemaAllOptional: true
+struct Foo: Codable { ... }
+```
+
+When set (a bare or truthy value enables it; `false`/`no`/`0` disables it), the type's `required` array is omitted entirely. Use it for types with **hand-written** `Codable` conformance that decodes with `decodeIfPresent` — there, whether a property is `?` in Swift no longer says whether its key must be present, and the symbol graph can't see the custom coding. The tag is stripped from the description and leaves no marker in the docs.
 
 ## Icon tooling
 

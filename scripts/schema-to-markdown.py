@@ -3,26 +3,26 @@
 
 Consumes the `*.schema.json` produced by `symbolgraph-to-schema.py` (the
 version-controlled source of truth, flat files under `public/schemas/`) and
-groups them into pages driven by each schema's `x-group` tag. This script knows
-nothing about Swift — it is a pure JSON Schema -> Markdown step.
+groups them into pages driven by each schema's `x-group` / `x-merge` tags. This
+script knows nothing about Swift — it is a pure JSON Schema -> Markdown step.
 
 Usage:
     schema-to-markdown.py <schemas-dir> <out-dir> [options]
 
-The `x-group` value is a slash path whose trailing slash decides layout:
+Two independent tags decide layout:
 
-    "Content/Maps"            no trailing slash -> the last segment ("Maps") is a
-                              shared PAGE; every type with this exact tag is
-                              concatenated onto it as a `##` section.
-    "System/Templates/"       trailing slash -> the whole path is a GROUP; the
-                              type gets its OWN page (named after the type)
-                              inside it.
+    x-group   A single section name. It only places the type in the sidebar /
+              landing-page taxonomy. A type with no `x-group` is folded into its
+              merge page (below) but not listed on the landing page.
+    x-merge   Optional. Every type sharing an `x-merge` value is concatenated
+              onto ONE page (named after that value) as a `##` section. A type
+              with no `x-merge` gets its OWN standalone page named after the type.
 
-Leading segments become nested sidebar groups, but pages are written FLAT (one
-file per page, named after the leaf/type) so a page's URL never encodes its group
-— re-grouping in the sidebar never breaks a link. Flat slugs share one namespace,
-so a collision is a hard error. Schemas with no `x-group` fall back to a `Shared`
-page so the build never breaks.
+Pages are written FLAT (one file per page, named after the merge value or the
+type) so a page's URL never encodes its group — re-grouping never breaks a link.
+Flat slugs share one namespace, so a collision is a hard error. A merge page's
+section is taken from its members' `x-group`; schemas with no `x-group` and no
+`x-merge` fall back to a `Shared` page so the build never breaks.
 
 `--base-path` is the route prefix the pages live under; it must match where
 `<out-dir>` maps to on the site so cross-page `$ref` links resolve.
@@ -152,52 +152,56 @@ def file_to_type(filename: str) -> str:
 
 @dataclass
 class Page:
-    key: str                       # unique page identity (dedupes concat types)
+    key: str                       # unique page identity (dedupes merged types)
     route: str                     # /reference/schema/<slug>/ — link & anchor base
     slug: str                      # flat page slug = the output file name
-    label: str                     # page title / sidebar label
-    groups: list[str]              # ancestor group labels (sidebar only)
-    standalone: bool               # True = one type IS the page
+    label: str                     # page title / sidebar label = the host type name
+    groups: list[str] = field(default_factory=list)  # [section]; set in pass 2
     types: list[tuple[str, dict]] = field(default_factory=list)  # (name, schema)
 
 
-def parse_tag(tag: str, type_name: str):
-    """Resolve a schema's `x-group` into its page identity. Pages are FLAT — the
-    route never encodes the group, so re-grouping in the sidebar never changes a
-    URL. Returns (page_key, route, page_slug, label, groups, standalone)."""
-    raw = (tag or "").strip()
-    standalone = raw.endswith("/")
-    parts = [p for p in raw.strip("/").split("/") if p] or [FALLBACK_GROUP]
-    if standalone:
-        groups = parts                       # whole path is sidebar nesting
-        label = type_name
-        page_slug = slug(type_name)          # own page, named after the type
-        key = "/".join(parts) + "/" + type_name
-    else:
-        groups = parts[:-1]
-        label = parts[-1]
-        page_slug = slug(parts[-1])          # shared page named after the leaf
-        key = "/".join(parts)
+def page_identity(schema: dict, type_name: str):
+    """Resolve a schema's page identity. `x-merge: X` folds this type INTO type
+    X's page (X is the host type; its mergers append as `##` sections); without
+    `x-merge`, the type hosts its own page. So the page is keyed by the target
+    type name either way, and a host + its mergers share one page. Pages are FLAT
+    — the route never encodes the section, so re-grouping never changes a URL.
+    Returns (page_key, route, page_slug, label)."""
+    target = (schema.get("x-merge") or "").strip() or type_name
+    page_slug = slug(target)
+    key = "page:" + target
     route = BASE_PATH + "/" + page_slug + "/"
-    return key, route, page_slug, label, groups, standalone
+    return key, route, page_slug, target
 
 
 def build_pages(files: list[Path]) -> list[Page]:
-    """Pass 1: load every schema, assign it to a page, and populate INDEX."""
+    """Pass 1: load every schema and assign it to its (host) page."""
     pages: dict[str, Page] = {}
     for f in sorted(files):
         schema = json.loads(f.read_text())
         type_name = schema.get("title") or file_to_type(f.name)
-        tag = schema.get("x-group", FALLBACK_GROUP)
-        key, route, page_slug, label, groups, standalone = parse_tag(tag, type_name)
+        key, route, page_slug, label = page_identity(schema, type_name)
         page = pages.get(key)
         if page is None:
-            page = Page(key, route, page_slug, label, groups, standalone)
+            page = Page(key, route, page_slug, label)
             pages[key] = page
         page.types.append((type_name, schema))
-        INDEX[type_name] = (route, standalone)
+
+    # Pass 2: sort members, resolve the section, and index types. The host type
+    # (name == page label) is rendered headingless — its name is already the page
+    # title — so it acts as the page's "standalone" type and links resolve to the
+    # page root; any merged types get their own `##` section + anchor. The section
+    # comes from the members' `x-group` (warn on conflict, Shared if none).
     for page in pages.values():
-        page.types.sort(key=lambda t: t[0])
+        # Host type (same name as the page) first, then mergers alphabetically.
+        page.types.sort(key=lambda t: (t[0] != page.label, t[0]))
+        member_groups = sorted({s["x-group"] for _, s in page.types if s.get("x-group")})
+        if len(member_groups) > 1:
+            print(f"warning: page '{page.label}' has members in multiple sections "
+                  f"{member_groups}; using '{member_groups[0]}'", file=sys.stderr)
+        page.groups = [member_groups[0] if member_groups else FALLBACK_GROUP]
+        for type_name, _ in page.types:
+            INDEX[type_name] = (page.route, type_name == page.label)
 
     # Flat slugs share one namespace, so they must be unique. Folders used to
     # disambiguate; now a collision would silently overwrite a page.
@@ -207,7 +211,7 @@ def build_pages(files: list[Path]) -> list[Page]:
     clashes = {s: keys for s, keys in by_slug.items() if len(keys) > 1}
     if clashes:
         for s, keys in clashes.items():
-            print(f"error: page slug '{s}' is claimed by multiple groups: "
+            print(f"error: page slug '{s}' is claimed by multiple pages: "
                   f"{', '.join(keys)}", file=sys.stderr)
         raise SystemExit(1)
 
@@ -329,16 +333,16 @@ def render_def(type_name: str, def_name: str, schema: dict,
     return lines
 
 
-def render_type_section(type_name: str, schema: dict, standalone: bool) -> list[str]:
-    """Render one top-level type. Standalone pages omit the `##` heading (the page
-    title already is the type) and host defs at `##`; concat pages add a `##
-    {Type}` heading and host defs at `###`."""
+def render_type_section(type_name: str, schema: dict, is_title: bool) -> list[str]:
+    """Render one top-level type. The host type (`is_title`) omits the `##` heading
+    — the page title already names it — and hosts its defs at `##`; a merged type
+    adds a `## {Type}` heading and hosts its defs at `###`."""
     global CURRENT_TYPE, CURRENT_STANDALONE
     CURRENT_TYPE = type_name
-    CURRENT_STANDALONE = standalone
+    CURRENT_STANDALONE = is_title
 
     lines: list[str] = []
-    if not standalone:
+    if not is_title:
         lines += [f"## {type_name}", ""]
     if schema.get("description"):
         lines += [schema["description"], ""]
@@ -347,9 +351,9 @@ def render_type_section(type_name: str, schema: dict, standalone: bool) -> list[
         lines += [f"[View JSON Schema]({SCHEMA_URL_BASE}/{filename})", ""]
     lines += body_block(schema)
 
-    def_level = "##" if standalone else "###"
+    def_level = "##" if is_title else "###"
     for dname, dschema in schema.get("$defs", {}).items():
-        lines += render_def(type_name, dname, dschema, standalone, def_level)
+        lines += render_def(type_name, dname, dschema, is_title, def_level)
     return lines
 
 
@@ -366,7 +370,7 @@ def render_page(page: Page) -> str:
            f"description: {yaml_str(summary or page.label)}", "---", "",
            GENERATED_BANNER, ""]
     for type_name, schema in page.types:
-        out += render_type_section(type_name, schema, page.standalone)
+        out += render_type_section(type_name, schema, type_name == page.label)
     return "\n".join(out).rstrip() + "\n"
 
 
@@ -398,50 +402,35 @@ def build_sidebar(pages: list[Page]) -> list[dict]:
     return to_items(root)
 
 
-def _effective_path(page: Page) -> list[str]:
-    """Heading path for the index: standalone types sit under their group nesting;
-    a concat page's leaf becomes a subsection holding its types."""
-    return page.groups if page.standalone else page.groups + [page.label]
-
-
 def render_index(pages: list[Page]) -> str:
-    """A single landing page listing every schema (grouped, with descriptions and
-    links) — the slim alternative to enumerating the whole type tree in the nav."""
-    has_json = SCHEMA_URL_BASE is not None
-    root: dict = {"children": {}, "rows": []}
+    """A single landing page listing every schema — the slim alternative to
+    enumerating the whole type tree in the nav. The taxonomy is driven purely by
+    `x-group` (the section); `x-merge` only affects page layout, so a merged type
+    is listed under its own section and links into its host page. A type with no
+    `x-group` (folded into a host page) is omitted."""
+    sections: dict[str, list[tuple[str, dict]]] = {}
     for page in pages:
-        node = root
-        for label in _effective_path(page):
-            node = node["children"].setdefault(label, {"children": {}, "rows": []})
         for type_name, schema in page.types:
-            node["rows"].append((type_name, schema))
+            group = schema.get("x-group")
+            if not group:
+                continue  # merge-only: rendered on its host page, not listed here
+            sections.setdefault(group, []).append((type_name, schema))
 
     out = ["---", 'title: "Schema reference"',
            'description: "Reference for the JSON import/export and game-system '
            'configuration schemas."', "---", "", GENERATED_BANNER, "",
            "Reference for the JSON formats the app reads and writes, generated from "
-           "its data model. Each type links to its details and its raw JSON Schema.", ""]
+           "its data model.", ""]
 
-    def emit(node: dict, depth: int) -> None:
-        if node["rows"]:
-            out.append("| Schema | Description |" + (" JSON |" if has_json else ""))
-            out.append("| --- | --- |" + (" --- |" if has_json else ""))
-            for type_name, schema in sorted(node["rows"], key=lambda r: r[0]):
-                route, standalone = INDEX[type_name]
-                detail = route if standalone else f"{route}#{github_slug(type_name)}"
-                desc = escape_cell((schema.get("description") or "").split("\n", 1)[0])
-                row = f"| [{type_name}]({detail}) | {desc} |"
-                if has_json:
-                    fn = schema.get("$id", f"{type_name}.schema.json")
-                    row += f" [JSON]({SCHEMA_URL_BASE}/{fn}) |"
-                out.append(row)
-            out.append("")
-        for label in sorted(node["children"]):
-            out.append(f"{'#' * min(depth + 2, 6)} {label}")
-            out.append("")
-            emit(node["children"][label], depth + 1)
+    for section in sorted(sections):
+        out += [f"## {section}", "", "| Schema | Description |", "| --- | --- |"]
+        for type_name, schema in sorted(sections[section], key=lambda r: r[0]):
+            route, standalone = INDEX[type_name]
+            detail = route if standalone else f"{route}#{github_slug(type_name)}"
+            desc = escape_cell((schema.get("description") or "").split("\n", 1)[0])
+            out.append(f"| [{type_name}]({detail}) | {desc} |")
+        out.append("")
 
-    emit(root, 0)
     return "\n".join(out).rstrip() + "\n"
 
 

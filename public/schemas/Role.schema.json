@@ -2,7 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Role.schema.json",
   "title": "Role",
-  "x-group": "Shared",
+  "x-group": "API",
+  "description": "Which side a creature is on.\n\nRole is the one piece of allegiance shared by a `Combatant` and its map `Token`, and it\ndrives more than presentation: it decides token ring colors, whether a creature's experience\ncounts toward encounter difficulty, whether the app rolls its initiative automatically, and how\nlabels are assigned.\n\n- Note: A `nil` role is treated as `hostile` throughout, so unclassified creatures behave as\n  adversaries.\n\n- SeeAlso: `Combatant/role`, `Token/role`",
   "type": "string",
   "enum": [
     "hostile",

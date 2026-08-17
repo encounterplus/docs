@@ -2,68 +2,82 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Combatant.schema.json",
   "title": "Combatant",
-  "x-group": "API/",
+  "x-group": "API",
   "type": "object",
+  "description": "One participant in a combat, and the mutable state that belongs to this fight.\n\nA `Combatant` is not a creature \u2014 it points at one via `reference` and reads its statistics\nfrom there. What lives on the combatant is what changes during the fight: current hit points\nand other ranges in `data`, active `effects` and `modifiers`, and its place in the turn\norder via `initiative`.\n\nThat split is what lets six goblins share one monster entry while each tracks its own damage.\nThe reverse case is a *shared* combatant \u2014 a player character, whose entity is unique \u2014 where\nthe `Entity/combatant` link means state persists between sessions instead of being deleted\nwith the combat.\n\nA combatant may also be tied to a map `Token`, in which case label, name, role and\nvisibility are kept in sync between the two.\n\n- SeeAlso: `Game`, `Initiative`, `Entity`, `Token`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this combatant.\n\nA UUID string automatically generated when the combatant is created. This serves as the\nprimary key in the Realm database."
     },
     "label": {
-      "type": "string"
+      "type": "string",
+      "description": "A short label distinguishing this combatant from identical ones.\n\nAssigned by `Game/addCombatant(_:)` and mirrored onto the map token. Friendly\ncombatants get a bare letter, others a letter and number.\n\n## Examples\n- `\"A\"` \u2014 a friendly combatant\n- `\"G1\"`, `\"G2\"` \u2014 the first and second goblin\n\n- SeeAlso: `CombatantLabel`, `uniqueName`"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the combatant.\n\nCopied from the referenced entity or token when the combatant is created, and editable\nafterwards so a creature can be renamed for this fight only.\n\n## Examples\n- `\"Goblin\"`\n- `\"Thorin Ironforge\"`"
     },
     "role": {
-      "$ref": "Role.schema.json"
+      "$ref": "Role.schema.json",
+      "description": "Which side the combatant is on.\n\nDrives colouring on the map, experience totals and automatic initiative rolling.\nA `nil` value is treated as hostile.\n\n- SeeAlso: `Role`, `isHostile`, `isFriendlyOrNeutral`"
     },
     "hidden": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the combatant is concealed from the players.\n\nHidden combatants are omitted from the player display and the web client's initiative\nlist. Kept in sync with the map token's visibility."
     },
     "notes": {
-      "type": "string"
+      "type": "string",
+      "description": "Game-master notes for this combatant.\n\nFree-form annotations scoped to this fight \u2014 tactics, reminders, what the creature is\ncarrying."
     },
     "initiative": {
       "type": "array",
       "items": {
         "$ref": "Initiative.schema.json"
-      }
+      },
+      "description": "This combatant's places in the turn order.\n\nUsually one entry, but a combatant can act several times per round, so systems with\nmultiple actions or legendary turns produce more than one.\n\n- SeeAlso: `Initiative`, `rollInitiative()`, `activeInitiative`"
     },
     "data": {
       "type": "object",
-      "additionalProperties": true
+      "additionalProperties": true,
+      "description": "Per-combat state overriding the referenced entity's values.\n\nHolds whatever changes during the fight \u2014 most importantly the ranges configured by the\nsystem, such as current and maximum hit points. Values here take precedence over the\nentity's own data when the combatant's view context is built.\n\n## Usage Examples\n- `\"hp.current\"`, `\"hp.maximum\"`, `\"hp.temporary\"`\n\n- Note: The structure of this data varies by game system.\n- SeeAlso: `configureRangesFromEntity(_:)`, `rangeFor(_:title:)`"
     },
     "attributes": {
-      "type": [
-        "string",
-        "number",
-        "boolean"
-      ]
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "AnyRealmValue.schema.json"
+      },
+      "description": "Dynamic attribute storage supporting various data types.\n\nA flexible key-value store for attributes and properties that need to be\nqueryable or frequently accessed. Supports multiple data types through RealmAny."
     },
     "reference": {
-      "type": "string"
+      "type": "string",
+      "description": "A soft link to the `Entity` this combatant represents.\n\nStored as an app URL rather than a Realm relationship, so a combatant survives the\nentity being unavailable and can be serialized on its own. Resolved through\n`CacheManager` by `entity` and `entityId`.\n\n## Examples\n- `\"/monster/goblin\"`\n- `\"/character/thorin-ironforge\"`\n\n- SeeAlso: `referenceURL`, `entity`"
     },
     "modifiers": {
       "type": "array",
       "items": {
         "$ref": "Modifier.schema.json"
-      }
+      },
+      "description": "Adjustments applied directly to this combatant.\n\nApplied on top of the combatant's context when its view context is computed, alongside\nthe modifiers carried by `effects`.\n\n## Examples\n- Equipment bonuses (+2 to AC from armor)\n- Temporary penalties (-2 to attacks)\n\n- SeeAlso: `Modifier`, `activeModifiers`"
     },
     "effects": {
       "type": "array",
       "items": {
         "$ref": "StatusEffect.schema.json"
-      }
+      },
+      "description": "Conditions currently affecting this combatant.\n\nEach effect may carry its own modifiers, which are applied together with `modifiers`.\n\n## Examples\n- Conditions: `\"poisoned\"`, `\"stunned\"`, `\"paralyzed\"`\n- Buffs: `\"blessed\"`, `\"hasted\"`, `\"invisible\"`\n\n- SeeAlso: `StatusEffect`"
     },
     "bloodied": {},
     "defeated": {},
     "player": {},
     "image": {},
     "entityId": {
-      "type": "string"
+      "type": "string",
+      "description": "The identifier of the referenced entity, without loading the entity itself."
     },
     "entityType": {
-      "$comment": "unmapped Swift type: EntityType"
+      "$comment": "unmapped Swift type: EntityType",
+      "description": "The kind of content this combatant references, derived from `reference`.\n\nDetermines which system configuration applies \u2014 ranges, defeated conditions, role defaults."
     },
     "tokenId": {}
   },

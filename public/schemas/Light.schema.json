@@ -2,35 +2,45 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Light.schema.json",
   "title": "Light",
-  "x-group": "Shared",
+  "x-group": "Map",
   "type": "object",
+  "description": "A light source on a `Map`.\n\nLights matter when `Map/lineOfSight` is on: they illuminate the wall-bounded areas around\nthem, which together with each token's own `Vision` decides what the players can see.\n\nLight falls off in two steps rather than smoothly \u2014 full brightness out to `radiusMin`, dim\nlight to `radiusMax` \u2014 matching how tabletop rules describe torches and lanterns.\n\nA light is either placed directly on the map through `Map/lights` or attached to a\n`Tile`, in which case it moves with the scenery.\n\n- SeeAlso: `Map`, `Tile`, `Vision`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this light.\n\nA UUID string automatically generated when the light is created. This serves as the\nprimary key in the Realm database."
     },
     "enabled": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the light is lit.\n\nLets a source be extinguished without deleting it \u2014 a torch that can be put out."
     },
     "radiusMin": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The radius of bright light, in grid units.\n\n## Examples\n- `20` \u2014 a torch's bright radius in feet"
     },
     "radiusMax": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The radius of dim light, in grid units.\n\nBeyond this the light contributes nothing."
     },
     "color": {
-      "type": "string"
+      "type": "string",
+      "description": "The light's color, as an RGB string.\n\n## Examples\n- `\"#ffffff\"` \u2014 neutral\n- `\"#ff9944\"` \u2014 firelight"
     },
     "opacity": {
-      "type": "number"
+      "type": "number",
+      "description": "How strongly the light's color tints the map, from `0` to `1`."
     },
     "alwaysVisible": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the light is shown even where the players cannot see it.\n\nLets a distant campfire or lit window be visible across an unexplored map."
     },
     "x": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The light's horizontal position in map coordinates.\n\n- SeeAlso: `position`"
     },
     "y": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The light's vertical position in map coordinates."
     },
     "sight": {}
   },

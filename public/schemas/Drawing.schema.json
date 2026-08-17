@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Drawing.schema.json",
+  "title": "Drawing",
+  "x-merge": "Map",
+  "type": "object",
+  "description": "A vector shape drawn on a `Map`.\n\nDrawings are the annotation layer \u2014 outlines, highlights and sketched-in features the game\nmaster adds over the artwork. Unlike `Map/canvas`, which is a raster, these stay editable and\ncan be moved between map layers.\n\nLike `Wall`, a drawing is a plain `Codable` value stored encoded in `Map/drawings`, and its\nderived geometry is cached \u2014 call `invalidate()` after editing `data` directly.\n\n- SeeAlso: `Map/drawings`, `Wall`",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for this drawing.\n\nA UUID string generated when the drawing is created."
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "The drawing's vertices, as a flat list of alternating x and y coordinates.\n\n- Note: Edit through `update(_:)`, which also invalidates the cached geometry.\n- SeeAlso: `points`"
+    },
+    "shape": {
+      "$ref": "#/$defs/Shape",
+      "description": "The drawing's geometry; `nil` behaves as `Shape/polygon`."
+    },
+    "layer": {
+      "$ref": "BattleMapLayer.schema.json",
+      "description": "Which map layer the drawing sits on.\n\nDetermines whether it is drawn under or over the tokens."
+    },
+    "strokeWidth": {
+      "type": "number",
+      "description": "The outline width, in map coordinates."
+    },
+    "strokeColor": {
+      "type": "string",
+      "description": "The outline color, as an RGB string.\n\n## Examples\n- `\"#ff0000\"`"
+    },
+    "fillColor": {
+      "type": "string",
+      "description": "The fill color, as an RGB string; `nil` leaves the shape unfilled."
+    },
+    "opacity": {
+      "type": "number",
+      "description": "The drawing's opacity, from `0` to `1`."
+    }
+  },
+  "required": [
+    "id",
+    "data"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Shape": {
+      "title": "Shape",
+      "description": "The geometry of a `Drawing`.",
+      "type": "string",
+      "enum": [
+        "polygon",
+        "ellipse",
+        "rectangle"
+      ]
+    }
+  }
+}

@@ -2,38 +2,49 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Vision.schema.json",
   "title": "Vision",
-  "x-group": "Shared",
+  "x-group": "Map",
   "type": "object",
+  "description": "What a `Token` can see, and what it carries to see by.\n\nVision has three independent parts. `enabled` decides whether the token sees at all \u2014 a\ntoken without it contributes nothing to what the players are shown. `light` is a light source\nthe token carries, illuminating the map for everyone. `dark` is darkvision: the ability to\nsee without light, which reveals the map to this token alone.\n\nThe distinction matters on a dark map \u2014 a dwarf with darkvision sees the corridor, but the\nhuman beside them sees only as far as their own torch reaches.\n\n- SeeAlso: `Token`, `Light`, `Map/lineOfSight`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this vision configuration.\n\nA UUID string generated when the object is created. Embedded objects have no primary key,\nso this is indexed instead."
     },
     "enabled": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the token sees at all.\n\nWith this off the token is blind for line-of-sight purposes and reveals nothing."
     },
     "light": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the token carries a light source.\n\n- SeeAlso: `Light`"
     },
     "lightRadiusMin": {
-      "type": "number"
+      "type": "number",
+      "description": "The radius of bright light the token emits, in grid units."
     },
     "lightRadiusMax": {
-      "type": "number"
+      "type": "number",
+      "description": "The radius of dim light the token emits, in grid units."
     },
     "lightColor": {
-      "type": "string"
+      "type": "string",
+      "description": "The color of the light the token emits, as an RGB string.\n\n## Examples\n- `\"#ffffff\"`"
     },
     "lightOpacity": {
-      "type": "number"
+      "type": "number",
+      "description": "How strongly the emitted light tints the map, from `0` to `1`."
     },
     "dark": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the token can see without light.\n\nDarkvision reveals the map to this token only, rather than illuminating it for everyone."
     },
     "darkRadiusMin": {
-      "type": "number"
+      "type": "number",
+      "description": "The inner radius of darkvision, in grid units."
     },
     "darkRadiusMax": {
-      "type": "number"
+      "type": "number",
+      "description": "The outer radius of darkvision, in grid units.\n\n## Examples\n- `60` \u2014 the usual darkvision range in feet"
     },
     "sight": {}
   },

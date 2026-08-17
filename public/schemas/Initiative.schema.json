@@ -2,24 +2,25 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Initiative.schema.json",
   "title": "Initiative",
-  "x-group": "API/",
+  "x-merge": "Combatant",
   "type": "object",
+  "description": "One slot a `Combatant` occupies in the turn order.\n\nTurn order is modelled as entries rather than a single number on the combatant, because a\ncombatant can act more than once per round \u2014 legendary actions, multiple initiative counts,\nor a system that hands out several turns. Each entry carries its own rolled `value` and,\nonce `Game/sortInitiative()` has run, its `order` within the round.\n\nAn entry with no `order` exists but is not yet in the turn order.\n\n- SeeAlso: `Combatant`, `Game`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this initiative entry.\n\nA UUID string generated when the entry is created. Embedded objects have no primary key,\nso this is what `Game/initiativeId` points at to mark the acting entry."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "An optional label for this entry.\n\nDistinguishes a combatant's several entries from one another where the system gives them\ndistinct meanings.\n\n## Examples\n- `\"Legendary Action\"`\n- `\"Lair Action\"`"
     },
     "value": {
-      "type": [
-        "string",
-        "number",
-        "boolean"
-      ]
+      "$ref": "AnyRealmValue.schema.json",
+      "description": "The rolled or assigned initiative value.\n\nHeld as `AnyRealmValue` because systems score initiative differently \u2014 a number in most,\na drawn card or suit in others. `.none` means the entry has not been rolled yet and it is\nexcluded from sorting.\n\n## Examples\n- `.int(17)`\n- `.string(\"Ace of Spades\")`\n\n- SeeAlso: `roll()`, `Game/rollInitiative(for:)`"
     },
     "order": {
-      "type": "integer"
+      "type": "integer",
+      "description": "This entry's position in the round, counting from `1`.\n\nAssigned by `Game/sortInitiative()`. `nil` while the entry is not part of the turn\norder \u2014 which is exactly what `isActive` reports."
     }
   },
   "required": [

@@ -2,18 +2,24 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "WSEvent.schema.json",
   "title": "WSEvent",
-  "x-group": "API/",
+  "x-group": "API",
   "type": "object",
+  "description": "One message on the WebSocket connection between the app and its clients.\n\n`WSEvent` is the app's whole live protocol. The embedded server pushes game state out to the\nbrowser player client and the external display, and those clients send edits back, all as\nevents carrying a `name` and a `data` payload.\n\nThe payload is deliberately untyped (`Any?`) because its shape depends entirely on the name \u2014\na `tokenUpdated` carries a `Token`, a `tokenMoved` carries a `Movement`, a `messageCreated`\ncarries a `Message`. The `Codable` conformance is hand-written for exactly this reason:\n`init(from:)` switches on the name to decode the right type, and `encode(to:)` switches\nagain to encode it.\n\nEvents pair into requests and responses through `requestId` and `responseId`, so a client\nasking a question \u2014 `getAttribute`, say \u2014 can match the answer to its question.\n\n- SeeAlso: `Game`, `Map`, `Token`, `Message`",
   "properties": {
     "name": {
-      "$ref": "#/$defs/Name"
+      "$ref": "#/$defs/Name",
+      "description": "What this event reports or requests.\n\nDetermines how `data` is interpreted."
     },
-    "data": {},
+    "data": {
+      "description": "The event's payload.\n\nUntyped because its shape depends on `name`; the coding methods narrow it."
+    },
     "requestId": {
-      "type": "string"
+      "type": "string",
+      "description": "The sender's correlation identifier, set on an incoming request.\n\nThe app echoes it back as the reply's `responseId`."
     },
     "responseId": {
-      "type": "string"
+      "type": "string",
+      "description": "The identifier of the request this event answers.\n\n`nil` for events broadcast on the app's own initiative rather than in reply to anything."
     }
   },
   "required": [
@@ -23,16 +29,19 @@
   "$defs": {
     "Name": {
       "title": "Name",
+      "description": "What a `WSEvent` reports or requests.\n\nThe name determines the payload type \u2014 see the discussion on `WSEvent`. Names ending in\n`-Updated`, `-Created` and `-Deleted` are the app broadcasting a change; names in the\nimperative (`createEntity`, `updateDoor`) are a client asking for one.",
       "type": "string",
       "enum": [
         "gameUpdated",
         "mapUpdated",
+        "screenUpdated",
+        "combatantsUpdated",
+        "mapLoaded",
+        "systemPaused",
         "mapFrameUpdated",
         "mapViewportUpdated",
         "mapFitScreen",
         "mapFocus",
-        "screenUpdated",
-        "combatantsUpdated",
         "tokenUpdated",
         "tokensUpdated",
         "markerUpdated",
@@ -43,33 +52,32 @@
         "lightsUpdated",
         "areaEffectUpdated",
         "areaEffectsUpdated",
+        "measurementUpdated",
+        "measurementsUpdated",
         "mapMoved",
         "tokenMoved",
         "markerMoved",
         "tileMoved",
         "areaEffectMoved",
-        "fogUpdated",
-        "pointerUpdated",
         "pointerMoved",
-        "mapLoaded",
-        "interactionUpdated",
-        "reload",
+        "fogUpdated",
+        "drawingsUpdated",
+        "lineOfSightUpdated",
+        "pointerUpdated",
+        "mapVideoControlUpdated",
         "clientConnected",
         "clientDisconnected",
         "clientUpdated",
-        "drawingsUpdated",
-        "lineOfSightUpdated",
+        "interactionUpdated",
+        "reload",
         "messageCreated",
         "messagesUpdated",
         "messageDeleted",
         "createMessage",
         "command",
         "roll",
-        "mapVideoControlUpdated",
         "trackedObjectCreated",
         "trackedObjectUpdated",
-        "measurementUpdated",
-        "measurementsUpdated",
         "trackedObjectDeleted",
         "trackedObjectsUpdated",
         "createEntity",
@@ -86,7 +94,6 @@
         "combatantDeleted",
         "updateDoor",
         "updateToken",
-        "systemPaused",
         "getAttribute",
         "setAttribute",
         "app"
@@ -95,15 +102,19 @@
     "Source": {
       "title": "Source",
       "type": "object",
+      "description": "Who originated an action, for attributing it back to a client.",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "The originating client's identifier."
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The client's display name."
         },
         "color": {
-          "type": "string"
+          "type": "string",
+          "description": "The client's accent color, as an RGB string."
         }
       },
       "required": [
@@ -114,39 +125,49 @@
     "Movement": {
       "title": "Movement",
       "type": "object",
+      "description": "A drag in progress on a map object.\n\n- SeeAlso: `ControlState`",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "The identifier of the object being moved."
         },
         "x": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The object's horizontal position in map coordinates."
         },
         "y": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The object's vertical position in map coordinates."
         },
         "state": {
-          "$ref": "ControlState.schema.json"
+          "$ref": "ControlState.schema.json",
+          "description": "The phase of the drag \u2014 whether this is a live update or the final position."
         },
         "polygon": {
           "type": "array",
           "items": {
             "type": "number"
-          }
+          },
+          "description": "The token's visible area at this position, when line of sight is enabled."
         },
         "path": {
           "type": "array",
           "items": {
             "type": "integer"
-          }
+          },
+          "description": "The route taken so far, as a flat list of alternating coordinates."
         },
         "distance": {
-          "type": "string"
+          "type": "string",
+          "description": "The distance travelled, formatted for display.\n\n## Examples\n- `\"30 ft\"`"
         },
         "animated": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether the receiver should animate to the new position rather than jump to it."
         },
         "source": {
-          "$ref": "#/$defs/Source"
+          "$ref": "#/$defs/Source",
+          "description": "The client that initiated the drag."
         }
       },
       "required": [
@@ -160,18 +181,23 @@
     "Frame": {
       "title": "Frame",
       "type": "object",
+      "description": "A viewport position on a map.",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "The identifier of the map."
         },
         "x": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The horizontal center of the viewport in map coordinates."
         },
         "y": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The vertical center of the viewport in map coordinates."
         },
         "zoom": {
-          "type": "number"
+          "type": "number",
+          "description": "The zoom level."
         }
       },
       "required": [
@@ -182,12 +208,15 @@
     "Image": {
       "title": "Image",
       "type": "object",
+      "description": "An updated image for a map, such as a redrawn fog-of-war mask.",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "The identifier of the map the image belongs to."
         },
         "image": {
-          "type": "string"
+          "type": "string",
+          "description": "The image itself, encoded for transport."
         }
       },
       "required": [
@@ -199,12 +228,15 @@
     "VideoControl": {
       "title": "VideoControl",
       "type": "object",
+      "description": "Playback state for a map's background video.\n\nLets every display stay in sync on an animated map.",
       "properties": {
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "The playback state.\n\n## Examples\n- `\"play\"`, `\"pause\"`"
         },
         "time": {
-          "type": "number"
+          "type": "number",
+          "description": "The playback position, in seconds."
         }
       },
       "required": [
@@ -216,27 +248,35 @@
     "Focus": {
       "title": "Focus",
       "type": "object",
+      "description": "A request to draw the players' attention to a point on the map.",
       "properties": {
         "x": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The horizontal position in map coordinates."
         },
         "y": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The vertical position in map coordinates."
         },
         "color": {
-          "type": "string"
+          "type": "string",
+          "description": "The highlight color, as an RGB string."
         },
         "effect": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether to play the attention-drawing animation."
         },
         "pan": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether to pan the viewport to the point."
         },
         "zoom": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether to zoom in on the point."
         },
         "reset": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether to restore the previous viewport instead of moving to the point."
         }
       },
       "required": [
@@ -253,15 +293,19 @@
     "Door": {
       "title": "Door",
       "type": "object",
+      "description": "A request to change a door's state.\n\nOpening a door changes what the party can see, so this is applied to the wall mesh and the\nresulting vision is rebroadcast.\n\n- SeeAlso: `Wall/DoorState`",
       "properties": {
         "mapId": {
-          "type": "string"
+          "type": "string",
+          "description": "The identifier of the map the door is on."
         },
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "The identifier of the wall acting as the door."
         },
         "state": {
-          "$ref": "Wall.schema.json#/$defs/DoorState"
+          "$ref": "Wall.schema.json#/$defs/DoorState",
+          "description": "The state to set."
         }
       },
       "required": [
@@ -274,13 +318,16 @@
     "Attribute": {
       "title": "Attribute",
       "type": "object",
+      "description": "A request to read or write an entity's attributes.",
       "properties": {
         "entityId": {
-          "type": "string"
+          "type": "string",
+          "description": "The identifier of the entity to read from or write to."
         },
         "attributes": {
           "type": "object",
-          "additionalProperties": true
+          "additionalProperties": true,
+          "description": "The attributes to write, or the attributes read back in the reply."
         }
       },
       "required": [

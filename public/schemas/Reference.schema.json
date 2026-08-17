@@ -2,27 +2,33 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Reference.schema.json",
   "title": "Reference",
-  "x-group": "Content/",
+  "x-group": "Content",
   "type": "object",
-  "description": "A reference to other entities",
+  "description": "A shortcut to other content, placed in a container's library tree.\n\nA `Reference` is a pointer wearing a name \u2014 it holds no content, only a link. Its purpose is to\nlet one piece of content appear in more than one place without being duplicated: a monster\ndefined in a compendium can be listed under the chapter it ambushes the party in, and a map can\nbe filed under two locations at once.\n\nIt differs from an inline link in `Page/content` by being a first-class library item: it sits\nin the tree with its own name, position and `parentId`, so it shows up when browsing rather\nthan only when reading.\n\n- Note: The link is a soft one. Nothing keeps a reference and its target in step, so\n  `linkedObject()` returns `nil` once the target is gone.\n\n- SeeAlso: `Group`, `Page`, `Module`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this reference.\n\nA UUID string automatically generated when the reference is created. This serves as the\nprimary key in the Realm database."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The display name of the reference.\n\nShown in the library in place of the target's own name, so a link can be labelled for the\ncontext it appears in.\n\n## Examples\n- `\"Klarg (Bugbear Boss)\"`"
     },
     "slug": {
-      "type": "string"
+      "type": "string",
+      "description": "A URL-friendly identifier for the reference.\n\n## Examples\n- `\"klarg-bugbear-boss\"`"
     },
     "reference": {
-      "type": "string"
+      "type": "string",
+      "description": "The app URL of the content this reference points at.\n\n## Examples\n- `\"/monster/bugbear\"`\n- `\"/map/cragmaw-hideout\"`\n- `\"/page/goblin-ambush\"`\n\n- SeeAlso: `linkURL`, `linkedObject()`"
     },
     "parentId": {
-      "type": "string"
+      "type": "string",
+      "description": "The identifier of the `Group` containing this reference in the library tree.\n\nEmpty for a reference at the top level of its container."
     },
     "rank": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The manual sort position among its siblings.\n\nLower values sort first."
     }
   },
   "required": [

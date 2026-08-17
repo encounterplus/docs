@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "TemplateDefinition.schema.json",
   "title": "TemplateDefinition",
-  "x-group": "Definitions/",
+  "x-group": "Definitions",
   "type": "object",
   "properties": {
     "title": {

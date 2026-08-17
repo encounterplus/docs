@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "GridType.schema.json",
+  "title": "GridType",
+  "x-merge": "Map",
+  "description": "The tiling geometry of a `Map`'s grid.",
+  "type": "string",
+  "enum": [
+    "square",
+    "hexFlat",
+    "hexPointy"
+  ]
+}

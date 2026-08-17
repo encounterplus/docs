@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "ViewDefinition.schema.json",
   "title": "ViewDefinition",
-  "x-group": "Definitions/",
+  "x-group": "Definitions",
   "type": "object",
   "description": "A declarative UI definition structure for building dynamic, data-driven layouts.\n\n`ViewDefinition` provides a flexible, JSON-serializable way to define user interface layouts\nthat can be rendered dynamically at runtime. It's designed for building data-driven UIs,\nserver-driven rendering, or any scenario where UI structure needs to be defined outside of code.",
   "properties": {
@@ -189,7 +189,7 @@
         },
         "attribute": {
           "type": "string",
-          "description": "Data binding path for dynamic content.\n\nSpecifies which property from the data context to display or bind to.\nUses dot notation to access nested properties.\n\n## Example\n``json\n// Simple property\n\"attribute\": \"data.level\"\n\n// Nested property\n\"attribute: \"data.character.abilities.strength\"\n``"
+          "description": "Data binding path for dynamic content.\n\nSpecifies which property from the data context to display or bind to.\nUses dot notation to access nested properties.\n\n## Example\n```json\n// Simple property\n\"attribute\": \"data.level\"\n\n// Nested property\n\"attribute: \"data.character.abilities.strength\"\n```"
         },
         "attributeType": {
           "type": "string",
@@ -271,11 +271,11 @@
         },
         "visibleIf": {
           "type": "string",
-          "description": "Condition for visibility - view shown when this evaluates to true.\n\nExpression string evaluated against the data context.\n\n## Example\n``json\n\"visibleIf\": \"data.hp > 0\"\n\"visibleIf\": \"data.level >= 5\"\n\"visibleIf\": \"data.equipment.count > 0\"\n``"
+          "description": "Condition for visibility - view shown when this evaluates to true.\n\nExpression string evaluated against the data context.\n\n## Example\n```json\n\"visibleIf\": \"data.hp > 0\"\n\"visibleIf\": \"data.level >= 5\"\n\"visibleIf\": \"data.equipment.count > 0\"\n```"
         },
         "hiddenIf": {
           "type": "string",
-          "description": "Condition for hiding - view hidden when this evaluates to true.\n\nExpression string evaluated against the data context.\n\n## Example\n``json\n\"hiddenIf\": \"data.isGM == false\"\n\"hiddenIf\": \"data.inventory.length == 0\"\n``"
+          "description": "Condition for hiding - view hidden when this evaluates to true.\n\nExpression string evaluated against the data context.\n\n## Example\n```json\n\"hiddenIf\": \"data.isGM == false\"\n\"hiddenIf\": \"data.inventory.length == 0\"\n```"
         },
         "custom": {
           "type": "object",

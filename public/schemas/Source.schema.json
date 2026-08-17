@@ -2,14 +2,17 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "Source.schema.json",
   "title": "Source",
-  "x-group": "Shared",
+  "x-merge": "Entity",
   "type": "object",
+  "description": "A citation to a source book or reference document.\n\n`Source` stores the canonical source identifier and an optional page number.\nIt is embedded in content models to preserve where imported or authored game\ncontent came from.",
   "properties": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The canonical source identifier.\n\nThis value is resolved with `sourceToName()` when displayed, so stored\nabbreviations or slugs can be shown as their full source names."
     },
     "page": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The page number within the source."
     }
   },
   "additionalProperties": false

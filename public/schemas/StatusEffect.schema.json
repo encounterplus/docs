@@ -2,70 +2,88 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "StatusEffect.schema.json",
   "title": "StatusEffect",
-  "x-group": "Shared",
+  "x-group": "Entity",
   "type": "object",
+  "description": "A condition or ongoing effect on a `Combatant`.\n\nStatus effects cover everything that temporarily changes a creature: conditions like poisoned\nor stunned, buffs like blessed or hasted, and spell effects with a duration. Each carries its\nown `modifiers`, which are applied on top of the combatant's context alongside the\ncombatant's own \u2014 so an effect can change armor class or speed for as long as it lasts.\n\nDuration is expressed relative to a turn rather than as a countdown: `durationType` names the\nmoment the effect ends and `roundStart`/`turnStart` record when it began, so the tracker\ncan tell when that moment arrives regardless of how initiative shifts.\n\nThe token drawn on the map picks these up through `Token/effects`, which reads them from the\ncombatant.\n\n- SeeAlso: `Combatant`, `Modifier`, `Token`",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "The unique identifier for this effect.\n\nA UUID string generated when the effect is created. Embedded objects have no primary key,\nso this is indexed instead."
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The effect's display name.\n\n## Examples\n- `\"Poisoned\"`, `\"Blessed\"`"
     },
     "type": {
-      "type": "string"
+      "type": "string",
+      "description": "The effect's category within the loaded system.\n\n## Examples\n- `\"condition\"`, `\"buff\"`, `\"debuff\"`"
     },
     "reference": {
-      "type": "string"
+      "type": "string",
+      "description": "A soft link to the `Entity` describing this effect.\n\nLets an effect carry the full rules text of the condition or spell it came from.\n\n## Examples\n- `\"/condition/poisoned\"`\n- `\"/spell/bless\"`\n\n- SeeAlso: `referenceURL`, `entity`"
     },
     "duration": {
-      "type": "number"
+      "type": "number",
+      "description": "How long the effect lasts, in `durationUnit`.\n\nApplies when `durationType` is `DurationType/time`."
     },
     "durationUnit": {
-      "type": "string"
+      "type": "string",
+      "description": "The unit `duration` is counted in, as the raw value of a `DurationUnit`.\n\n## Examples\n- `\"round\"`, `\"minute\"`, `\"hour\"`, `\"day\"`"
     },
     "durationType": {
-      "type": "string"
+      "type": "string",
+      "description": "When the effect expires, as the raw value of a `DurationType`.\n\n## Examples\n- `\"targetEndNextTurn\"`, `\"time\"`"
     },
     "descr": {
-      "type": "string"
+      "type": "string",
+      "description": "The effect's rules text."
     },
     "notes": {
-      "type": "string"
+      "type": "string",
+      "description": "Game-master notes on this instance of the effect."
     },
     "color": {
-      "type": "string"
+      "type": "string",
+      "description": "The effect's color, as an RGB string.\n\nUsed for the badge drawn on the token."
     },
     "icon": {
-      "type": "string"
+      "type": "string",
+      "description": "The icon representing the effect on the token and in the combatant list."
     },
     "source": {
-      "type": "string"
+      "type": "string",
+      "description": "The creature or ability that applied this effect.\n\nAnchors the source-relative `DurationType` cases \u2014 an effect ending on its caster's next\nturn needs to know whose turn that is."
     },
     "roundStart": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The combat round the effect was applied in.\n\n- SeeAlso: `Game/round`"
     },
     "turnStart": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The turn within `roundStart` that the effect was applied on.\n\n- SeeAlso: `Game/turn`"
     },
     "enabled": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether the effect is currently in force.\n\nLets an effect be suspended \u2014 kept on the creature but not applied \u2014 without removing it."
     },
     "data": {
       "type": "object",
-      "additionalProperties": true
+      "additionalProperties": true,
+      "description": "Flexible JSON storage for system-specific or arbitrary structured data.\n\n- Note: The structure of this data varies by game system."
     },
     "attributes": {
-      "type": [
-        "string",
-        "number",
-        "boolean"
-      ]
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "AnyRealmValue.schema.json"
+      },
+      "description": "Dynamic attribute storage supporting various data types."
     },
     "modifiers": {
       "type": "array",
       "items": {
         "$ref": "Modifier.schema.json"
-      }
+      },
+      "description": "The adjustments this effect applies while it lasts.\n\n## Examples\n- `-2` to attack rolls while poisoned\n- `+1` to AC and saves while blessed\n\n- SeeAlso: `Modifier`, `Combatant/activeModifiers`"
     }
   },
   "required": [
@@ -77,6 +95,7 @@
   "$defs": {
     "DurationType": {
       "title": "DurationType",
+      "description": "When a `StatusEffect` expires.",
       "type": "string",
       "enum": [
         "sourceStartNextTurn",
@@ -88,6 +107,7 @@
     },
     "DurationUnit": {
       "title": "DurationUnit",
+      "description": "The unit a `StatusEffect`'s duration is counted in.",
       "type": "string",
       "enum": [
         "round",
