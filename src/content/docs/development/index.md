@@ -15,8 +15,7 @@ the [Guides](/guides/quick-start/).
 
 ## What's here
 
-- **[Custom System](/system-development/)** — the full guide to authoring a game system:
-  folder layout, entity definitions, forms, views, templates, themes, migrations and packaging.
+- **[Custom System](/system-development/)** — the guide to authoring a game system.
 - **[Schema reference](/reference/schema/)** — the generated reference for every JSON format the
   app reads and writes, from import archives to definition files.
 - **[URL scheme](/reference/url-scheme/)** — driving the app from links.
