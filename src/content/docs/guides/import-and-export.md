@@ -1,48 +1,134 @@
 ---
 title: Import and Export
+description: Getting content in and out — the file formats Encounter+ understands, the Package Manager, exporting your own work, and backups.
 ---
 
-:::caution[Obsolete]
-TODO: update to v5
+Encounter+ reads and writes several file formats. This page says what each one is for, and how to
+move content in and out.
+
+:::tip
+For the format definitions themselves, see the [Reference](/reference/schema/) section. This page is
+about using them.
 :::
 
-## Data Format
+## Formats
 
-EncounterPlus is using XML files as a data exchange format, packed into ZIP archive along with other files (images, tokens, fonts, styles, etc..). 
+| Extension | What it is |
+| --- | --- |
+| `.module` | A module — an adventure, compendium or asset pack |
+| `.campaign` | A campaign |
+| `.system` | A game system |
+| `.collection` | A set of content, packed as an archive with its images beside it |
+| `.eplus` | The same content as a single JSON file, with images inlined |
+| `.dd2vtt` / `.uvtt` | A battle map from another tool, with its walls and lights |
+| `.csv` | Table data |
+| `.jpg` `.png` `.webp` | An image, imported as a battle map |
+| `.compendium` `.pack` | Legacy version 4 XML content — **import only** |
 
-A special file extension can be used for automatic import using Files app or Airdop transfer, although it's not necessary. 
+`.collection` and `.eplus` carry exactly the same content. The archive keeps images as separate
+files; the single file inlines them. Use `.eplus` when you want one file to send someone, and
+`.collection` when the images matter on their own.
 
-### Compendium
+:::note
+`.eplus` can be imported but not exported. Export produces `.collection`.
+:::
 
-The archive can use `.compendium` file extension and it must contain `compendium.xml` definition file in the root. It can contain `monsters, players, items, spells` folders with images.
+## Importing
 
-* [Compendium ](elements/compendium.md)
+### From the app
 
-Elements: 
-* [Monster](elements/monster.md)
-* [Player](elements/player.md)
-* [Item](elements/item.md)
-* [Spell](elements/spell.md)
+**Settings → Import**, then pick a file.
 
-### Module & Campaign
+Files are read where they are. Importing never moves or deletes your original, so importing from
+iCloud Drive or a USB drive is safe.
 
-The archive can use `.campaign` or `.module` file extensins and it must contain `campaign.xml` or `module.xml` file. It can contain multiple folders with various files, which will be copied during import. A special `assets` folder is used for HTML styles, javascript, font and images. 
+### From outside the app
 
-* [Campaign](elements/campaign.md)
-* [Module](elements/module.md)
+Two other routes work without opening Settings first:
 
-Elements:
-* [Page](elements/page.md)
-* [Encounter](elements/encounter.md)
-* [Map](elements/map.md)
-* [Group](elements/group.md)
+- **Files app** — tap a supported file and it opens in Encounter+.
+- **AirDrop** — send a file to the device and choose Encounter+.
 
-### Pack
+Both use the same importer.
 
-The archive can use `.pack` file extensins and it must contain `pack.xml` file. It can contain multiple folders with various files, which will be copied during import.
+### From the Package Manager
 
-* [Pack](elements/pack.md)
+**Settings → Package Manager** lists published content — game systems and modules — and installs it
+directly. Nothing to download by hand.
 
-Elements:
-* [Asset](elements/asset.md)
-* [Group](elements/group.md)
+The Package Manager also tells you when something you have installed has a newer version.
+
+### Legacy version 4 content
+
+`.compendium` and `.pack` archives from version 4 still import.
+
+That content is D&D 5E content, so **the D&D 5E system has to be installed first**. Without it the
+import fails rather than guessing where the content belongs. See
+[Upgrading from Version 4](/about/upgrading/).
+
+## Exporting
+
+**Settings → Export**, then choose what to write out. You can export:
+
+- a single campaign, as `.campaign`
+- a single module, as `.module`
+- a game system, as `.system`
+- a set of content, as `.collection`
+- **everything**, as a set of files
+
+Exported files go wherever you choose in the Files app, or straight into a share sheet.
+
+You can also export one entry at a time from the library — open it and tap **Export**.
+
+## Maps from other tools
+
+`.dd2vtt` and `.uvtt` files come from map-making tools like Dungeondraft. They bring their own
+walls, lights and grid, so an imported map is ready to play without drawing anything.
+
+Plain images work too — import a `.jpg`, `.png` or `.webp` and you get a map with that image as its
+background. You then align the grid yourself. See [Battle Maps](/guides/battle-maps/#the-grid).
+
+## Where the files live
+
+All app content sits in **Documents**, which is visible in the Files app under Encounter+.
+
+You can browse it, copy files out, and back the whole folder up.
+
+:::caution
+It is also deletable from the Files app. Be careful what you remove there — the app expects its own
+folders to exist.
+:::
+
+## Backups
+
+Two different things count as a backup, and they protect against different problems:
+
+- **Export** writes your content to files you keep. This survives anything, including a lost device,
+  and can be imported into any install.
+- **Settings → Advanced → Local Database → Backup** copies the app's database. This is the fast
+  local safety net.
+
+Export before anything destructive — bulk deletes, a system change, or upgrading a device.
+
+## Common questions
+
+### The file will not import
+
+Check the extension is one of the ones listed above, and that a game system is installed. For legacy
+`.compendium` and `.pack` files, check that D&D 5E specifically is installed.
+
+### Where did the imported content go?
+
+Modules and campaigns appear in the library under **Content**. Everything else is filed into the
+current campaign. See [Campaigns & Modules](/guides/campaigns-and-modules/).
+
+### Can I edit an exported file?
+
+Yes. The current formats are JSON, so a `.collection` or `.eplus` file can be edited by hand or
+generated by a script. See the [schema reference](/reference/schema/).
+
+## Where to go next
+
+- [Campaigns & Modules](/guides/campaigns-and-modules/) — what you are importing into.
+- [Game Systems](/guides/game-systems/) — installing and switching systems.
+- [Content Settings](/settings/content/) — the Import, Export and Delete buttons themselves.

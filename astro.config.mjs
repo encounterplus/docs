@@ -12,6 +12,10 @@ export default defineConfig({
 		'/guides/web-client-faq': '/guides/remote-play/',
 		'/remote-play': '/guides/remote-play/',
 		'/special-thanks': '/guides/special-thanks/',
+		// Retired in the v5 guides restructure.
+		'/guides/encounter-management': '/guides/encounters/',
+		'/guides/tips-and-tricks': '/guides/how-it-works/',
+		'/guides/battle-map': '/guides/battle-maps/',
 	},
 	integrations: [
 		starlight({
@@ -38,21 +42,26 @@ export default defineConfig({
 				{
           label: "Guides",
           items: [
-            { label: "Quick start", link: "/guides/quick-start/" },
+            { label: "Quick Start", link: "/guides/quick-start/" },
+            { label: "How it works", link: "/guides/how-it-works/" },
+            { label: "The Library", link: "/guides/library/" },
             { label: "Campaigns & Modules", link: "/guides/campaigns-and-modules/" },
-            { label: "Encounter Management", link: "/guides/encounter-management/" },
-            { label: "Library", link: "/guides/library/" },
-            { label: "Battle maps", link: "/guides/battle-map/" },
+            { label: "Encounters & Combat", link: "/guides/encounters/" },
 						{
               label: "Battle Maps",
               items: [
-                { label: "Line of Sight", link: "/guides/battle-maps/line-of-sight/" },
+                { label: "Overview", link: "/guides/battle-maps/" },
+                { label: "Tokens", link: "/guides/battle-maps/tokens/" },
+                { label: "Line of Sight & Fog", link: "/guides/battle-maps/line-of-sight/" },
+                { label: "Drawing, Markers & Effects", link: "/guides/battle-maps/drawing-and-effects/" },
               ],
             },
-            { label: "Import and Export", link: "/guides/import-and-export/" },
+            { label: "The Player Screen", link: "/guides/player-screen/" },
             { label: "Remote Play", link: "/guides/remote-play/" },
-            { label: "Tips and Tricks", link: "/guides/tips-and-tricks/" },
-            { label: "Tutorials", link: "/guides/tutorials/" },
+            { label: "Dice & Roll Tables", link: "/guides/dice/" },
+            { label: "Import and Export", link: "/guides/import-and-export/" },
+            { label: "Game Systems", link: "/guides/game-systems/" },
+            { label: "Video Tutorials", link: "/guides/tutorials/" },
             { label: "Special Thanks", link: "/guides/special-thanks/" },
           ],
         },

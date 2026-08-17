@@ -6,7 +6,7 @@ description: Party movement, default token style, input gestures, rendering perf
 **Settings → Main Settings → Battle Map.**
 
 The whole screen requires the **Battle Map** purchase; without it the row is not shown on the main
-Settings screen. For how to use the map itself, see the [Battle Map guide](/guides/battle-map/).
+Settings screen. For how to use the map itself, see the [Battle Map guide](/guides/battle-maps/).
 
 ## General
 

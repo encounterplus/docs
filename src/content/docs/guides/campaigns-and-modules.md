@@ -1,41 +1,131 @@
 ---
 title: Campaigns & Modules
+description: Organising your material — what a campaign is, what a module is, groups, pages and references, and how the current campaign works.
 ---
 
-:::caution[Obsolete]
-TODO: update to v5
+A **campaign** is your own container for one ongoing game. A **module** is a bundle of content made
+to be shared.
+
+That is the whole difference. Both hold the same kinds of things — pages, maps, encounters and
+entries — but a campaign is where you work, and a module is what you install.
+
+| | Campaign | Module |
+| --- | --- | --- |
+| Made by | You | You or someone else |
+| Comes from | Created in the app | Imported or downloaded |
+| Holds | Your notes, maps, encounters, party | Published adventure content |
+| Deleting it | Removes its content | Removes everything it brought |
+
+## Campaigns
+
+A campaign holds the material for one table, plus the state of the game you are running: the current
+map, the loaded maps, and the initiative order.
+
+### Creating one
+
+Open the library, go to **Content → Campaigns**, and add one. Give it a name and a description.
+
+### The current campaign
+
+One campaign is the **current** one at a time. That is the campaign the game screen, battle map and
+player display are driving.
+
+Switch it under **Settings → Current Campaign**, or from the campaign list.
+
+Switching changes what **Load Party** finds, which maps are to hand, and where new content is filed.
+
+### The party
+
+Attach your player characters to the campaign. Two things then start working:
+
+- **Load Party** adds all of them to combat in one tap.
+- **Encounter difficulty** compares your monsters against their levels.
+
+Both are described in [Encounters & Combat](/guides/encounters/).
+
+## Modules
+
+A module is content packaged for distribution — an adventure, a compendium, a rules supplement, an
+asset pack.
+
+Modules arrive two ways: **Settings → Package Manager** downloads published ones, and
+**Settings → Import** installs a `.module` file you already have. See
+[Import and Export](/guides/import-and-export/).
+
+A module carries its own name, author, version and description, so you can see where content came
+from and whether an update exists.
+
+:::caution
+Deleting a module deletes everything it brought with it. Content you created yourself belongs to your
+campaign, not to the module, and is not affected.
 :::
 
-### Campaigns and Modules
+## What goes inside
 
-In the **Compendium** ![load][icon-library], materials for managing campaigns can be accessed. Documents can be created, maps can be organized, and encounters can be saved. All of the creatures and Player Characters are managed here as well. This article will focus on managing **Campaigns**, which are whole adventures for the Player Characters. This will also apply to **Modules** which are small bite-sized adventures that can be inserted into larger campaigns.
+Both campaigns and modules hold the same building blocks:
 
-### Creating a Campaign
+| Item | What it is |
+| --- | --- |
+| **Page** | Written content — notes, read-aloud text, house rules |
+| **Map** | A battle map |
+| **Encounter** | A prepared fight |
+| **Group** | A folder, for structure |
+| **Reference** | A shortcut to something else |
 
-Creating a campaign is the first step in planning a larger long-term adventure for the Player Characters. A campaign can consist of **Maps**, **Pages**, and **Encounters**. You can **Group** these files together into folders.
+### Pages
 
-1. Tap on the ![Compendium][icon-library].
+Pages are the prose half of an adventure. Write your session notes, room descriptions and handouts
+here.
 
-	***Campaigns**, **Modules**, and **Asset Packs** can be added here. Player Characters as well as items, gear, spells, and monsters can be also added to the Compendium.*
+Text on a page can contain live links and dice — `{#monster Goblin}` opens the creature, and
+`{#dice 2d6+3}` rolls. See [Dice & Roll Tables](/guides/dice/).
 
-2. Tap the **Campaigns** button.
-3. Tap the ![add][icon-add] button to add a new campaign. This is where the title can be set and a description can be added. **Modules** can also be inserted and Player Characters can be assigned.
+### Groups
 
-*Inserting Player Characters into a campaign makes it easier to add a group of Player Characters to an Encounter or Map.*
+Groups are folders. Use them to give an adventure chapters and a campaign sections.
 
-### Managing a Campaign
+Groups nest, so you can go as deep as you need.
 
-Once a Campaign is created the planning phase begins. As stated above, the following files can be added to a campaign:
+:::note
+Deleting a group does **not** delete what is inside it. The contents move back to the top level of the
+campaign or module.
+:::
 
-* **Pages**: These are going to be documents that can include anything that the DM needs to keep track of: events, NPCs, character arcs, and anything else that needs to be written down.
-* **Encounters**: Adding encounters lets the DM pre-plan who/what the Player Characters will face. Creating an encounter will prompt a name, description, and combatants. Based on the Player Characters in the campaign, Encounter will state the difficulty.
-* **Maps**: Maps can be hand drawn using the tools built into Encounter+. Maps can also be imported from the **Photos App** or the **Files App**. These maps can then be drawn on. Markers can also be added by double-tapping in the map. This will add a marker to the spot that was double-tapped.
+### References
 
-*The use of Maps can be unlocked via the in-app purchase in the ![Settings][icon-settings] or via the in-app **Subscription**.*
+A reference is a shortcut. It points at something else — a creature, a map, a page — and shows up in
+the tree with its own name.
 
-[icon-library]: ../../../assets/icons/library.png
-[icon-load]: ../../../assets/icons/load.png
-[icon-add]: ../../../assets/icons/add.png
-[icon-settings]: ../../../assets/icons/settings.png
-[icon-initiative]: ../../../assets/icons/initiative.png
-[icon-pencil]: ../../../assets/icons/pencil.png
+This is how one thing appears in two places without being copied. The goblin defined in a compendium
+can also be listed in the chapter where it ambushes the party.
+
+References are soft links. If the target is deleted, the reference is left pointing at nothing.
+
+## How this relates to the library
+
+The library holds all your content. Campaigns and modules organise it.
+
+Nothing is duplicated: filing a creature into a campaign does not make a second copy of it. See
+[How it works](/guides/how-it-works/).
+
+## Common questions
+
+### Where did my new content go?
+
+New content is filed into the current campaign unless you say otherwise. Check
+**Settings → Current Campaign**.
+
+### Can content belong to both a campaign and a module?
+
+Yes. Content records where it came from, and can sit in both.
+
+### I deleted a module and lost content
+
+A module owns what it brought. If you edited one of its entries, make a **Copy** first — the copy is
+yours and survives. See [The Library](/guides/library/#copying).
+
+## Where to go next
+
+- [Import and Export](/guides/import-and-export/) — installing modules and exporting your campaign.
+- [Encounters & Combat](/guides/encounters/) — the party and encounter difficulty.
+- [Battle Maps](/guides/battle-maps/) — maps live in campaigns and modules too.
