@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A new push to the same PR supersedes the old run; nothing is published, so cancelling is safe.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Same build the deploy workflow runs. Fails on invalid frontmatter, MDX parse
+      # errors, missing asset imports and sidebar links to nonexistent routes.
+      - run: npm run build
