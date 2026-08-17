@@ -41,6 +41,18 @@
 	margin-top: 0.75em;
 }
 
+/* h2 is a genuine section break here — a whole merged type on the schema pages,
+   a top-level topic in the guides — but Starlight separates it from h3 by one
+   type step alone (same weight, same color), and the tightened margin above
+   leaves the two nearly equidistant from the text before them. A rule above h2
+   restores the boundary without re-inflating vertical space. No page opens with
+   an h2, so this never lands directly under the h1. */
+.sl-markdown-content .sl-heading-wrapper.level-h2 {
+	margin-top: 2rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--sl-color-hairline-light);
+}
+
 .sl-markdown-content code {
 	border-radius: 0.375rem;
 }
