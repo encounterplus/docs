@@ -1,76 +1,89 @@
 ---
 title: Introduction
 description:
-  pls is a prettier and powerful ls(1) for the pros. It is a modern alternative
-  to ls(1), which has been around for over half a century.
+  Encounter+ is a game master's toolkit for iPhone, iPad and Mac — library, encounters, initiative,
+  battle maps, dice, and a player-facing screen, all in one app.
 ---
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 
-some description about the project, what it is, why it exists, etc.
+**Encounter+ is the app you run your table from.** It keeps your creatures, spells, items and notes
+in one library, builds encounters out of them, tracks initiative while you play, and puts a battle
+map on the table — with a second, player-facing view for the people sitting across from you.
+
+It runs on iPhone, iPad and Mac, works entirely offline, and stores everything on your own device.
 
 ![app screenshot](../../../assets/promo-transparent-small.png)
 
-## Features
-
-main features of the project, what it can do, etc.
+## What it does
 
 <CardGrid>
-  <Card
-    title="Pretty"
-    icon="star">
-    output is cleaner, friendlier and more colorful. Who doesn't like a
-    little color in their terminal?
+  <Card title="Library" icon="open-book">
+    Creatures, spells, items, players, notes and roll tables, all searchable and filterable. Edit
+    anything, or create your own from scratch.
   </Card>
-  <Card
-    title="Powerful"
-    icon="information">
-    providers more features than the competition. It uses a cascading
-    config system with specs.
+  <Card title="Encounters & initiative" icon="list-format">
+    Build an encounter ahead of time or on the fly, roll initiative, and track hit points,
+    conditions and turns while you run it.
   </Card>
-  <Card
-    title="Performant"
-    icon="rocket">
-    is speedy and performant (written in Rust). It continues to be fast
-    even with all features enabled.
+  <Card title="Battle maps" icon="star">
+    Maps with tokens, walls, lighting, line of sight and fog of war, plus drawing tools, markers and
+    areas of effect. Available as a one-time purchase.
   </Card>
-  <Card
-    title="Practical"
-    icon="approve-check">
-     has sensible defaults and an effortless interface. The CLI is
-    fluent, intuitive and memorable.
+  <Card title="Player screen" icon="desktop">
+    Mirror a player-facing view to a TV or projector over AirPlay or HDMI — the map, the initiative
+    order, images and handouts, without your notes.
   </Card>
-  <Card
-    title="Petite"
-    icon="magnifier">
-    is a small, single-file, binary executable. It supports both Mac and
-    Linux.
+  <Card title="Remote play" icon="laptop">
+    A built-in web server lets players open the map in a browser and move their own tokens from
+    anywhere. Part of the Premium subscription.
   </Card>
-  <Card
-    title="Pliable"
-    icon="setting">
-     can be extensively tweaked by power users and pros. Personalise it
-    exactly how you like it.
+  <Card title="Dice roller" icon="random">
+    A standard roller everywhere a roll is needed, with an optional 3D roller and dice themes for
+    Premium subscribers.
   </Card>
-  <Card
-    title="Personable"
-    icon="puzzle">
-    prioritises consumption by humans over scripts. The output is pretty
-    and readable, by default.
+  <Card title="Campaigns & modules" icon="document">
+    Organise your material into campaigns and modules — adventures, maps, pages and handouts kept
+    together and loaded when you need them.
   </Card>
-  <Card
-    title="Picturesque"
-    icon="seti:image">
-     can render high-quality SVG images right in the terminal as file and
-    directory icons.
+  <Card title="Your own game system" icon="puzzle">
+    The app is not hard-wired to one ruleset. A *game system* defines what content types exist and
+    how they look, and you can install, switch or build your own.
+  </Card>
+  <Card title="Works offline" icon="database">
+    Everything lives in a local database on your device, so the whole app keeps working with no
+    network at all — and it backs itself up on a schedule.
+  </Card>
+  <Card title="Import & export" icon="cloud-download">
+    Bring in modules, campaigns, systems, maps in `.dd2vtt` / `.uvtt` format, CSV files and images —
+    and export your own content back out. Legacy XML content still imports.
   </Card>
 </CardGrid>
 
-You can refer to [our comparison](/about/comparison/) of to other
-`ls(1)` alternatives, notably exa/eza.
+## What you get without paying
+
+Encounter+ runs a complete game out of the box. The library and compendium, creating and editing
+content, encounter building, the initiative tracker, campaigns and modules, import and export, roll
+tables and the dice roller are all included.
+
+There are **no ads, ever** — not in the free app, and not anywhere else. Nothing is interrupted by
+advertising and nothing is unlocked by watching one.
+
+Two purchases add to that: a **one-time Battle Map purchase** unlocks maps, tokens, lighting and
+line of sight, and an **optional Premium subscription** adds remote play, 3D dice, animated tiles,
+weather effects and early access to new features — mainly as a way to support ongoing development.
+See [Purchases](/settings/purchases/) for the details.
+
+## Where to go next
+
+- New here? Start with the [Quick Start](/guides/quick-start/).
+- Setting up maps? See the [Battle Map guide](/guides/battle-map/) and
+  [Line of Sight](/guides/battle-maps/line-of-sight/).
+- Playing with people who aren't in the room? See [Remote Play](/guides/remote-play/).
+- Looking for a specific setting? The [Settings Overview](/settings/overview/) lists every screen.
 
 ## More info
 
-For more information, take a look at the [FAQs](/about/faq/). If your question
-isn't answered there, feel free to start a
-[GitHub discussion](https://github.com/pls-rs/pls/discussions).
+For common questions, take a look at the [FAQs](/about/faq/). If your question isn't answered there,
+ask on our [Discord](https://discord.gg/psWk84h) or on
+[r/EncounterPlus](https://www.reddit.com/r/EncounterPlus/).
