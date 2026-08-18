@@ -37,8 +37,8 @@ type — and whether the reader already has it installed — before anything lar
 
 ### `url` — a single file
 
-Points directly at an archive or map file: `.module`, `.campaign`, `.system`, `.uvtt`, `.dd2vtt`,
-and the other supported types.
+Points directly at an archive or map file: `.module`, `.campaign`, `.system`, `.eplus`, `.uvtt`,
+`.dd2vtt`, and the other [supported types](/reference/file-types/).
 
 ```
 encounterplus://import?url=https%3A%2F%2Fexample.com%2Fmaps%2Fgoblin-cave.uvtt
@@ -183,7 +183,7 @@ system's own file handoff rather than a URL — the share sheet on iOS and iPadO
 iPad, or the file association on macOS. Encounter+ registers its document types, so it appears as a
 destination automatically:
 
-`.module` · `.campaign` · `.system` · `.pack` · `.compendium` · `.uvtt` · `.dd2vtt`
+`.module` · `.campaign` · `.system` · `.pack` · `.compendium` · `.eplus` · `.uvtt` · `.dd2vtt`
 
 That path hands over the file directly, with no hosting involved. Use `url` only when the file is
 already reachable over `https` — a web-based tool with a temporary upload, for example.

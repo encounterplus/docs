@@ -68,9 +68,9 @@ Because that content is 5E content, **the D&D 5E system has to be installed befo
 otherwise the import fails rather than guessing where the content belongs. If an old archive refuses
 to import, this is usually why.
 
-The current formats are `.module`, `.campaign`, `.system`, `.collection` and `.eplus`; see
-[Import and Export](/guides/import-and-export/). Nothing forces you to convert — your old archives
-keep working.
+The current formats are `.module`, `.campaign`, `.system` and `.eplus`; see
+[Import and Export](/guides/import-and-export/) and [File Types](/reference/file-types/). Nothing
+forces you to convert — your old archives keep working.
 
 ## Purchases
 

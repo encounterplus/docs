@@ -6,7 +6,7 @@ Documentation site for **Encounter+**, a virtual tabletop / DM tool for iOS and 
 
 The deliverable here is content — Markdown/MDX pages — not application code.
 
-Live site: **<https://docs.encounter.plus>** — the canonical origin, configured as `site` in [astro.config.mjs](astro.config.mjs) and matching the Pages custom domain.
+Live site: **<https://docs.encounter.plus>**
 
 ## 🧞 Commands
 

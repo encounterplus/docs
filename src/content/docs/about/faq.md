@@ -132,14 +132,13 @@ If you have just updated from version 4, this is expected and nothing is lost. S
 | `.module` | A distributable body of content — pages, maps, encounters, entities, assets |
 | `.campaign` | A whole campaign, including its content |
 | `.system` | A game system |
-| `.collection` | A mixed set of content in one archive |
-| `.eplus` | The same content as a single JSON file, with images embedded |
+| `.eplus` | The universal Encounter+ archive — a mixed set of content, with its images beside it |
 | `.dd2vtt` / `.uvtt` | A single map exported from Dungeondraft, Universal VTT and similar tools |
-| `.csv` | Tabular data — roll tables and bulk entity import |
+| `.csv` | Tabular data — the rows of a roll table |
 | `.jpg` / `.png` / `.webp` | Images, imported as maps or artwork |
 
 Legacy `.compendium` and `.pack` XML archives from older versions still import as well. See
-[Import and Export](/guides/import-and-export/) and the
+[Import and Export](/guides/import-and-export/), [File Types](/reference/file-types/) and the
 [schema reference](/reference/schema/) for the current formats.
 
 ### What can I export?
@@ -147,7 +146,8 @@ Legacy `.compendium` and `.pack` XML archives from older versions still import a
 A single entity or a selection of them, a module, a campaign, the current system, or everything at
 once. **Settings → Export.**
 
-`.eplus` is import-only by design — there is no export to it.
+Each of those is written as an archive of the matching type — `.module`, `.campaign`, `.system`, or
+`.eplus` for a set of loose content — and every one of them imports straight back.
 
 ### Can I import from Dropbox, Google Drive or somewhere other than iCloud?
 

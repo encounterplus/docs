@@ -88,6 +88,7 @@ export default defineConfig({
 				{
 					label: 'Reference',
 					items: [
+						{ label: 'File Types', link: '/reference/file-types/' },
 						{ label: 'URL Scheme', link: '/reference/url-scheme/' },
 						{ label: 'Legacy XML', link: '/reference/legacy-xml/overview/' },
 						...schemaReference,
