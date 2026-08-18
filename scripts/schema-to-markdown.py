@@ -367,7 +367,9 @@ def render_page(page: Page) -> str:
     summary = (page.types[0][1].get("description", "").split("\n", 1)[0]
                if len(page.types) == 1 else f"{page.label} reference.")
     out = ["---", f"title: {yaml_str(page.label)}",
-           f"description: {yaml_str(summary or page.label)}", "---", "",
+           f"description: {yaml_str(summary or page.label)}",
+           # Generated page: no "Edit page" link, hand-edits are overwritten.
+           "editUrl: false", "---", "",
            GENERATED_BANNER, ""]
     for type_name, schema in page.types:
         out += render_type_section(type_name, schema, type_name == page.label)
@@ -418,7 +420,9 @@ def render_index(pages: list[Page]) -> str:
 
     out = ["---", 'title: "Schema reference"',
            'description: "Reference for the JSON import/export and game-system '
-           'configuration schemas."', "---", "", GENERATED_BANNER, "",
+           'configuration schemas."',
+           # Generated page: no "Edit page" link, hand-edits are overwritten.
+           "editUrl: false", "---", "", GENERATED_BANNER, "",
            "Reference for the JSON formats the app reads and writes, generated from "
            "its data model.", ""]
 

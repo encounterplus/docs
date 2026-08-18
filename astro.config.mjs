@@ -28,6 +28,10 @@ export default defineConfig({
 				replacesTitle: true,
       },
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/encounterplus/docs' }],
+			// "Edit page" link under each page; Starlight appends the page's source path.
+			editLink: {
+				baseUrl: 'https://github.com/encounterplus/docs/edit/main/',
+			},
 			customCss: [
         // Relative path to your custom CSS file
         './src/styles/custom.css',
