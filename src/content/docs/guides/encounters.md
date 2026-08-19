@@ -1,9 +1,9 @@
 ---
 title: Encounters & Combat
-description: Building an encounter, adding creatures on the fly, rolling initiative, and tracking hit points, conditions and turns while you run the fight.
+description: Building an encounter, adding combatants on the fly, rolling initiative, and tracking hit points, conditions and turns while you run the fight.
 ---
 
-An encounter is a group of creatures you plan to throw at your players. Combat is what happens when
+An encounter is a group of combatants you plan to throw at your players. Combat is what happens when
 you run it.
 
 This page covers both: building the encounter, then running it.
@@ -20,7 +20,8 @@ and fog. They meet on the game screen.
 
 ## Building an encounter
 
-Open the **add** menu next to the initiative window. You get three ways to add combatants:
+Tap the ![more][icon-more] **More** menu next to the initiative window. You get three ways to add
+combatants:
 
 | Action | What it does |
 | --- | --- |
@@ -47,22 +48,22 @@ Every combatant has a role, and it does more than colour the row:
 | **Neutral** | A bystander. |
 
 Role decides the token ring colour on the map, whether initiative is rolled automatically, and
-whether the creature counts toward encounter difficulty.
+whether the combatant counts toward encounter difficulty.
 
 ### Hit points
 
-A monster's hit points are worked out when it is loaded. You choose how under
+A combatant's hit points are worked out when it is loaded. You choose how under
 **Settings → Combat → [Hit Points](/settings/combat/#hit-points)** — rolled, average, minimum or
 maximum.
 
-This applies at load time only. Creatures already in the fight keep the hit points they have.
+This applies at load time only. Combatants already in the fight keep the hit points they have.
 
 ### Difficulty
 
 With D&D 5E loaded, the game screen shows a difficulty rating for the current encounter. It compares
-the experience value of the hostile creatures against the levels of your party.
+the experience value of the hostile combatants against the levels of your party.
 
-Add or remove a creature and the rating updates. It is a guide, not a rule.
+Add or remove a combatant and the rating updates. It is a guide, not a rule.
 
 :::note
 Difficulty is a 5E feature. With another system loaded, the rating is hidden.
@@ -70,16 +71,16 @@ Difficulty is a 5E feature. With another system loaded, the rating is hidden.
 
 ### Loading onto the map too
 
-By default, loading a creature adds it to combat **and** puts a token on the map. Change this under
+By default, loading a combatant adds it to combat **and** puts a token on the map. Change this under
 **Settings → Combat → [Load Mode](/settings/combat/#load-mode)**.
 
 If you build encounters in front of your players, turn on
-**[Hidden by Default](/settings/combat/#hidden-by-default)** so creatures arrive hidden and you
+**[Hidden by Default](/settings/combat/#hidden-by-default)** so combatants arrive hidden and you
 reveal them when you want.
 
 ## Running combat
 
-Tap **start**. The app rolls initiative for the creatures and sorts the list.
+Tap **start**. The app rolls initiative for the combatants and sorts the list.
 
 By default it does not roll for player characters — you type their numbers in. You can change that in
 [Combat Settings](/settings/combat/).
@@ -132,7 +133,7 @@ time.
 
 ## Common questions
 
-### Can I add creatures after combat has started?
+### Can I add combatants after combat has started?
 
 Yes. New combatants join at the bottom of the order until initiative is rolled again.
 
@@ -150,3 +151,5 @@ It only appears with a 5E-compatible system loaded.
 - [Combat Settings](/settings/combat/) — every setting on this screen, row by row.
 - [Battle Maps](/guides/battle-maps/) — running the same fight on a map.
 - [The Player Screen](/guides/player-screen/) — showing the initiative order to your table.
+
+[icon-more]: /assets/symbols/ellipsis.svg

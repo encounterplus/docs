@@ -41,9 +41,10 @@ and so on.
 
 Tap **All Entries** and type a name. Tap a result to read it.
 
-## 3. Add creatures to the encounter
+## 3. Add combatants to the encounter
 
-Back on the game screen, open the **add** menu next to the initiative window:
+Back on the game screen, tap the ![more][icon-more] **More** menu (the three dots) in the
+initiative window:
 
 | Action | What it does |
 | --- | --- |
@@ -51,28 +52,33 @@ Back on the game screen, open the **add** menu next to the initiative window:
 | **New Combatant** | Create a one-off combatant by hand |
 | **Load Party** | Add every player character in the current campaign |
 
-Pick **Load Combatant** and add two creatures. Tap the same creature twice to get two of them.
+Pick **Load Combatant** and add two combatants. Tap the same creature twice to get two of them.
 
-By default a loaded creature is added to combat *and* placed on the map. You can change that under
+By default a loaded combatant is added to combat *and* placed on the map. You can change that under
 **Settings → Combat → [Load Mode](/settings/combat/#load-mode)**.
 
 ## 4. Roll initiative
 
-Tap **start**. The app rolls initiative for the creatures and sorts the list.
+Tap **start**. By default the app rolls initiative automatically for all enemy combatants and sorts
+the list. You can also set a value yourself by tapping a combatant's initiative field and typing it in.
 
 While combat runs:
 
 - **next** and **previous** move through turns.
 - Tap a combatant's hit points to apply damage or healing.
 - Swipe a row to edit it or add conditions.
+- Long press a row (or right click on macOS) to open its context menu.
 
-Tap **stop** to end combat. You can start again later and pick up where you left off.
+Tap **stop** to end combat. You can start again later and pick up where you left off. To clear the
+board for the next fight, tap the ![more][icon-more] **More** menu and choose **Reset**: all enemy
+combatants are removed and your party's combatants stay in the list.
 
 ## 5. Put it on a map
 
-Open the game screen menu and tap **New Map**, or load an existing map from your campaign.
+Open the game screen menu and tap the ![new][icon-new] **New Map**, or load an existing map from
+your campaign.
 
-Drag a token to move it. Tokens for creatures you loaded are already there if Load Mode included the
+Drag a token to move it. Tokens for combatants you loaded are already there if Load Mode included the
 map.
 
 :::note
@@ -92,10 +98,11 @@ Both show the same player-facing view. Your notes and hidden tokens stay on your
 
 ## 7. Save what you built
 
-Use **Save Encounter** to keep the encounter for later. Saving a map keeps token positions, fog and
-drawings.
+Nothing needs saving by hand: maps and the tokens on them — positions, fog and drawings — are saved
+automatically as you go, and live in your current campaign.
 
-Saved encounters and maps live in your current campaign, and load again in one tap.
+**Save Encounter** is still there if you want a snapshot of the combatants and their token positions
+as a reusable encounter, but it is no longer the preferred way to keep your work.
 
 ## Where to go next
 
@@ -105,3 +112,5 @@ Saved encounters and maps live in your current campaign, and load again in one t
 - [Campaigns & Modules](/guides/campaigns-and-modules/) — organising your material.
 
 [icon-library]: /assets/symbols/text.book.closed.svg
+[icon-more]: /assets/symbols/ellipsis.svg
+[icon-new]: /assets/symbols/plus.svg

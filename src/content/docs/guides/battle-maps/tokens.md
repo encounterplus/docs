@@ -146,7 +146,7 @@ An aura follows its creature. For an area anchored to the ground instead, use an
 ### My token is on the map but not in initiative
 
 Load Mode was set to *Map* only. Change it under [Combat Settings](/settings/combat/#load-mode), or
-add the creature to combat separately.
+add the combatant to combat separately.
 
 ### The token is the wrong size
 
@@ -160,7 +160,7 @@ Turn on restricted movement, as described above. Without it, walls block vision 
 ## Where to go next
 
 - [Line of Sight & Fog](/guides/battle-maps/line-of-sight/) — walls, lights and what players see.
-- [Encounters & Combat](/guides/encounters/) — the initiative side of the same creatures.
+- [Encounters & Combat](/guides/encounters/) — the initiative side of the same combatants.
 
 [icon-move]: /assets/icons/move.png
 [icon-move-restricted]: /assets/icons/move-restricted2.png
