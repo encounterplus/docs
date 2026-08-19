@@ -13,11 +13,12 @@ export default defineConfig({
 	redirects: {
 		'/guides/web-client-faq': '/guides/remote-play/',
 		'/remote-play': '/guides/remote-play/',
-		'/special-thanks': '/guides/special-thanks/',
+		'/special-thanks': '/about/special-thanks/',
 		// Retired in the v5 guides restructure.
 		'/guides/encounter-management': '/guides/encounters/',
 		'/guides/tips-and-tricks': '/guides/how-it-works/',
 		'/guides/battle-map': '/guides/battle-maps/',
+		'/guides/special-thanks': '/about/special-thanks/',
 	},
 	integrations: [
 		starlight({
@@ -43,6 +44,7 @@ export default defineConfig({
             { label: "Introduction", link: "/about/intro" },
             { label: "Upgrading from v4", link: "/about/upgrading/" },
             { label: "Frequently Asked Questions", link: "/about/faq/" },
+            { label: "Special Thanks", link: "/about/special-thanks/" },
           ],
         },
 				{
@@ -69,7 +71,6 @@ export default defineConfig({
             { label: "Import and Export", link: "/guides/import-and-export/" },
             { label: "Game Systems", link: "/guides/game-systems/" },
             { label: "Video Tutorials", link: "/guides/tutorials/" },
-            { label: "Special Thanks", link: "/guides/special-thanks/" },
           ],
         },
 				{
