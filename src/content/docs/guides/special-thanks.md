@@ -2,7 +2,7 @@
 title: Special Thanks
 ---
 
-### Users and Beta Testers
+### Users and Testers
 
 A special thanks to all beta testers and users on Reddit, Discord and Facebook for providing invaluable feedback during and after development.
 
