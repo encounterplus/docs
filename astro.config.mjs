@@ -42,7 +42,7 @@ export default defineConfig({
           items: [
             { label: "Introduction", link: "/about/intro" },
             { label: "Upgrading from v4", link: "/about/upgrading/" },
-            { label: "FAQ", link: "/about/faq/" },
+            { label: "Frequently Asked Questions", link: "/about/faq/" },
           ],
         },
 				{
