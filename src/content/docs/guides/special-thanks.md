@@ -2,13 +2,19 @@
 title: Special Thanks
 ---
 
-:::caution[Obsolete]
-TODO: update to v5
-:::
-
-### Beta Testers &amp; Users
+### Users and Beta Testers
 
 A special thanks to all beta testers and users on Reddit, Discord and Facebook for providing invaluable feedback during and after development.
+
+Special mention goes to `rrgeorge`, `AceDetectivePuff`, `Tixu`, `LohrumIpsum`, `JacobJ`, `Nocker777`, `Poofypuma`, `Dusey` and `scumbag` for their invaluable work as community moderators and developers of tools for Encounter+.
+
+### Supporters
+
+A heartfelt thank you to all paying supporters. Your continued support is what makes further development and constant improvement of the app possible.
+
+### CzePeku
+
+For battle maps located in screenshots, app store previews and videos [Website](https://www.czepeku.com)
 
 ### 2 Minute Tabletop
 
@@ -29,15 +35,3 @@ For example adventures and battle maps. [Website](https://www.elventower.com)
 ### Matt Forsyth
 
 For artworks located in the settings and app store preview. [Artstation](https://www.artstation.com/mattforsyth)
-
-### Iñaki Silleras Art
-
-For artworks located in the app store preview. [FB page](https://www.facebook.com/Iñaki-Silleras-Art-377132112405478/)
-
-### Kaitlyn South
-
-For helping with tutotrials and documentation
-
-### WotC
-
-For creating an awesome TTRPG game experience
