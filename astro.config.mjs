@@ -90,6 +90,7 @@ export default defineConfig({
 					items: [
 						{ label: 'File Types', link: '/reference/file-types/' },
 						{ label: 'URL Scheme', link: '/reference/url-scheme/' },
+						{ label: 'Server API', link: '/reference/server-api/' },
 						{ label: 'Legacy XML', link: '/reference/legacy-xml/overview/' },
 						...schemaReference,
 					],
