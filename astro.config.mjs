@@ -64,6 +64,7 @@ export default defineConfig({
             },
             { label: "The Player Screen", link: "/guides/player-screen/" },
             { label: "Remote Play", link: "/guides/remote-play/" },
+            { label: "Writing Content", link: "/guides/writing-content/" },
             { label: "Dice & Roll Tables", link: "/guides/dice/" },
             { label: "Import and Export", link: "/guides/import-and-export/" },
             { label: "Game Systems", link: "/guides/game-systems/" },

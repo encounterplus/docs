@@ -77,8 +77,9 @@ Both campaigns and modules hold the same building blocks:
 Pages are the prose half of an adventure. Write your session notes, room descriptions and handouts
 here.
 
-Pages are written in Markdown, and links do double duty: `[Goblin](monster)` opens the creature and
-`[2d6+3](dice)` rolls. See [Dice & Roll Tables](/guides/dice/).
+Pages are written in a rich text editor, and links do double duty: a link to `/monster/goblin` opens
+the creature, and a link to `/roll` rolls its own text. See
+[Writing Content](/guides/writing-content/#pages).
 
 ### Groups
 

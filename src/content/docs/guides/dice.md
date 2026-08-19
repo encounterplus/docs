@@ -36,49 +36,21 @@ Switch to private for the rolls your players should not see, and back afterwards
 
 Dice written into a creature's stat block or a page are live. Tap one and it rolls.
 
-That works because all text in the app is Markdown, and a Markdown link whose destination is a roll
-type becomes a live die. Write them yourself in any page, note or description:
+That works because the text the app renders is Markdown, and dice expressions in it are found
+automatically — `2d10` in a trait is tappable with no markup at all. To be explicit, or to label a
+roll, link it:
 
 ```markdown
-[2d6+3](dice)
-[1d20+5](roll)
-[1d20+7](attack)
-[2d8+4](damage)
-[1d20+3](save)
-[1d20+2](check)
+[2d6+3](roll)
+[2d6+3](roll "fire damage")
 ```
 
-All of them roll. The different destinations exist so the app can tell an attack from a save — which
-is what lets each kind carry its own dice theme.
+Under D&D 5E the app also guesses the kind of roll — a leading `+` is an attack, a `d20` is a check,
+a formula followed by *damage* is damage — which is what lets each kind carry its own dice theme.
 
-The link text is the formula. To show something else alongside it, add a link title:
-
-```markdown
-[2d6+3](dice "fire damage")
-```
-
-Plain formulas in ordinary prose are picked up too, so `2d6+3` written in a sentence is tappable
-without any markup. Use a link when you want a specific roll type or label.
-
-### Links to other content
-
-Links work the same way for content — the destination is the kind of thing you are pointing at:
-
-```markdown
-[Goblin](monster)
-[Bag of holding](item)
-[Fireball](spell)
-[Chapter 1](page)
-[Cragmaw Hideout](map)
-```
-
-Tapping one opens that entry. Nothing is copied — it is a link.
-
-If two sources define the same name, narrow it with the source after a `#`:
-
-```markdown
-[Goblin](monster#MM)
-```
+Pages are the exception: they use a rich text editor, so a roll there has to be a link to `/roll`
+with the formula as its text. The full syntax, including links to other content, is covered in
+[Writing Content](/guides/writing-content/).
 
 ## Roll tables
 
@@ -107,7 +79,7 @@ Nesting is capped, so a table that eventually rolls on itself will stop rather t
 
 ### Entries inside results
 
-Table cells can contain content links, using the same syntax as above:
+Table cells can contain content links, the same as any other text:
 
 ```markdown
 [Potion of healing](item)
@@ -138,8 +110,8 @@ Your public rolls appear in their log the same way. See [Remote Play](/guides/re
 
 ### My dice text is not tappable
 
-Check the syntax — a Markdown link with the roll type as its destination, `[2d6+3](dice)` — and make
-sure the formula is one the app can parse, such as `2d6+3`.
+Check that the formula is one the app can parse, such as `2d6+3`. If you wrote it as a link, the
+destination has to be `roll`.
 
 ### The 3D roller is not there
 
@@ -153,6 +125,7 @@ Set the roller **Mode** to *Private*. See
 
 ## Where to go next
 
+- [Writing Content](/guides/writing-content/) — the full Markdown, link and dice syntax.
 - [Dice Roller Settings](/settings/dice-roller/) — rollers, sound and dice themes.
 - [The Library](/guides/library/) — where roll tables are stored.
 - [Remote Play](/guides/remote-play/) — rolling with players who are not in the room.
