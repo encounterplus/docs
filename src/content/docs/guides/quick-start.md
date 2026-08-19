@@ -106,7 +106,7 @@ as a reusable encounter, but it is no longer the preferred way to keep your work
 
 ## Where to go next
 
-- [How it works](/guides/how-it-works/) — the four parts of the app.
+- [How it works](/guides/how-it-works/) — the core concepts behind the app.
 - [The Library](/guides/library/) — searching, editing and creating content.
 - [Encounters & Combat](/guides/encounters/) — the full version of steps 3 and 4.
 - [Campaigns & Modules](/guides/campaigns-and-modules/) — organising your material.

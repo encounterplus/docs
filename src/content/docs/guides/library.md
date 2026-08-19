@@ -27,10 +27,14 @@ The sidebar has three groups:
 | **Compendium** | The content types your game system defines |
 
 The **Compendium** group changes with the loaded system. Creatures, spells and items are there
-because D&D 5E defines them — a different system lists different things. See
-[How it works](/guides/how-it-works/).
+because D&D 5E defines them — a different system lists different things.
 
-At the bottom you can see the name and version of the loaded system.
+Every entry in these lists is an **entity**. They all share one underlying storage, and the system
+decides what each kind stores, how you edit it, how its detail screen reads and how it is styled.
+That is why the library can list content types the app itself knows nothing about. See
+[Everything in there is an entity](/guides/how-it-works/#everything-in-there-is-an-entity).
+
+At the top you can see the name and version of the loaded system.
 
 ## Finding things
 

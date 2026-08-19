@@ -24,6 +24,10 @@ A system is a folder of definitions, not code:
 - Filters, themes, icons, fonts and translations.
 - Its own settings.
 
+Every entry of every type is an **entity** — one underlying storage model that the system gives
+meaning to through those definitions. See
+[Everything in there is an entity](/guides/how-it-works/#everything-in-there-is-an-entity).
+
 Because none of that is built into the app, a system can be updated on its own schedule, and anyone
 can write one.
 

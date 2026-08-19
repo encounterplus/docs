@@ -1,14 +1,14 @@
 ---
 title: How it works
-description: The four parts of Encounter+ — the game system, the library, campaigns and modules, and the game screen — and how they fit together.
+description: The core concepts behind Encounter+ — the game system, the library, campaigns and modules, and the game screen — and how they fit together.
 ---
 
-Encounter+ is built from four parts. Almost every question about the app is really a question about
-which part you are in. Once you know the four, the rest of the app makes sense.
+Encounter+ is built from a handful of core concepts. Almost every question about the app is really
+a question about which one you are in. Once you know them, the rest of the app makes sense.
 
-## The four parts
+## The core concepts
 
-| Part | What it does |
+| Concept | What it does |
 | --- | --- |
 | **Game system** | Decides what kinds of content exist |
 | **Library** | Holds all your content |
@@ -54,12 +54,9 @@ One campaign is the **current campaign** at any time. That is the one the game s
 The game screen is where you actually play. It holds the initiative tracker, the battle map, the dice
 roller and the shared log.
 
-Everything you do here is temporary until you save it. You can load an encounter, run it, change your
-mind, and reset — your library is untouched.
-
 ## How they connect
 
-The parts stack. Each one builds on the one before it:
+They stack. Each one builds on the one before it:
 
 ```
 Game system   →   what content can exist
@@ -83,10 +80,35 @@ The library sidebar is a map of the same idea:
 | **Library** | All Entries and Bookmarks — search across everything |
 | **Content** | Campaigns, Modules and System |
 | **Compendium** | The content types the loaded system defines |
-| *(bottom)* | The name and version of the loaded system |
 
 The **Compendium** section is the one that changes between systems. What you see there comes from the
 system, not from the app.
+
+### Everything in there is an entity
+
+A creature, a spell, an item, a class, a vehicle — internally they are all the same thing, an
+**entity**. The app has no built-in idea of what a creature is. It stores entities, and the loaded
+system tells it what each kind of entity means:
+
+| The system defines | What you see |
+| --- | --- |
+| **Data** | Which fields an entry stores, and what type each one is |
+| **Form** | The editor screen you get when you create or edit one |
+| **View** | The read-only detail screen — the stat block, the spell card |
+| **Appearance** | The fonts, colours and layout it is drawn with |
+
+That is why a 5E stat block looks like a 5E stat block. Nothing about it is hardcoded — it is the
+system's definition of the Monster entity, rendered.
+
+It also explains a few things that would otherwise look odd:
+
+- A new content type can appear without an app update. The system adds it, and a new Compendium
+  section appears with a working editor and detail screen.
+- Two systems can both have "spells" that store completely different fields and look nothing alike.
+- Everything works the same everywhere. Search, filters, bookmarks, import and export are written
+  against entities in general, so they apply to content types the app has never heard of.
+
+If you want to define your own entity types, see [Custom System](/system-development/).
 
 ## What is yours and what is not
 
