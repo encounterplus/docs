@@ -104,4 +104,4 @@ Saved encounters and maps live in your current campaign, and load again in one t
 - [Encounters & Combat](/guides/encounters/) — the full version of steps 3 and 4.
 - [Campaigns & Modules](/guides/campaigns-and-modules/) — organising your material.
 
-[icon-library]: /assets/icons/library.png
+[icon-library]: /assets/symbols/text.book.closed.svg

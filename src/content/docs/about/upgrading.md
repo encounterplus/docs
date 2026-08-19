@@ -3,8 +3,8 @@ title: Upgrading from Version 4
 description: What changed in version 5, why your library may look empty at first, and how to get your existing content back.
 ---
 
-Version 5 keeps everything you had. There is one step to know about, and this page is mostly about
-that step.
+Version 5 keeps all of your content. There is one extra step after upgrading, and this page explains
+what it is and why it is needed.
 
 :::tip[The short version]
 Your content is intact. It is D&D 5E content, and version 5 only shows content belonging to the
