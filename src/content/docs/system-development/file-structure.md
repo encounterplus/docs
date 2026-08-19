@@ -47,6 +47,12 @@ Nothing here is mandatory except `system.json` and `entities.json`. A system wit
 folder simply has no editors; a system with no `themes/` folder falls back to the app's built-in
 default theme.
 
+Content collection files may also sit at the root — `<collection.label>.json` for each entity type,
+plus `pages.json`, `maps.json`, `encounters.json` and friends. They are optional: a definitions-only
+system has none, and one that ships reference content (the published D&D 5E package and its SRD
+entries, for instance) imports them when the system is installed. See
+[Packaging & Distribution](/system-development/packaging/#distributing-content-for-your-system).
+
 ## The metadata files
 
 ### `system.json`

@@ -99,12 +99,25 @@ or the file.
 
 ## Distributing content for your system
 
-A system carries definitions. The creatures, spells and items authored against it are separate
-`.module` packages that record your system's `id`, and a module declaring a `system` in its
-manifest requires that system to be installed first.
+A system's job is to carry definitions, and there are two ways to get content to the people
+installing it.
 
-Keeping them apart is what lets the ruleset and the content that uses it ship on different
-schedules — and it is why the bundled D&D 5E system contains no SRD content.
+**Separate `.module` packages** are the default. They record your system's `id`, and a module
+declaring a `system` in its manifest requires that system to be installed first. Keeping them apart
+is what lets the ruleset and the content that uses it ship on different schedules, and it keeps the
+system archive small.
+
+**Content inside the `.system` archive** is the other option. Collection files placed at the archive
+root — `<collection.label>.json` for each entity type, plus `pages.json`, `maps.json`,
+`encounters.json` and the other content collections — are imported along with the definitions, and
+their entries are tagged with the system's `id`. Use this for reference content that is part of the
+ruleset itself rather than an optional add-on. The published D&D 5E package works this way: it is
+the same system as the bundled copy, plus the SRD content.
+
+The bundled copy of D&D 5E inside the app is definitions only, which is why a user who installs it
+offline starts with an empty library, while the downloaded package starts with a full one. It is
+worth saying which of the two your package is in its manifest `description`, since both install
+identically and the difference is only visible afterwards.
 
 ## Checklist
 

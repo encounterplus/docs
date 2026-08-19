@@ -9,7 +9,8 @@ that step.
 :::tip[The short version]
 Your content is intact. It is D&D 5E content, and version 5 only shows content belonging to the
 game system that is loaded — so **install the D&D 5E system and everything comes back.** The app
-offers to do it for you, from a copy bundled inside the app, with no download needed.
+offers to do it for you, from a copy bundled inside the app, with no download needed. That copy is
+the game system alone — it brings no content, because you already have yours.
 :::
 
 ## What changed
@@ -42,8 +43,14 @@ comes up empty.
 **The app asks you.** Whenever no game system is installed — on a first launch, and again after
 updating — you get a **Game System Required** screen with an **Install D&D 5E** button.
 
-That copy of D&D 5E ships inside the app, so installing it needs no download, no network and no
-account. One tap and it is in; your library fills back up.
+Because you already have content, that button installs the copy of D&D 5E that ships inside the
+app — no download, no network and no account. It is the **game system only**: the definitions your
+existing content needs in order to be displayed, with no content of its own. One tap and it is in;
+your library fills back up with what you already had.
+
+The published package in the Package Manager is the same system plus the **SRD reference content**.
+Install that one if you want the SRD entries as well — but for getting your own library back, the
+bundled copy is all that is needed.
 
 If you dismissed that screen and want to do it by hand:
 

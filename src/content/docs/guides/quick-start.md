@@ -13,7 +13,13 @@ first. It is short.
 On first launch you get a **Game System Required** screen. Nothing works properly until a system is
 installed, so start here.
 
-Tap **Install D&D 5E**. A copy ships inside the app, so this needs no download and no account.
+Tap **Install D&D 5E**. That downloads the published D&D 5E package, which **includes the SRD
+reference content** — so the library comes up with creatures, spells and items already in it. No
+account is needed, but it does need a network connection.
+
+If you are offline, **Install D&D 5E Offline Copy** installs the copy that ships inside the app
+instead. That one is the game system only, without any content, so the library starts empty and you
+add or import the content yourself.
 
 Two other buttons on that screen do the same job in different ways:
 

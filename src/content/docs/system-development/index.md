@@ -40,11 +40,15 @@ files point at.
 
 ## What a system is not
 
-A system carries **definitions, not content**. Creatures, spells and items are user content: they
-live in modules and campaigns and merely record which system they belong to. The bundled D&D 5E
-system, for example, ships the definitions for a 5E creature but no creatures.
+A system is primarily **definitions, not content**. Creatures, spells and items are user content:
+they live in modules and campaigns and merely record which system they belong to. The copy of D&D 5E
+bundled inside the app, for example, ships the definitions for a 5E creature but no creatures.
 
 This separation is what lets a system be updated independently of the content authored against it.
+
+A `.system` archive *may* still ship content alongside its definitions, for reference material that
+belongs to the ruleset itself — the published D&D 5E package does exactly that with the SRD content.
+See [Packaging & Distribution](/system-development/packaging/#distributing-content-for-your-system).
 
 ## The development loop
 

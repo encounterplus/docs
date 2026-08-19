@@ -57,14 +57,23 @@ of the entire library.
 The app ships with a `generic` system and a `dnd5e` one; others can be installed from the Package
 Manager or imported as a `.system` file, and you can build your own.
 
+Most systems are definitions only — they shape the library and leave it empty. Some packages ship
+content as well: the published D&D 5E package brings the SRD reference content along with the
+definitions.
+
 See [Current System](/settings/content/#current-system) and the
 [System schema](/reference/schema/system/).
 
 ### How do I install a game system?
 
 **The app asks you.** Whenever no system is installed, you get a **Game System Required** screen with
-an **Install D&D 5E** button — that copy ships inside the app, so it needs no download, no network
-and no account. One tap and you have a working 5E setup.
+an **Install D&D 5E** button. That downloads the published package, which includes the SRD reference
+content, so you end up with a working 5E setup and a library that already has entries in it.
+
+The same screen also offers **Install D&D 5E Offline Copy** — the copy that ships inside the app. It
+needs no download, no network and no account, but it is the game system only, without any content.
+That is the right one if you are offline, or if you are upgrading from version 4 and already have
+your own content.
 
 If you want something else, or you dismissed that screen:
 

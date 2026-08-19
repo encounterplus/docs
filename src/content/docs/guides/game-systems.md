@@ -27,18 +27,43 @@ A system is a folder of definitions, not code:
 Because none of that is built into the app, a system can be updated on its own schedule, and anyone
 can write one.
 
+### Definitions only, or definitions plus content
+
+Most systems are **definitions only**: they give the library its shape and leave it empty. You fill
+it yourself, or by importing `.module` packages authored for that system.
+
+A system package *can* also carry content of its own — entries packed into the same `.system`
+archive and imported alongside the definitions. The published D&D 5E package is the example: it
+brings the SRD reference content with it, so the library is already full when the install finishes.
+
+Both kinds are the same file type and install the same way. The difference shows up afterwards, in
+whether the library has anything in it — so it is worth reading a package's description before
+assuming content comes with it.
+
 ## Installing a system
 
 ### D&D 5E
 
-A copy of D&D 5E ships inside the app. Install it from the **Game System Required** screen, which
-appears whenever no system is installed.
+The **Game System Required** screen appears whenever no system is installed, and offers D&D 5E two
+ways:
 
-It is never installed automatically, and never overwrites a copy you already have.
+- **Install D&D 5E** downloads the published package. It is the newer of the two and **includes the
+  SRD reference content**, so the library is populated as soon as it finishes. It needs a network
+  connection.
+- **Install D&D 5E Offline Copy** installs the copy that ships inside the app. That one is the
+  **game system only, without any content** — no download, no network and no account.
+
+If you are upgrading from version 4 you already have your content and only need the definitions, so
+the bundled copy is the one offered first in that case. See
+[Upgrading from Version 4](/about/upgrading/).
+
+Neither is ever installed automatically, and neither overwrites a copy you already have.
 
 ### From the Package Manager
 
-**Settings → Package Manager → Systems** lists published systems and installs them directly.
+**Settings → Package Manager → Systems** lists published systems and installs them directly. The
+listing describes what each package contains — some are definitions only, some ship reference
+content as well.
 
 This is also where updates appear once a system is installed.
 
