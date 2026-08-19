@@ -22,7 +22,7 @@ Recursion is capped at `Constants.MAX_NESTED_ROLLS`.
 
 ## Examples
 A magic-item table with columns `d100` and `Magic Item`, and rows such as
-`["01-50", "{#item Potion of healing}"]`.
+`["01-50", "[Potion of healing](item)"]`.
 
 - SeeAlso: `TableColumn`, `TableRoll`
 
@@ -124,5 +124,5 @@ that content — which is what makes a roll a tree rather than a flat result.
 | Property | Type | Required | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | No | The header of the column this cell came from. <br>**Examples:** `"Magic Item"` |
-| `value` | `string` | Yes | The cell's content, with any inline dice macros already rolled. <br>**Examples:** `"{#item Bag of holding}"`; `"3 gems worth 50 gp each"` — after a `2d4` macro was resolved |
+| `value` | `string` | Yes | The cell's content, with any inline dice macros already rolled. <br>**Examples:** `"[Bag of holding](item)"`; `"3 gems worth 50 gp each"` — after a `2d4` macro was resolved |
 | `rolls` | Array&lt;[TableRoll](#tableroll)&gt; | No | Rolls produced by table references inside `value`. A reference preceded by a dice expression is rolled that many times, so one cell can yield several rolls on the same table. |

@@ -12,7 +12,7 @@
     },
     "value": {
       "type": "string",
-      "description": "The cell's content, with any inline dice macros already rolled.\n\n## Examples\n- `\"{#item Bag of holding}\"`\n- `\"3 gems worth 50 gp each\"` \u2014 after a `2d4` macro was resolved"
+      "description": "The cell's content, with any inline dice macros already rolled.\n\n## Examples\n- `\"[Bag of holding](item)\"`\n- `\"3 gems worth 50 gp each\"` \u2014 after a `2d4` macro was resolved"
     },
     "rolls": {
       "type": "array",
