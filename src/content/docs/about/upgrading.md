@@ -27,6 +27,24 @@ D&D 5E did not go away — it became the `dnd5e` system. Nothing was cut, and no
 behaviour was lost. What you gain is that the system can be updated on its own schedule without an
 app release, and that other rulesets are now possible at all.
 
+## Context menus almost everywhere
+
+Version 5 puts a context menu on most things you can see. **Long press** on iPhone and iPad,
+**right click** (or two-finger click) on Mac, and a menu of the actions for that thing appears where
+you are already looking, instead of in a toolbar or a detail screen.
+
+They are worth trying on:
+
+- **Combatants** in the initiative list — damage and healing, conditions, duplicating, removing.
+- **Tokens** on the battle map — the same combatant actions, plus map-side ones.
+- **Library entries** — open, edit, duplicate, bookmark, add to a campaign or module, export, delete.
+- **Rows inside forms** — reordering and removing list items, and the per-row actions of that field.
+- **Maps, pages, encounters, campaigns and modules** in their lists.
+
+Nothing is *only* available in a context menu, so nothing is lost if you never use them — but they
+are usually the shortest route, and multi-step jobs like building an encounter are much faster with
+them.
+
 ## Why your library may look empty
 
 When your database was migrated, all of your existing content was tagged as **D&D 5E** content,

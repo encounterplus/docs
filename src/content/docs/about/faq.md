@@ -40,6 +40,16 @@ The same applies to offloading the app, and to a device reset. **Export your con
 files somewhere else** before deleting or resetting anything.
 :::
 
+### Is there a faster way to get at an item's actions?
+
+Yes — **long press** it on iPhone and iPad, or **right click** it on Mac. Most things in the app
+carry a context menu with the actions for that thing: combatants in the initiative list, tokens on
+the battle map, library entries, rows inside a form, and maps, pages, encounters, campaigns and
+modules in their lists.
+
+Everything in those menus is available elsewhere too, so you never have to use them — but they are
+usually the shortest route.
+
 ### Which devices does it run on?
 
 iPhone, iPad and Mac. The Mac version is the iPad app running natively, so your purchases and
