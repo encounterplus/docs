@@ -3,6 +3,10 @@ title: Battle Maps
 description: Creating a map, setting up the background and grid, understanding layers, and sharing the map with your players.
 ---
 
+:::caution[Work in progress]
+These pages are still being written. Some details may be missing or out of date.
+:::
+
 A battle map is the playing surface. It is a background image, a grid that says how big a square is,
 and layers of things placed on top: tokens, scenery, walls, lights and your own drawings.
 

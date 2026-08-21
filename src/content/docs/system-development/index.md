@@ -3,6 +3,10 @@ title: Custom System
 description: How to build a game system for Encounter+ — what a system is made of, how the app loads it, and the edit-reload loop for developing one.
 ---
 
+:::caution[Work in progress]
+These pages are still being written. Some details may be missing or out of date.
+:::
+
 A **game system** is what gives Encounter+ its shape. The app itself has no notion of a creature,
 a spell or a stat block — it loads one system at a time and builds its entire content model,
 library, editors and detail views from the JSON files that system contains.
