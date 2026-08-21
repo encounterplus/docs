@@ -152,4 +152,4 @@ It only appears with a 5E-compatible system loaded.
 - [Battle Maps](/guides/battle-maps/) — running the same fight on a map.
 - [The Player Screen](/guides/player-screen/) — showing the initiative order to your table.
 
-[icon-more]: /assets/symbols/ellipsis.svg
+[icon-more]: /assets/symbols/ellipsis.png

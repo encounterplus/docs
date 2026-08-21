@@ -35,6 +35,7 @@ For every option on the map's settings screen, see [Battle Map Settings](/settin
 | ![snap][icon-snap] | **Snap to Grid** | Align movement and drawing to the grid |
 | ![reveal][icon-reveal] | **Fog of War** | Reveal and hide parts of the map |
 | ![markers][icon-markers] | **Markers** | Add and manage markers |
+| ![tools][icon-tools] | **Tools** | Grid align, map resize and the walls generator |
 | ![settings][icon-settings] | **Settings** | The map's own settings |
 
 Several tools have a second set of options. **Tap the tool a second time** to open them — that is how
@@ -71,16 +72,20 @@ makes movement, distances, light radii and spell areas mean something.
 
 ### Matching the grid to your image
 
-Most map images already have a grid drawn on them. Your job is to line the app's grid up with it:
+Most map images already have a grid drawn on them. Your job is to line the app's grid up with it.
+The **Grid Align** tool does this for you, and is the way to do it.
 
-1. Set **Grid Size** to the size of one square in the image.
-2. Use **Offset X** and **Offset Y** to slide the grid until the lines match.
-3. Use **Scale** to fine-tune the background if the two never quite agree.
+1. Tap ![tools][icon-tools] and choose **Grid Align**.
+2. A 3x3 mesh appears on the map. Drag it into place and resize it until its nine cells sit exactly
+   on nine squares of the image.
+3. Tap **Apply**.
 
-Work on one corner of the map until it lines up, then check the opposite corner. If the far corner
-drifts, the scale is slightly off, not the offset.
+The app works out the grid size and offset from the mesh, so the whole grid lines up at once. Using
+three squares rather than one spreads out any small error you make, which is what keeps the far
+corner of the map aligned as well as the near one.
 
-<video src="https://encounter.plus/videos/grid-align.mp4" width="100%" controls preload></video>
+You can still set **Grid Size**, **Offset X** and **Offset Y** by hand in the map's settings if you
+want to nudge the result, or if the image has no grid to match.
 
 ### Grid options
 
@@ -99,6 +104,37 @@ someone's artwork.
 
 **Scale** and **Units** feed every distance in the app. Set them to match your game — 5 ft, 1.5 m, or
 whatever your system uses — and movement paths, light radii and area effects follow.
+
+## Tools
+
+![tools][icon-tools] holds three tools that change the map as a whole, rather than editing one thing
+on it.
+
+### Grid Align
+
+Lines the grid up with the grid drawn on your background image. See
+[Matching the grid to your image](#matching-the-grid-to-your-image) above.
+
+### Map Resize
+
+Changes the size of the map. Give it a new width and height, or a percentage to scale by.
+
+Everything on the map is resized with it — tokens, drawings, lights and walls all keep their position
+relative to the background, so a map you have already walled and lit survives the change.
+
+This is mostly a [performance](#performance) tool. Very large map images are the usual cause of a
+sluggish map on an older device, and scaling one down is the most direct fix. Reach for it before
+turning renderer settings off.
+
+### Walls Generator
+
+Builds walls automatically from the **Floor** layer. Paint the walkable ground on the floor layer
+first; the generator then traces its edges and creates walls along them.
+
+It is the fast way to get [line of sight](/guides/battle-maps/line-of-sight/) working on a map — a
+few minutes of painting floor instead of drawing every wall by hand. Treat the result as a starting
+point and tidy it up: doors in particular need to be placed yourself, since the generator only sees
+where the floor ends.
 
 ## Layers
 
@@ -165,8 +201,10 @@ That is separate from saving an encounter. An encounter holds combatants; a map 
 
 ## Performance
 
-Large maps on older devices can feel heavy. Three settings help, all in
-[Battle Map Settings](/settings/battle-map/):
+Large maps on older devices can feel heavy. The first thing to try is scaling the map down with
+[Map Resize](#map-resize) — an oversized background image is the usual culprit.
+
+Beyond that, three settings help, all in [Battle Map Settings](/settings/battle-map/):
 
 - **Low Power Mode** throttles the renderer.
 - **Only Update on Drop** recomputes line of sight once per move instead of continuously.
@@ -188,4 +226,5 @@ Large maps on older devices can feel heavy. Three settings help, all in
 [icon-snap]: /assets/icons/snap.png
 [icon-reveal]: /assets/icons/reveal.png
 [icon-markers]: /assets/icons/markers.png
+[icon-tools]: /assets/symbols/wrench.and.screwdriver.png
 [icon-settings]: /assets/icons/settings.png

@@ -1,0 +1,11 @@
+# SF Symbol names used as inline icons in the docs. Regenerate the whole set with:
+#
+#   ./scripts/sf-symbol-icon.swift --list scripts/symbols.txt --out public/assets/symbols
+#
+# public/assets/symbols/ is generated from this list — add a name here rather than
+# dropping a file in by hand.
+
+ellipsis
+plus
+text.book.closed
+wrench.and.screwdriver

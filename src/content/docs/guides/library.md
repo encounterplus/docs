@@ -154,4 +154,4 @@ Yes. **Settings → Package Manager** downloads published systems, compendia and
 - [Campaigns & Modules](/guides/campaigns-and-modules/) — organising material into adventures.
 - [Import and Export](/guides/import-and-export/) — getting content in and out.
 
-[icon-library]: /assets/symbols/text.book.closed.svg
+[icon-library]: /assets/symbols/text.book.closed.png

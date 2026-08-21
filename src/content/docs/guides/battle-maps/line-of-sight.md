@@ -12,8 +12,6 @@ Encounter+ has two ways to hide a map from your players, and they solve differen
 
 Fog of war is manual and predictable. Line of sight is automatic and dramatic. Most maps use both.
 
-<video src="https://encounter.plus/videos/line-of-sight.mp4" width="100%" controls preload></video>
-
 :::tip
 For the performance and rendering options, see
 [Battle Map Settings → Line of Sight](/settings/battle-map/#line-of-sight).

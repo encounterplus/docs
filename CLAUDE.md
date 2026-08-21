@@ -90,10 +90,36 @@ When set (a bare or truthy value enables it; `false`/`no`/`0` disables it), the 
 
 ## Icon tooling
 
-`scripts/strip-sf-symbol.py` extracts a single weight/scale variant from an SF Symbols template SVG export, stripping template guides/notes to produce a compact SVG for the docs. Usage:
+`scripts/sf-symbol-icon.swift` renders SF Symbols to PNG by name, so the inline icons used
+in guides are generated from a list rather than exported one at a time:
+
+```bash
+./scripts/sf-symbol-icon.swift --list scripts/symbols.txt --out public/assets/symbols
+```
+
+`public/assets/symbols/` is generated from `scripts/symbols.txt` — add a name to the list and
+rerun rather than dropping a file in by hand.
+
+Output is flat monochrome on transparent, which is what
+[`src/styles/custom.css`](src/styles/custom.css) needs — it recolours these for dark mode with
+`filter: invert(1)`, and that only holds for flat single-colour art. The default `--tint` is a mid
+grey (`#666666`, inverting to `#999999`) rather than black: these icons sit in running text, and
+pure black inverts to pure white, which reads brighter than the prose around it.
+
+It renders PNG rather than SVG because AppKit rasterises symbol artwork on the way into any context,
+and the vector outlines in `SF Symbols.app` are keyed by private-use codepoints with no published
+name mapping. Icons display at 1.5rem, so the default 3x asset is indistinguishable from vector.
+
+`scripts/strip-sf-symbol.py` is for symbols the first script cannot reach — custom symbols the app
+draws itself, which `NSImage(systemSymbolName:)` cannot resolve by name. It extracts a single
+weight/scale variant from an SF Symbols template SVG export, stripping template guides/notes to
+produce a compact SVG for the docs. Usage:
 
 ```bash
 ./scripts/strip-sf-symbol.py SOURCE.svg OUTPUT.svg --group Light-S
 ```
 
 `--group` selects the variant (e.g. `Regular-S`, `Light-M`); if the group isn't found the script prints the available group ids. Generated icons are committed under `public/assets/`.
+
+`public/assets/icons/` is a separate, older hand-made PNG set (the battle-map toolbar icons). It is
+not generated and not SF Symbols; leave it alone unless replacing an icon it holds.

@@ -111,6 +111,6 @@ as a reusable encounter, but it is no longer the preferred way to keep your work
 - [Encounters & Combat](/guides/encounters/) — the full version of steps 3 and 4.
 - [Campaigns & Modules](/guides/campaigns-and-modules/) — organising your material.
 
-[icon-library]: /assets/symbols/text.book.closed.svg
-[icon-more]: /assets/symbols/ellipsis.svg
-[icon-new]: /assets/symbols/plus.svg
+[icon-library]: /assets/symbols/text.book.closed.png
+[icon-more]: /assets/symbols/ellipsis.png
+[icon-new]: /assets/symbols/plus.png
