@@ -110,3 +110,13 @@
 		width: min(20%, 10rem);
 	}
 }
+
+/* astro-mermaid appends its own <style> at runtime that puts a faint card behind
+   every rendered diagram — `[data-theme="dark"] pre.mermaid[data-processed]` and its
+   light/prefers-color-scheme twins. That reads as a panel the rest of the prose does
+   not have. Its stylesheet lands after this one, so !important is what wins here. */
+pre.mermaid,
+pre.mermaid[data-processed] {
+	background: none !important;
+	border-radius: 0;
+}

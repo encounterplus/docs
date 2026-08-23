@@ -58,14 +58,18 @@ roller and the shared log.
 
 They stack. Each one builds on the one before it:
 
-```
-Game system   →   what content can exist
-     ↓
-Library       →   the content you have
-     ↓
-Campaigns     →   how it is organised
-     ↓
-Game screen   →   what you are running right now
+```mermaid
+flowchart TD
+    system("`**Game system**
+    what content can exist`")
+    library("`**Library**
+    the content you have`")
+    campaigns("`**Campaigns**
+    how it is organised`")
+    screen("`**Game screen**
+    what you are running right now`")
+
+    system --> library --> campaigns --> screen
 ```
 
 A creature is defined by the system, stored in the library, organised into a campaign, and loaded
