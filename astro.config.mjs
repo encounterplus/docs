@@ -29,13 +29,6 @@ export default defineConfig({
 				theme: 'forest',
 				autoTheme: true, 
 				enableLog: false ,
-				mermaidConfig: {
-					startOnLoad: false,
-					flowchart: {
-						curve: 'basis',
-						padding: 15
-					}
-				}
 			}
 		),
 		starlight({
