@@ -2,16 +2,16 @@
   /* make sure icons in markdown content are sized correctly */
   .sl-markdown-content img[src*="icons"] {
     display: inline-block;
-    width: 1.5rem;
-    height: 1.5rem;
+    max-width: 1.5rem;
+    max-height: 1.5rem;
     margin: 0;
   }
 
 	/* make sure icons in markdown content are sized correctly */
   .sl-markdown-content img[src*="symbols"] {
     display: inline-block;
-    width: 1.5rem;
-    height: 1.5rem;
+    max-width: 1.5rem;
+    max-height: 1.5rem;
     margin: 0;
   }
 }
