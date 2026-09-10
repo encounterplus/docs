@@ -7,6 +7,11 @@ Dice come up in three places in Encounter+: the roller you open yourself, the ro
 blocks and text, and roll tables.
 
 :::tip
+The complete formula syntax — every operator and modifier, `kh`, `!`, `r`, `cs` and the rest — is in
+[Dice Expressions](/reference/dice-expressions/).
+:::
+
+:::tip
 For roller settings — public or private rolls, 3D dice, sound and themes — see
 [Dice Roller Settings](/settings/dice-roller/).
 :::
@@ -20,6 +25,25 @@ drops the dice on screen, and is part of the Premium subscription.
 
 Both use the same random number generator, so they are equally fair. The 3D roller is for the
 feeling of it.
+
+### Writing a formula by hand
+
+The dice buttons are a shortcut, not the only way in. The **Formula** field above them is a plain
+text field — tap it and type whatever you want, `4d6dl1` or `2d20kh1+5`, then press return to roll.
+Whatever the buttons build ends up in that same field, so you can tap out `2d6` and then edit it.
+
+The **⇅** button beside the dice lists every modifier the app understands — *kh — Keep Highest*,
+*r — Reroll*, *! — Explode* and the rest — and inserts the one you pick into the formula. It is the
+quickest way to remember the syntax without leaving the roller.
+
+The same menu ends with the upgrades: **Double Dice** rewrites the formula with every die count
+doubled, and under D&D 5E **Upgrade to Advantage** / **Upgrade to Disadvantage** turn each `d20` into
+`2d20kh1` or `2d20kl1`.
+
+:::tip
+Every modifier, operator and shorthand is listed in
+[Dice Expressions](/reference/dice-expressions/).
+:::
 
 ### Who sees your rolls
 
@@ -125,6 +149,7 @@ Set the roller **Mode** to *Private*. See
 
 ## Where to go next
 
+- [Dice Expressions](/reference/dice-expressions/) — every formula, operator and modifier.
 - [Writing Content](/guides/writing-content/) — the full Markdown, link and dice syntax.
 - [Dice Roller Settings](/settings/dice-roller/) — rollers, sound and dice themes.
 - [The Library](/guides/library/) — where roll tables are stored.

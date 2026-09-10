@@ -221,4 +221,5 @@ is built around now, and it stays readable if you ever open the file outside Enc
 
 - [Campaigns & Modules](/guides/campaigns-and-modules/) — where pages live.
 - [Dice & Roll Tables](/guides/dice/) — rolling, roll tables and dice settings.
+- [Dice Expressions](/reference/dice-expressions/) — every formula, operator and modifier.
 - [Game Systems](/guides/game-systems/) — what defines the content types you can link to.

@@ -100,6 +100,7 @@ export default defineConfig({
 				{
 					label: 'Reference',
 					items: [
+						{ label: 'Dice Expressions', link: '/reference/dice-expressions/' },
 						{ label: 'File Types', link: '/reference/file-types/' },
 						{ label: 'URL Scheme', link: '/reference/url-scheme/' },
 						{ label: 'Server API', link: '/reference/server-api/' },
