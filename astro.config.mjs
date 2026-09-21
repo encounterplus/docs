@@ -72,6 +72,7 @@ export default defineConfig({
                 { label: "Tokens", link: "/guides/battle-maps/tokens/" },
                 { label: "Line of Sight & Fog", link: "/guides/battle-maps/line-of-sight/" },
                 { label: "Drawing, Markers & Effects", link: "/guides/battle-maps/drawing-and-effects/" },
+                { label: "Video & Transparent Assets", link: "/guides/battle-maps/video-assets/" },
               ],
             },
             { label: "The Player Screen", link: "/guides/player-screen/" },
