@@ -137,6 +137,10 @@ Two things make tiles more than decoration:
 
 Tiles can be locked so they stop moving once the scene is dressed.
 
+A tile's artwork is an [asset](/guides/battle-maps/assets/) — a still image, a sprite sheet or a
+video. Placing one gives the tile its own copy, so you can tint or resize it without touching the
+original.
+
 :::note
 Animated tiles are part of the **Premium** subscription.
 :::

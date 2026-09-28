@@ -20,6 +20,8 @@ export default defineConfig({
 		'/guides/tips-and-tricks': '/guides/how-it-works/',
 		'/guides/battle-map': '/guides/battle-maps/',
 		'/guides/special-thanks': '/about/special-thanks/',
+		// Broadened from a video-only page.
+		'/guides/battle-maps/video-assets': '/guides/battle-maps/assets/',
 	},
 	integrations: [
 		// Renders ```mermaid code blocks client-side. Must come before starlight so it
@@ -72,7 +74,7 @@ export default defineConfig({
                 { label: "Tokens", link: "/guides/battle-maps/tokens/" },
                 { label: "Line of Sight & Fog", link: "/guides/battle-maps/line-of-sight/" },
                 { label: "Drawing, Markers & Effects", link: "/guides/battle-maps/drawing-and-effects/" },
-                { label: "Video & Transparent Assets", link: "/guides/battle-maps/video-assets/" },
+                { label: "Assets", link: "/guides/battle-maps/assets/" },
               ],
             },
             { label: "The Player Screen", link: "/guides/player-screen/" },
