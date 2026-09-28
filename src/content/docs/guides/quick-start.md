@@ -50,7 +50,7 @@ initiative window:
 | --- | --- |
 | **Load Combatant** | Pick a creature from the library and add it |
 | **New Combatant** | Create a one-off combatant by hand |
-| **Load Party** | Add every player character in the current campaign |
+| **Load Party** | Add the current campaign's party, set in Campaign Settings |
 
 Pick **Load Combatant** and add two combatants. Tap the same creature twice to get two of them.
 

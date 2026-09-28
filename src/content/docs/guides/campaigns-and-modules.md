@@ -34,14 +34,43 @@ Switch it under **Settings → Current Campaign**, or from the campaign list.
 
 Switching changes what **Load Party** finds, which maps are to hand, and where new content is filed.
 
-### The party
+### Campaign settings
 
-Attach your player characters to the campaign. Two things then start working:
+Each campaign has its own settings for play. Open them from **Settings → Current Campaign →
+Campaign Settings**, or from the menu on the campaign's detail screen → **Campaign Settings**.
 
-- **Load Party** adds all of them to combat in one tap.
-- **Encounter difficulty** compares your monsters against their levels.
+Changes are kept only when you tap **Save**.
 
-Both are described in [Encounters & Combat](/guides/encounters/).
+#### Party
+
+The characters **Load Party** adds to combat. Tap **Add Party Member** and pick them from the
+library — you can pick several at once. Drag to reorder, and swipe to remove one.
+
+- **Any entity can join.** Player characters are the usual members, but NPCs, companions and
+  sidekicks can be added alongside them.
+- **Order is kept.** Load Party adds members in the order listed.
+- **Some members remember their state.** Entities of a *standalone* type — player characters in
+  D&D 5E — keep one combatant between sessions, so hit points and conditions carry over. Any other
+  member joins with fresh stats from its entry each time.
+- **Nobody is added twice.** A member already in combat is skipped, so loading the party again
+  after adding a latecomer is safe.
+
+Once loaded, player characters in combat also feed the 5E encounter difficulty rating. Both are
+described in [Encounters & Combat](/guides/encounters/).
+
+#### Random Assets
+
+Modules the app draws artwork from when it places something that has no asset of its own, such as
+a status effect's aura. An asset matches by its name or one of its tags; when several match, one is
+picked at random.
+
+Tap **Add Module** to pick from your installed modules. Leave the list empty to turn this off.
+
+:::note
+Both lists store links rather than the items themselves. If you delete a party member or a module
+and later import it again, the campaign picks it back up. Links that no longer point at anything
+are skipped.
+:::
 
 ## Modules
 

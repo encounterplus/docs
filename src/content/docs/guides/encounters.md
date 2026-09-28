@@ -27,15 +27,18 @@ combatants:
 | --- | --- |
 | **Load Combatant** | Pick a creature from the library |
 | **New Combatant** | Create a one-off combatant by hand |
-| **Load Party** | Add every player character in the current campaign |
+| **Load Party** | Add the current campaign's party |
 
 **Load Combatant** is the usual one. Tap the same creature more than once to add several copies — the
 app numbers them for you.
 
 **New Combatant** is for something that only exists in this fight. It is not saved to the library.
 
-**Load Party** needs a current campaign with player characters in it. See
-[Campaigns & Modules](/guides/campaigns-and-modules/).
+**Load Party** adds the members listed in the current campaign's
+[Campaign Settings](/guides/campaigns-and-modules/#campaign-settings), in that order. Members
+already in combat are skipped, so you can run it again after adding someone to the party. If the
+party is empty you get an error pointing you there; if some members can no longer be found, the rest
+are loaded and the confirmation says how many were missing.
 
 ### Roles
 
@@ -139,8 +142,9 @@ Yes. New combatants join at the bottom of the order until initiative is rolled a
 
 ### My player characters are not in the list
 
-**Load Party** only adds player characters attached to the **current campaign**. Check
-**Settings → Current Campaign**, and check the characters are assigned to it.
+**Load Party** only adds the party of the **current campaign**. Check which campaign is loaded
+under **Settings → Current Campaign**, then open **Campaign Settings** below it and check the
+characters are listed under **Party**.
 
 ### The difficulty rating is missing
 

@@ -72,3 +72,15 @@ main screen's system button → **Settings**, and from the system's detail scree
 The primary campaign. The row shows its name and description, or *None*; tapping it opens the
 campaign list, where you can switch to another. See
 [Campaigns & Modules](/guides/campaigns-and-modules/).
+
+### Campaign Settings
+
+Shown when a campaign is loaded. Opens that campaign's play settings:
+
+| Setting | What it does |
+| --- | --- |
+| **Party** | The members **Load Party** adds to combat, in order. Any entity type can be added. |
+| **Random Assets** | Modules searched, by asset name or tag, for artwork when something is placed without an asset of its own. |
+
+Changes are kept when you tap **Save**. See
+[Campaign settings](/guides/campaigns-and-modules/#campaign-settings) for how each one behaves.
