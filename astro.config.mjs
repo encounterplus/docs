@@ -40,6 +40,17 @@ export default defineConfig({
     		dark: './src/assets/logo-dark.webp',
 				replacesTitle: true,
       },
+			// Cloudflare Web Analytics: cookieless, so no consent banner. The token is public.
+			head: [
+				{
+					tag: 'script',
+					attrs: {
+						type: 'module',
+						src: 'https://static.cloudflareinsights.com/beacon.min.js',
+						'data-cf-beacon': '{"token": "f60deb58dd8d434885761cecf8123606"}',
+					},
+				},
+			],
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/encounterplus/docs' }],
 			// "Edit page" link under each page; Starlight appends the page's source path.
 			editLink: {
