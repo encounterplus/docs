@@ -87,6 +87,22 @@ Open a token to edit it:
 | **Elevation** | Height above the ground, in map units |
 | **Rotation** | Facing, in degrees |
 | **Hidden** | Hides the token from your players |
+| **Asset** | Artwork that replaces the creature's token image |
+| **Reference** | The library entity the token represents |
+
+### Artwork
+
+A token's picture comes from one of two places:
+
+1. **Its asset**, if it has one. An asset always wins, whatever entity the token refers to.
+2. **Otherwise, its entity's token image** — the token image set on the creature in the library.
+
+So a token made from a creature shows that creature's token image until you give it an asset. Remove
+the asset and it goes back to the creature's image. A token does not need an entity at all: one
+with only an asset is plain artwork on the token layer.
+
+[Random assets](/guides/campaigns-and-modules/#random-assets) use the same rule — a match is set as
+the new token's asset, so it replaces the creature's image.
 
 ### Labels
 

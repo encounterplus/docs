@@ -3,8 +3,14 @@ title: Assets
 description: The artwork behind tokens, tiles and effects — where assets come from, the asset types, tags and components, and video assets including transparent video and WebM conversion.
 ---
 
-An **asset** is a piece of artwork used on a map. Every token, tile, area effect and aura is drawn
-with one.
+An **asset** is a piece of artwork used on a map. Every tile needs one. Tokens, area effects and
+auras can use one too:
+
+- **Tokens** — the asset replaces the creature's own token image. See
+  [Token artwork](/guides/battle-maps/tokens/#artwork).
+- **Area effects and auras** — the asset is drawn inside the shape. Without one, the shape is drawn
+  with a translucent fill and an outlined edge — on the map for an area effect, around the token for
+  an aura.
 
 An asset is more than an image file. It has a name and tags, a **type** that decides how its file is
 played, and parameters that control size and placement. Open one in the asset editor to change any
@@ -77,10 +83,11 @@ You can always correct what was guessed in the asset editor.
 
 An asset's name and tags are how you find it again in a large pack.
 
-They also drive **random assets**. When the app places something that has no artwork of its own,
-such as a status effect's aura, it looks through the modules chosen in the current campaign's
+They also drive **random assets**. When the app creates a token, an area effect or a status
+effect's aura, it looks through the modules chosen in the current campaign's
 [Campaign Settings](/guides/campaigns-and-modules/#random-assets) for an asset whose name or tag
-matches, and picks one at random. Tag a few flame effects `fire` and every fire effect gets one of
+matches, and picks one at random. On a token, the picked asset replaces the creature's own token
+image. Tag a few flame effects `fire` and every fire effect gets one of
 them.
 
 ## Components

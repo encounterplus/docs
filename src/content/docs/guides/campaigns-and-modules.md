@@ -60,9 +60,9 @@ described in [Encounters & Combat](/guides/encounters/).
 
 #### Random Assets
 
-Modules the app draws artwork from when it places something that has no asset of its own, such as
-a status effect's aura. An asset matches by its name or one of its tags; when several match, one is
-picked at random.
+Modules the app draws artwork from when it creates a token, an area effect or a status effect's
+aura. An asset matches by its name or one of its tags; when several match, one is picked at random.
+On a token, a matching asset replaces the creature's own token image.
 
 Tap **Add Module** to pick from your installed modules. Leave the list empty to turn this off.
 

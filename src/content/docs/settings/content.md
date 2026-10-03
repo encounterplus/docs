@@ -80,7 +80,7 @@ Shown when a campaign is loaded. Opens that campaign's play settings:
 | Setting | What it does |
 | --- | --- |
 | **Party** | The members **Load Party** adds to combat, in order. Any entity type can be added. |
-| **Random Assets** | Modules searched, by asset name or tag, for artwork when something is placed without an asset of its own. |
+| **Random Assets** | Modules searched, by asset name or tag, for artwork when a token, area effect or aura is created. |
 
 Changes are kept when you tap **Save**. See
 [Campaign settings](/guides/campaigns-and-modules/#campaign-settings) for how each one behaves.

@@ -17,7 +17,6 @@ export default defineConfig({
 		'/special-thanks': '/about/special-thanks/',
 		// Retired in the v5 guides restructure.
 		'/guides/encounter-management': '/guides/encounters/',
-		'/guides/tips-and-tricks': '/guides/how-it-works/',
 		'/guides/battle-map': '/guides/battle-maps/',
 		'/guides/special-thanks': '/about/special-thanks/',
 		// Broadened from a video-only page.
@@ -94,6 +93,7 @@ export default defineConfig({
             { label: "Dice & Roll Tables", link: "/guides/dice/" },
             { label: "Import and Export", link: "/guides/import-and-export/" },
             { label: "Game Systems", link: "/guides/game-systems/" },
+            { label: "Tips & Tricks", link: "/guides/tips-and-tricks/" },
             { label: "Video Tutorials", link: "/guides/tutorials/" },
           ],
         },

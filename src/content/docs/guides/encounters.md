@@ -101,10 +101,17 @@ Tap a combatant's hit points to open the damage input. Type a number and it is s
 Switch the input to healing to add hit points instead. Temporary hit points and maximum hit points
 can be adjusted the same way.
 
+### Combatant actions
+
+Swipe a row to **edit** the combatant or **delete** it.
+
+Long press a row (right click on Mac) for the full menu: add status effects and conditions, roll
+initiative, make it the active combatant, apply damage, and create or delete its token.
+
 ### Conditions
 
-Swipe a row to reach its actions. From there you can add conditions, edit the combatant, or remove
-it.
+Add a condition from the row's **Status Effects** menu — pick one from the list, or tap **New** for
+a blank effect.
 
 A condition can carry a duration and a source, so you can see where it came from and when it ends.
 Tap a condition under a combatant to read what it does, or to remove it.
