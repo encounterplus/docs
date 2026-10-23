@@ -18,7 +18,6 @@ systems/<id>/
 ├── collections.json         # ordering for types, plus type-to-type mappings
 ├── custom-attributes.json   # extra queryable attributes
 ├── filters.json             # library filter / group / sort options
-├── rules.json               # optional seed content shipped with the system
 ├── forms/
 │   ├── <label>.json         # the editor for one entity type
 │   ├── settings.json        # the system's own settings screen

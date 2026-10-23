@@ -119,7 +119,7 @@ From there the work is editing the system's files. The whole folder is visible i
 Encounter+, so you can edit it on the device or on a computer and reload.
 
 From there it is a developer job, and it has its own section:
-[Custom System](/system-development/) covers the folder layout, entity definitions, forms,
+[System Development](/system-development/) covers the folder layout, entity definitions, forms,
 views, templates, themes and packaging. The underlying formats are listed in the
 [schema reference](/reference/schema/).
 
@@ -148,5 +148,5 @@ Yes. Install as many as you like and switch between them. Only one is loaded at 
 
 - [How it works](/guides/how-it-works/) — where systems sit in the app.
 - [Import and Export](/guides/import-and-export/) — installing `.system` files.
-- [Custom System](/system-development/) — building a system of your own.
+- [System Development](/system-development/) — building a system of your own.
 - [Schema reference](/reference/schema/) — the definition formats, for building a system.

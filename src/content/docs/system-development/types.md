@@ -1,6 +1,6 @@
 ---
 title: Types & Collections
-description: Named value sets, their ordering, lookup tables, custom attributes and localization — the vocabulary a system's forms, views and filters share.
+description: Named value sets, their ordering, lookup tables, library filters, custom attributes and localization — the vocabulary a system's forms, views and filters share.
 ---
 
 Pickers need options. Filters need option lists. Stat blocks need to turn `"evocation"` into
@@ -145,6 +145,46 @@ An **object** of arrays declares a mapping — a grouping of one type's keys und
 This is what drives cascading pickers: choose a category, and the second picker offers only the
 item types belonging to it.
 
+## `filters.json`
+
+The library's filter, group and sort controls, keyed by entity name:
+
+```json
+{
+  "Monster": {
+    "params": [
+      { "attribute": "data.size", "attributeType": "Size", "title": "Common.Size" },
+      { "attribute": "data.type", "attributeType": "MonsterType", "title": "Common.Type" },
+      { "attribute": "data.environments", "attributeType": "Environment", "title": "Common.Environment" },
+      { "attribute": "sources.name", "title": "Common.Source", "dynamic": true }
+    ],
+    "group": [
+      { "attribute": "data.cr", "attributeType": "ChallengeRating", "title": "Common.CR",
+        "text": "CR {{value}} ({{value|map:'ChallengeRatingToXP', '0'}} XP)" },
+      { "attribute": "name", "title": "Common.Name" }
+    ],
+    "sort": [
+      { "attribute": "name", "title": "Common.Name" },
+      { "attribute": "data.cr", "title": "Common.CR", "text": "{{value|valueMap:'ChallengeRatingToXP'}}" }
+    ]
+  }
+}
+```
+
+- **`params`** — the filter controls. With `attributeType`, options come from that
+  [type](#typesjson). With `"dynamic": true`, options are gathered from the values
+  actually present in the user's content — the right choice for sources, class names and anything
+  open-ended.
+- **`group`** — the group-by options. `text` is a template for the section header, with the group's
+  value bound to `value`.
+- **`sort`** — the sort options. `text` supplies a sort key when the stored value does not sort
+  correctly on its own; sorting challenge ratings by their XP value is how `"1/8"` ends up before
+  `"1"` instead of after it.
+
+A filter over an attribute the entities do not actually carry simply produces no options, and a
+block keyed by an entity name that `entities.json` does not define is skipped. If a type is
+sourcable and you declare no `params` at all, a source filter is added automatically.
+
 ## Custom attributes
 
 `custom-attributes.json` declares extra keys for an entity's `attributes` store — the flat,
@@ -202,4 +242,3 @@ block written as `{{ data.size | map: 'Size' }}` needs no changes to work in ano
 
 - [Forms](/system-development/forms/) — where `attributeType` is consumed.
 - [Templates](/system-development/templates/) — `map`, `valueMap`, `l` and the rest.
-- [Configuration & Filters](/system-development/config/) — filters built on these types.

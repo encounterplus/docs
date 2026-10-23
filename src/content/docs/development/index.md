@@ -15,7 +15,7 @@ the [Guides](/guides/quick-start/).
 
 ## What's here
 
-- **[Custom System](/system-development/)** — the guide to authoring a game system.
+- **[System Development](/system-development/)** — the guide to authoring a game system.
 - **[Styling Modules](/development/module-styling/)** — giving a module's pages their own look.
 - **[Schema reference](/reference/schema/)** — the generated reference for every JSON format the
   app reads and writes, from import archives to definition files.

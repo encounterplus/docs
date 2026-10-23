@@ -112,7 +112,7 @@ It also explains a few things that would otherwise look odd:
 - Everything works the same everywhere. Search, filters, bookmarks, import and export are written
   against entities in general, so they apply to content types the app has never heard of.
 
-If you want to define your own entity types, see [Custom System](/system-development/).
+If you want to define your own entity types, see [System Development](/system-development/).
 
 ## What is yours and what is not
 

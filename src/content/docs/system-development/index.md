@@ -1,5 +1,5 @@
 ---
-title: Custom System
+title: System Development
 description: How to build a game system for Encounter+ — what a system is made of, how the app loads it, and the edit-reload loop for developing one.
 ---
 
@@ -34,7 +34,7 @@ Inside that folder, a handful of JSON files answer a handful of questions:
 | How is each type edited? | [`forms/*.json`](/system-development/forms/) |
 | How is each type displayed? | [`views/*.json`](/system-development/views/) |
 | What does it look like? | [`themes/*.json`](/system-development/themes/) |
-| How does the library filter and group? | [`filters.json`](/system-development/config/) |
+| How does the library filter and group? | [`filters.json`](/system-development/types/#filtersjson) |
 | How does the app behave for this ruleset? | [`config.json`](/system-development/config/) |
 | What text is shown, in which language? | [`lang/*.json`](/system-development/types/#localization) |
 | How does old content catch up? | [`migrations/*.js`](/system-development/migrations/) |

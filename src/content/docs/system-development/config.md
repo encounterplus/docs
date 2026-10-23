@@ -1,11 +1,10 @@
 ---
-title: Configuration & Filters
-description: config.json — per-type behavior, combat tracker bars, measurement systems, initiative and game resources — plus the library's filter, group and sort options.
+title: Configuration
+description: config.json — per-type behavior, combat tracker bars, measurement systems, initiative, game resources and view themes.
 ---
 
 `entities.json` says what types exist and `forms/` and `views/` say how they are edited and shown.
-`config.json` says how the app **behaves** for them, and `filters.json` says how the library
-**browses** them.
+`config.json` says how the app **behaves** for them.
 
 ## `config.json`
 
@@ -321,54 +320,7 @@ Keep `data-theme` for that alone: Pico reads any value on `<html>` as a forced s
 there would turn off its automatic dark mode. That is why the app writes themes as
 `data-view-theme`.
 
-## `filters.json`
-
-The library's filter, group and sort controls, keyed by entity name:
-
-```json
-{
-  "Monster": {
-    "params": [
-      { "attribute": "data.size", "attributeType": "Size", "title": "Common.Size" },
-      { "attribute": "data.type", "attributeType": "MonsterType", "title": "Common.Type" },
-      { "attribute": "data.environments", "attributeType": "Environment", "title": "Common.Environment" },
-      { "attribute": "sources.name", "title": "Common.Source", "dynamic": true }
-    ],
-    "group": [
-      { "attribute": "data.cr", "attributeType": "ChallengeRating", "title": "Common.CR",
-        "text": "CR {{value}} ({{value|map:'ChallengeRatingToXP', '0'}} XP)" },
-      { "attribute": "name", "title": "Common.Name" }
-    ],
-    "sort": [
-      { "attribute": "name", "title": "Common.Name" },
-      { "attribute": "data.cr", "title": "Common.CR", "text": "{{value|valueMap:'ChallengeRatingToXP'}}" }
-    ]
-  }
-}
-```
-
-- **`params`** — the filter controls. With `attributeType`, options come from that
-  [type](/system-development/types/). With `"dynamic": true`, options are gathered from the values
-  actually present in the user's content — the right choice for sources, class names and anything
-  open-ended.
-- **`group`** — the group-by options. `text` is a template for the section header, with the group's
-  value bound to `value`.
-- **`sort`** — the sort options. `text` supplies a sort key when the stored value does not sort
-  correctly on its own; sorting challenge ratings by their XP value is how `"1/8"` ends up before
-  `"1"` instead of after it.
-
-A filter over an attribute the entities do not actually carry simply produces no options, and a
-block keyed by an entity name that `entities.json` does not define is skipped. If a type is
-sourcable and you declare no `params` at all, a source filter is added automatically.
-
-## `rules.json`
-
-Optional seed content shipped with a system — the conditions, senses, skills and other reference
-entries a ruleset needs to function. It is content rather than definition, and it is what
-`statusEffects.menuProvider` draws on.
-
 ## Where to go next
 
-- [Types & Collections](/system-development/types/) — what `attributeType` refers to.
-- [Templates](/system-development/templates/) — the expressions in `detail`, `text` and `states`.
+- [Templates](/system-development/templates/) — the expressions in `detail` and `states`.
 - [Forms](/system-development/forms/#the-system-settings-form) — exposing config to users.

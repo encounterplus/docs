@@ -128,7 +128,7 @@ export default defineConfig({
 						{ label: 'Overview', link: '/development/' },
 						{ label: 'Styling Modules', link: '/development/module-styling/' },
 						{
-							label: 'Custom System',
+							label: 'Building Systems',
 							collapsed: true,
 							items: [
 								{ label: 'Overview', link: '/system-development/' },
@@ -139,7 +139,7 @@ export default defineConfig({
 								{ label: 'Views', link: '/system-development/views/' },
 								{ label: 'Templates', link: '/system-development/templates/' },
 								{ label: 'Themes', link: '/system-development/themes/' },
-								{ label: 'Configuration & Filters', link: '/system-development/config/' },
+								{ label: 'Configuration', link: '/system-development/config/' },
 								{ label: 'Migrations', link: '/system-development/migrations/' },
 								{ label: 'Packaging', link: '/system-development/packaging/' },
 							],
