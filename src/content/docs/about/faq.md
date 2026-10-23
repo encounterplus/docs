@@ -89,7 +89,7 @@ If you want something else, or you dismissed that screen:
 
 | Where | What it does |
 | --- | --- |
-| **Settings → Current System** | Lists the systems you have installed and switches between them |
+| **Settings → Current System → Manage** | Lists the systems you have installed and switches between them |
 | **Settings → Package Manager** | Downloads published systems you do not have yet |
 | **Settings → Import** | Installs a system from a `.system` file |
 

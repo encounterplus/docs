@@ -11,7 +11,8 @@ A few screens are also reachable from where you use them, not only from Settings
 - **Combat** — from the initiative window's overflow menu.
 - **External Screen** — the setup half lives in Settings; what you show the players right now lives
   in the external screen controls on the game screen.
-- **System Settings** — from the main screen's system button → **Settings**.
+- **System Settings** — from the game screen's system button → **System Settings**, or the library
+  sidebar's system row.
 
 ## The screens
 
@@ -57,8 +58,8 @@ Each page notes the condition next to the setting it applies to.
 
 Not everything configurable is in Settings:
 
-- **System settings** are defined by the loaded game system, not by the app. Reach them from the main
-  screen's system button → **Settings**, or from Settings → Current System → **System Settings**.
+- **System settings** are defined by the loaded game system, not by the app. Reach them from the game
+  screen's system button → **System Settings**, or from Settings → Current System → **System Settings**.
   What they contain depends on the system. See [Content](/settings/content/#system-settings).
 - **Map, token and creature properties** are edited on the object itself, in the library or on the
   map — not here.

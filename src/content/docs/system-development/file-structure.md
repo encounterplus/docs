@@ -153,7 +153,7 @@ The template context exposes both roots as `env.systemURL` and `env.dataURL`, an
 
 On macOS debug builds, the app watches the system folder and reloads automatically when anything
 under `views/`, `forms/`, `themes/`, `styles/` or `scripts/` changes. On iOS, and in release
-builds, use **Reload System** from the system button.
+builds, use **Reload System** from the game screen's system button.
 
 ## Things not to put in the folder
 

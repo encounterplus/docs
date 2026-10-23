@@ -43,7 +43,6 @@ Deletes content in bulk, after asking what to remove:
 | **All Campaigns** | Deletes every campaign except the primary one. |
 | **All Modules** | Deletes every imported module. |
 | **All Systems** | Deletes every game system, then recreates and loads the generic one. |
-| **Everything** | Deletes all database content along with the campaign, module and system directories, then recreates and loads the generic system. |
 
 :::danger
 These cannot be undone. Take a backup first — either [export](#export) the content you want to keep,
@@ -53,8 +52,13 @@ or at least back up the database with **Settings → Advanced Settings → Local
 
 ## Current System
 
-The game system in use. The row shows its name, description and version; tapping it opens the list
-of installed systems, where you can switch to another one.
+The game system in use. The row shows its artwork, name, description and version; tapping it opens
+that system's detail screen — its package details, updates, entity migrations and recommended
+content. See [The system screen](/guides/game-systems/#the-system-screen).
+
+**Manage**, at the trailing end of the section header, opens the **System Manager**: every installed
+system, where you load a different one, create, import, edit or delete systems, or get more from
+the Package Manager. See [The System Manager](/guides/game-systems/#the-system-manager).
 
 A system defines what content types exist and how they are displayed, so switching it changes the
 shape of the whole library.
@@ -62,16 +66,19 @@ shape of the whole library.
 ### System Settings
 
 The current system's own settings, which come from the system rather than from the app — what they
-contain depends on which system is loaded.
+contain depends on which system is loaded. A system that ships view themes adds an **Appearance**
+section with a **Theme** picker.
 
 Saving here reloads the system so the new values take effect. The same screen is reachable from the
-main screen's system button → **Settings**, and from the system's detail screen.
+game screen's system button → **System Settings**, the library sidebar's system row, and the
+system's detail screen.
 
 ## Current Campaign
 
-The primary campaign. The row shows its name and description, or *None*; tapping it opens the
-campaign list, where you can switch to another. See
-[Campaigns & Modules](/guides/campaigns-and-modules/).
+The primary campaign for the loaded system. The row shows its artwork, name and description;
+tapping it opens that campaign's detail screen. **Manage**, in the section header, opens the
+campaign list, where you can switch to another. With no campaign loaded the row reads
+**Choose Campaign** and opens the list. See [Campaigns & Modules](/guides/campaigns-and-modules/).
 
 ### Campaign Settings
 

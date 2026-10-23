@@ -28,7 +28,7 @@ Two other buttons on that screen do the same job in different ways:
 
 :::note
 D&D 5E is never installed for you. If you skipped this screen, you can install the system later from
-**Settings → Current System**, or **Settings → Package Manager**.
+**Settings → Current System → Manage**, or **Settings → Package Manager**.
 :::
 
 ## 2. Find something in the library

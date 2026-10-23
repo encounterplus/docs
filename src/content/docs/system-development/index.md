@@ -58,7 +58,8 @@ See [Packaging & Distribution](/system-development/packaging/#distributing-conte
 
 ### 1. Create a skeleton
 
-The **System Manager** (reached from the main screen's system button) has a **Create** button. It
+The **System Manager** (the game screen's system button → **System Manager**, or
+**Settings → Current System → Manage**) creates one from its **+** button → **Create System**. It
 asks for a name, short name, version and system id, and writes a minimal system folder containing
 `config.json`, `entities.json`, `types.json`, `filters.json`, a default theme and a starter set of
 icons.
@@ -80,7 +81,8 @@ one.
 
 ### 3. Reload
 
-The system button on the main screen offers **Reload System**. It re-reads every definition file
+The system button on the game screen offers **Reload System**, as do the library sidebar's system
+row and the system's detail screen. It re-reads every definition file
 without restarting the app, so the usual loop is *save → reload → look*.
 
 Reloading also happens automatically when you save system settings, and when a system is installed

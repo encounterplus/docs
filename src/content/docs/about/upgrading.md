@@ -73,8 +73,8 @@ bundled copy is all that is needed.
 If you dismissed that screen and want to do it by hand:
 
 1. Open **Settings**.
-2. Tap **Current System**.
-3. Pick **D&D 5E** from the list of installed systems.
+2. Tap **Manage** in the **Current System** section header.
+3. Tap **Load** on **D&D 5E** in the list of installed systems.
 
 If it is not listed at all, **Settings → Package Manager** downloads it, and
 **Settings → Import** installs it from a `.system` file you already have.
