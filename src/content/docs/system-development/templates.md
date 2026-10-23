@@ -127,6 +127,56 @@ Binds a value for later reuse:
 
 or in short form, `{% set name value %}`.
 
+### `query`
+
+Looks up other entities and binds them to a variable, in HTML views and pages only:
+
+```
+{% query subclasses entity="Subclass" filter="data.class ==[c] $nameWithSource" sort="name" %}
+{% for subclass in subclasses %}
+  <h3><a href="/subclass/{{ subclass.slug }}">{{ subclass.name }}</a></h3>
+{% endfor %}
+```
+
+The variable to set comes first, as with `set`. Everything after it is a `name=value` option, in
+any order:
+
+- `entity` — required. The entity type to query, by the name its definition gives it in the
+  system: `"Subclass"`, `"Monster"`, `"Spell"`. Not the lowercase label references use.
+- `filter` — a [predicate](https://developer.apple.com/documentation/foundation/nspredicate) each
+  entity must match. Without it, every entity of the type is returned.
+- `sort` — a key path to sort the results by, descending with a `-` prefix (`sort="-data.level"`).
+  Without it, results are in name order. Entities missing the value come last.
+- `limit` — the most results to return.
+- `scope` — `"system"` (the default) searches the whole game system; `"container"` only the
+  module or campaign being viewed.
+
+Option values are literals or template variables: `entity=type` reads the variable `type`.
+
+In the filter, a bare key path such as `data.class` reads each candidate entity, and a `$` key
+path such as `$nameWithSource` or `$data.class.name` reads the template being rendered, including
+`set` and loop variables. Values are bound, never pasted into the filter, so a name with an
+apostrophe needs no quoting; don't put `{{ }}` inside the tag.
+
+Some things to keep in mind:
+
+- The filter sees each entity's stored values plus `nameWithSource` (`Fighter|XPHB`) and
+  `source` — not computed values. Each result is the entity's full view context, computed values
+  included, so they can be sorted and displayed.
+- References are stored with their source, `Fighter|XPHB`, so compare them with `nameWithSource`,
+  not `name`. To accept references with or without a source:
+  `"data.class ==[c] $nameWithSource OR data.class ==[c] $name"`.
+- A `$` key path that leads nowhere is `nil`, and `nil` equals every candidate missing the field.
+  Wrap the tag in `{% if data.class %}` when the value may be absent.
+- An unknown entity type, a variable that does not exist at all, or a malformed filter shows an
+  error in place of the view rather than an empty list.
+- No type conversion: `'3'` and `3` differ, and an entity whose value cannot be compared — a
+  string ordered against a number — is left out.
+- Predicate keywords cannot be key names in a filter: write `data.#size`, not `data.size`
+  (likewise `first`, `last`, `in`, `yes`, `no` and the rest).
+
+The query runs every time the view renders, so it always reflects the current library.
+
 ### `macro` and `call`
 
 Define a reusable fragment and invoke it — the template-level equivalent of a function, for

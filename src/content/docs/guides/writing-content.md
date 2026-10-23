@@ -4,16 +4,11 @@ description: Markdown formatting, links to your own content, and live dice — t
 ---
 
 Most text you type in Encounter+ is Markdown: creature traits, item descriptions, notes, roll table
-cells — everything the app renders itself. The same rules apply everywhere, so what you learn
-writing a trait also works in a table.
+cells, module and campaign pages. The same rules apply everywhere, so what you learn writing a trait
+also works in a table or a page.
 
 Two things make it more than plain Markdown: a link can point at your own content, and dice are live.
-
-:::note[Pages are different — for now]
-Module and campaign **pages** are written in a rich text editor and stored as HTML, so the Markdown
-formatting below does not apply to them. Links and dice rolls in pages still work — see
-[Pages](#pages). Pages are moving to Markdown in a future update.
-:::
+Pages go a little further again, with raw HTML and a few extra kinds of block — see [Pages](#pages).
 
 ## Formatting
 
@@ -49,8 +44,8 @@ Tables use the GitHub pipe syntax:
 A blank line separates paragraphs. A single line break inside a paragraph is kept as a line break.
 
 :::note
-Raw HTML is not rendered — write `<b>bold</b>` and you get the tag text, not bold text. Use Markdown
-instead.
+Outside pages, raw HTML is not rendered — write `<b>bold</b>` in a trait and you get the tag text,
+not bold text. Use Markdown instead. Pages do render it.
 :::
 
 How all of this actually looks — fonts, colours, how a quote is drawn — comes from the loaded game
@@ -76,6 +71,8 @@ You can size them with a fragment after the filename:
 ```markdown
 ![The tavern](tavern.jpg#width=400)
 ```
+
+In pages, size an image with an attribute instead — see [Pages](#pages).
 
 ## Links to your content
 
@@ -192,24 +189,123 @@ against. See [Dice & Roll Tables](/guides/dice/).
 | Entity descriptions and traits | The main use — rendered in the detail view |
 | Roll table cells | A cell can link an item or another table, and the result comes back linked |
 | Notes | Anywhere the app gives you a plain text box |
-| Pages | Rich text rather than Markdown — see below |
+| Pages | Everything above, plus the extras below |
 
-### Pages
+## Pages
 
-Pages have their own editor: you format with its toolbar, and the page is stored as HTML rather than
-Markdown. Everything in *Formatting* above is handled by the toolbar instead of by typing.
+Pages are written in Markdown too, and everything above works in them: formatting, links to your
+content, written rolls, and dice found in ordinary text. A page also understands a few things the
+rest of the app does not.
 
-Links still do the same two jobs, written as paths with the editor's link tool:
+### Raw HTML
 
-| Link address | Result |
-| --- | --- |
-| `/monster/goblin` | Opens the creature |
-| `/page/goblin-arrows` | Opens the page |
-| `/roll` | Rolls the link's own text, so link the text `2d6+3` |
+HTML in a page is rendered. Reach for it when Markdown has no syntax for what you want:
 
-A `/roll` link takes its label from the link's title, the same way `[2d6+3](roll "fire damage")`
-does elsewhere. Dice written as ordinary text in a page are *not* picked up automatically — in a
-page, a roll has to be a link.
+```markdown
+The <mark>red door</mark> is trapped. H<sub>2</sub>O, x<sup>2</sup>.
+```
+
+Links inside raw HTML are kept exactly as written: dice in them are not linked, and a link like
+`<a href="monster">` is not turned into a content link. Write links in Markdown to get those.
+
+### Attributes
+
+Curly braces after an element give it a class, an id or any other attribute, which your module's CSS
+can then style (see [Styling Modules](/development/module-styling/)):
+
+```markdown
+## The Ambush {#ambush .boxed}
+
+A paragraph with a class.
+{.flavor}
+
+![The tavern](images/tavern.jpg){width=400}
+```
+
+That last line is how to size an image in a page — the `#width=400` fragment from
+[Images](#images) does not apply here.
+
+### Blocks
+
+A block between `:::` lines becomes a group your CSS can style as one — a sidebar, read-aloud text, a
+GM note. The opening line names it, and can carry attributes too:
+
+```markdown
+::: sidebar
+### Optional rule
+
+Goblins flee at half strength.
+:::
+
+::: {.note #warning}
+Not for the players' eyes.
+:::
+```
+
+A `:::` with no name is plain text. To put one block inside another, give the outer one a longer
+fence, such as `::::`.
+
+### Footnotes and definition lists
+
+```markdown
+The tomb was sealed in the year of the comet.[^1]
+
+[^1]: Or so the priests claim.
+
+Darkvision
+: You see in dim light as if it were bright light.
+```
+
+### Links between pages
+
+A link whose destination is a page's slug opens that page from anywhere in the same module or
+campaign, and a heading can be linked directly:
+
+```markdown
+[Camp Vengeance](camp-vengeance)
+[The ambush](camp-vengeance#the-ambush)
+[See below](#the-ambush)
+```
+
+Every heading gets an anchor from its text: lowercase, accents dropped, and each run of anything
+other than letters, digits and hyphens turned into a single hyphen — *The Ambush!* becomes
+`#the-ambush`. Give a heading its own
+with an attribute (`## The Ambush {#ambush}`) when you want one that survives a rename.
+
+### Images
+
+Tapping an image in a page opens it in the image viewer, from which you can show it on the player
+screen. An image inside a link follows the link instead, and `{.no-preview}` after an image leaves it
+untappable:
+
+```markdown
+![Floor plan](images/plan.jpg){.no-preview}
+```
+
+Wide tables scroll sideways rather than widening the page.
+
+### The page editor
+
+The page editor is a Markdown editor with highlighting. Its toolbar has Bold, Italic and Heading, and
+two menus for what is fiddly to type:
+
+- **Link** — *From Library…* links anything in your library, by its name, as many entries as you pick.
+- **Image** — *Photo Library…*, *Choose File…* or *From Container…* (an image the module already
+  has). New images are copied into the module's `images` folder. You can also paste an image.
+
+**Preview** shows the rendered page beside the editor and follows it as you scroll.
+
+### HTML pages
+
+Pages written before Markdown support, and pages from older modules, are HTML. They still display
+as they always have, and open in the same editor as HTML source, without the formatting toolbar.
+In an HTML page, dice in ordinary text are not picked up — a roll has to be a link, such as
+`<a href="/roll/2d6+3">2d6+3</a>`.
+
+To switch a page to Markdown, tap the page's title in the editor and choose **Format**. **Convert**
+rewrites the HTML as Markdown, keeping as HTML whatever Markdown cannot express; **Keep Text** changes
+only the format. Converting back to HTML writes out the page as it displays, with content and dice
+links as plain links.
 
 ## Content written for v4
 

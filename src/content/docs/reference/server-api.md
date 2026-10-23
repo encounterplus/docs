@@ -74,7 +74,7 @@ fetches on load, before it starts following [WebSocket events](#websocket-api).
 {
   "version": "5.0",
   "build": 4212,
-  "game": { "round": 3, "turn": 1, "started": true, "combatantId": "…", "initiativeId": "…" },
+  "game": { "round": 3, "turn": 1, "started": true, "combatantId": "…", "initiativeId": "…", "resources": [ { "…": "…" } ] },
   "map": { "id": "…", "name": "Goblin Cave", "…": "…" },
   "screen": { "mapId": "…", "overlayType": "…", "…": "…" },
   "messages": [ { "…": "…" } ],
@@ -94,6 +94,22 @@ fetches on load, before it starts following [WebSocket events](#websocket-api).
 | `paused` | Whether the campaign is paused |
 
 Returns `404` when there is no primary campaign for the loaded system.
+
+`game.resources` lists the loaded system's [game
+resources](/system-development/config/#game-resources) that are visible to players, each with its
+current value. The definition is resolved in, so a client never needs the system's `config.json`:
+
+```json
+"resources": [
+  { "id": "fear", "type": "counter", "label": "Fear", "icon": "gi-burning-skull", "min": 0, "max": 12, "value": 5 }
+]
+```
+
+`max` and `icon` are absent when the system leaves them out. An image `icon` is a path on this
+server. Resources with `gm` visibility are never sent, and neither is a `countdown` at `0`. `type`
+is `counter` or `countdown`; a client should skip a type it does not know, since later types will
+share the list. The list is empty, not absent, when
+the system declares no player-visible resources; older app builds leave it out entirely.
 
 ### `GET /api/system`
 
@@ -344,7 +360,7 @@ unfinished.
 
 | Group | Events |
 | --- | --- |
-| Game state | `gameUpdated`, `combatantsUpdated`, `systemPaused` |
+| Game state | `gameUpdated`, `combatantsUpdated`, `resourcesUpdated`, `systemPaused` |
 | Player screen | `screenUpdated`, `interactionUpdated`, `reload` |
 | Map | `mapUpdated`, `mapLoaded`, `mapFrameUpdated`, `mapFitScreen`, `mapFocus`, `mapVideoControlUpdated` |
 | Map objects | `tokenUpdated`, `tokensUpdated`, `markerUpdated`, `markersUpdated`, `tileUpdated`, `tilesUpdated`, `lightUpdated`, `lightsUpdated`, `areaEffectUpdated`, `areaEffectsUpdated`, `measurementUpdated`, `measurementsUpdated` |
@@ -356,6 +372,9 @@ unfinished.
 | Object tracking | `trackedObjectCreated`, `trackedObjectUpdated`, `trackedObjectDeleted`, `trackedObjectsUpdated` |
 
 Broadcasts go to every connected client, including the one whose action caused them.
+
+`resourcesUpdated` carries the whole `game.resources` list from [`GET /api`](#get-api) after any
+change, and replaces what the client holds. `gameUpdated` never carries resources.
 
 ### Dragging
 

@@ -1,6 +1,6 @@
 ---
 title: Configuration & Filters
-description: config.json — per-type behavior, combat tracker bars, measurement systems and initiative — plus the library's filter, group and sort options.
+description: config.json — per-type behavior, combat tracker bars, measurement systems, initiative and game resources — plus the library's filter, group and sort options.
 ---
 
 `entities.json` says what types exist and `forms/` and `views/` say how they are edited and shown.
@@ -59,6 +59,7 @@ what allows a system to ship a sensible default and still let a user change it f
 | `view.renderer` | `native` (default), `html`, `custom`, `sheet`. |
 | `view.template` | Which `views/*.html` file the `html` renderer uses. |
 | `view.updateMode` | `load`, `reload`, `event`, `none`. |
+| `load` | What loading the type produces — `creature`, `statusEffect`, `areaEffect`. See below. |
 
 `collection.detail` and `combatant.detail` are the one-line summaries under a name. They are
 ordinary [templates](/system-development/templates/) over the entity's context, which means they
@@ -91,6 +92,31 @@ on:
 
 The leading `#` makes it a [formula](/system-development/templates/#formulas). This example is the
 D&D 5E instant-death rule; without it, the default rule of reaching zero applies.
+
+#### Load targets
+
+`loadable` in [`entities.json`](/system-development/entities/) decides whether a type can be
+loaded at all. `load` decides what loading it produces:
+
+```json
+"Spell": { "load": ["statusEffect", "areaEffect"] }
+```
+
+| Target | Produces | Needs in the entity data |
+| --- | --- | --- |
+| `creature` | A combatant and/or token, following the load mode. | — |
+| `statusEffect` | A status effect on the selected token. | `data.duration`, `data.durationUnit` or `data.durationType` |
+| `areaEffect` | An area effect placed on the map. | `data.areaEffectShape` |
+
+Without the key a loadable type loads as a creature only, so status and area effects need the
+type to list them. An entity's duration or area data alone never makes one. An empty list loads
+nothing.
+
+The app tries the targets in order: a status effect when a token is selected, then an area
+effect, then a creature. An entity that lists effects but has neither the data nor a selected
+token is reported as an error instead of being loaded as a creature, unless the list also
+includes `creature`. The combat/map load-mode menu is shown only for types whose list includes
+`creature`.
 
 ### Status effect menus
 
@@ -172,6 +198,128 @@ A card-draw system sets `"mode": "draw"`; a system where initiative is a fixed d
 
 Everything here can be exposed to users through the settings form, since settings merge over
 config.
+
+### Game resources
+
+Counters the table spends and accumulates during play, such as Daggerheart's Fear:
+
+```json
+"resources": [
+  { "id": "fear", "label": "Fear", "icon": "gi-burning-skull", "min": 0, "max": 12, "visibility": "players" }
+]
+```
+
+`resources` is always a list, even for a system with a single resource. Each entry becomes a
+counter in the game screen's bottom bar, where the GM changes it with `−` and `+`, sets it directly
+from a menu on the value, or resets it.
+
+| Key | Values |
+| --- | --- |
+| `id` | Required. Identifies the resource and the value stored for it; keep it stable across system versions |
+| `label` | The name shown with the value; a localization key works here. Defaults to the `id`, capitalized |
+| `icon` | A `gi-` game icon name, or the path of an image in the system folder |
+| `type` | `counter` (default) or `countdown` |
+| `min` | The lowest value; defaults to `0` |
+| `max` | The highest value; leave it out for no upper limit |
+| `initial` | The starting value; defaults to `min` |
+| `visibility` | `gm` (default) or `players` |
+
+A resource with `players` visibility is shown on the player display and the web client. One with
+`gm` visibility stays with the GM; its value never leaves the device. The default is `gm`, so a
+resource is only shown to players when the system says so. Players see the `max` beside the value
+(`5 / 12`) when the resource has one, and the value alone when it does not.
+
+The menu on a counter's value lists every value from `min` to `max`, so the GM can set it in one
+step. Without a `max` it lists `min` to `min + 12`; `+` still goes past that.
+
+A `countdown` works like a counter for the GM, who sets it and counts it down. Players see it only
+while it is running: at `0` it is hidden, at any other value it shows (when its visibility is
+`players`). Daggerheart's countdowns are a good fit:
+
+```json
+{ "id": "countdown", "label": "Countdown", "type": "countdown", "visibility": "players" }
+```
+
+Values belong to the campaign. They persist across sessions and never reset on their own, not even
+when combat ends. A resource the GM has not changed reads as its `initial` value, and a value is
+always kept within `min` and `max`, even after a system update narrows them.
+
+An entry without an `id`, a repeated `id`, or a `type` the app does not know is skipped, so a
+system written for a newer app still loads.
+
+### View themes
+
+Named looks for the system's HTML views — pages, entity views rendered with the `html` renderer,
+and tables — that the user picks under **Appearance** in the system settings:
+
+```json
+"viewThemes": [
+  { "id": "parchment", "label": "Parchment" },
+  { "id": "clean", "label": "Clean" }
+]
+```
+
+| Key | Values |
+| --- | --- |
+| `id` | Required. Letters, digits, `-` and `_`; keep it stable, it is what the user's choice is saved as |
+| `label` | The name shown in the picker; a localization key works here. Defaults to the `id`, capitalized |
+
+The app does no styling of its own. It writes the selected id as `data-view-theme` on `<html>`,
+and your stylesheet does the rest:
+
+```css
+:root { --accent: #58180d; --paper: #fdf1dc; }
+:root[data-view-theme="clean"] { --accent: #1f4e79; --paper: #ffffff; }
+```
+
+With no theme picked — the default — there is no `data-view-theme`, so your base rules are the
+default look. Your own templates in `views/*.html` write the attribute themselves from
+`env.theme`:
+
+```html
+<html lang="en" data-kind="{{kind}}"{% if env.theme %} data-view-theme="{{env.theme}}"{% endif %}>
+```
+
+The bundled templates already do. A theme that needs more than variables can live in its own file,
+linked from your template through `{{ env.systemURL }}styles/themes/{{ env.theme }}.css`.
+
+Modules with their own look (`styles/page.css`) and older modules (`assets/css/global.css`) never
+load the system's styles, so themes do not reach them. A theme is shown everywhere the view is,
+the web client included.
+
+#### Light and dark
+
+With no theme picked, views follow the app's appearance, which the user sets for the whole app.
+Declare which schemes your stylesheet supports and write colours with `light-dark()` (or system
+colours such as `Canvas`), and they follow it:
+
+```css
+:root { color-scheme: light dark; }
+body { color: light-dark(#222, #eee); background: light-dark(#fff, #1e1e1e); }
+```
+
+To offer a look that is always light or always dark, make it a theme and force the scheme in CSS.
+`light-dark()`, `Canvas`, form controls and scrollbars all follow `color-scheme`:
+
+```css
+:root[data-view-theme="night"] { color-scheme: dark; }
+:root[data-view-theme="parchment"] { color-scheme: light; }
+```
+
+`@media (prefers-color-scheme: dark)` does not follow `color-scheme`, only the app's appearance,
+so rules written with it ignore a forced theme.
+
+[Pico](https://picocss.com) switches its colours on a `data-theme="light"` or `"dark"` attribute
+rather than on `color-scheme`, and CSS cannot set an attribute. A Pico-based system writes it in its
+own templates, from the theme:
+
+```html
+<html lang="en"{% if env.theme == "night" %} data-theme="dark"{% endif %}>
+```
+
+Keep `data-theme` for that alone: Pico reads any value on `<html>` as a forced scheme, so a theme id
+there would turn off its automatic dark mode. That is why the app writes themes as
+`data-view-theme`.
 
 ## `filters.json`
 

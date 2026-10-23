@@ -126,6 +126,7 @@ export default defineConfig({
 					label: 'Development',
 					items: [
 						{ label: 'Overview', link: '/development/' },
+						{ label: 'Styling Modules', link: '/development/module-styling/' },
 						{
 							label: 'Custom System',
 							collapsed: true,

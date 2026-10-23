@@ -72,9 +72,9 @@ roll, link it:
 Under D&D 5E the app also guesses the kind of roll — a leading `+` is an attack, a `d20` is a check,
 a formula followed by *damage* is damage — which is what lets each kind carry its own dice theme.
 
-Pages are the exception: they use a rich text editor, so a roll there has to be a link to `/roll`
-with the formula as its text. The full syntax, including links to other content, is covered in
-[Writing Content](/guides/writing-content/).
+Pages work the same way. The exception is older pages stored as HTML, where a roll has to be a link
+with the formula in its address, `/roll/2d6+3`. The full syntax, including links to other content, is
+covered in [Writing Content](/guides/writing-content/).
 
 ## Roll tables
 
