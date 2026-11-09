@@ -137,6 +137,8 @@ export default defineConfig({
 								{ label: 'Types & Collections', link: '/system-development/types/' },
 								{ label: 'Forms', link: '/system-development/forms/' },
 								{ label: 'Views', link: '/system-development/views/' },
+								{ label: 'Model Schemas', link: '/system-development/schemas/' },
+								{ label: 'Character Sheets', link: '/system-development/sheets/' },
 								{ label: 'Templates', link: '/system-development/templates/' },
 								{ label: 'Themes', link: '/system-development/themes/' },
 								{ label: 'Configuration', link: '/system-development/config/' },

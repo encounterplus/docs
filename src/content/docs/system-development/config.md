@@ -57,6 +57,7 @@ what allows a system to ship a sensible default and still let a user change it f
 | `combatant.states` | Named state conditions — see below. |
 | `view.renderer` | `native` (default), `html`, `custom`, `sheet`. |
 | `view.template` | Which `views/*.html` file the `html` renderer uses. |
+| `view.sheet` | Which `sheets/<id>/` folder the type's [sheet](/system-development/sheets/) is. With the `sheet` renderer the type opens as it, `default` when this is left out; with `html` the template links to it through `env.sheetURL`. |
 | `view.updateMode` | `load`, `reload`, `event`, `none`. |
 | `load` | What loading the type produces — `creature`, `statusEffect`, `areaEffect`. See below. |
 
@@ -126,6 +127,64 @@ includes `creature`. The combat/map load-mode menu is shown only for types whose
 Each entry names an entity type to offer as status effects, optionally narrowed by a
 subtype after a colon. `Rule:condition` is what makes a 5E system's conditions appear in the
 tracker's status effect menu — the conditions are ordinary content, not a hardcoded list.
+
+### Linked status effects
+
+A character sheet's condition toggles can show as status effects on the character's combatant, and
+so on its token. List them under the entity type, in `statusEffects`:
+
+```json
+"Character": {
+  "statusEffects": [
+    { "attribute": "data.conditions.vulnerable", "reference": "/condition/vulnerable", "name": "Condition.Vulnerable", "icon": "gi-broken-shield" },
+    { "attribute": "data.exhaustion", "name": "Condition.Exhaustion" }
+  ]
+}
+```
+
+| Key | Values |
+| --- | --- |
+| `attribute` | Required. The flag's path, starting with `data.`, made of plain keys. No list items |
+| `name` | Required. The effect's name; a localization key works here |
+| `icon` | A `gi-` game icon name, or the icon path a status effect holds. Wins over the rule's icon |
+| `reference` | The entity describing the effect, such as `/condition/vulnerable` |
+
+The flag is the source of truth, and the two stay in step in both directions:
+
+- Turning a flag on adds its effect, unless the combatant already has a matching one. Turning it
+  off removes every matching effect.
+- Adding a matching effect turns the flag on, and removing the last one turns it off, however the
+  effect was added or removed: from the menu, in a form, or when its duration runs out.
+- Anything else is left alone. Changing hit points doesn't touch effects, and adding Bless doesn't
+  touch flags.
+
+A flag is on when it is `true` or a number other than zero, so a level such as Exhaustion works as
+well as a boolean. When an effect turns a flag on, a boolean is written as `true` and a number as
+`1`; a level already above zero is kept. Removing the last effect writes `false` or `0`.
+
+An effect matches a link by `reference`, compared on the label and slug only, so
+`/condition/vulnerable/srd` matches `/condition/vulnerable` whichever source provides the rule.
+
+Write the address the app gives the entity. A [`dynamic`](/system-development/entities/) type goes
+by its subtype, so a `Rule` of type `condition` is `/condition/vulnerable`, not `/rule/vulnerable`.
+References that differ never match, even when the names are the same, so a wrong label means an
+effect added from the menu doesn't turn its flag on.
+
+When the link or the effect has no reference they are compared by name, ignoring case. Name
+matching uses the translated name, so prefer a `reference` when the system has rules to point at.
+With one, the effect also takes its description, color, duration, modifiers and aura from the rule,
+if the rule is installed.
+
+Links need three things, and a link missing one is reported as a warning when the system loads:
+
+- The entity type is `standalone`. Only those entities share one combatant, so links on any other
+  type are ignored. A flag written to such an entity is saved as plain data.
+- The type has a [model schema](/system-development/schemas/).
+- `attribute` is declared in the schema as a boolean, integer or number.
+
+A flag that is already on when a combatant is created gets its effect then. A flag turned on before
+the links were added to the system, on a combatant that already exists, gets no effect until it is
+toggled.
 
 ### Measurement
 

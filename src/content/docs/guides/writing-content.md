@@ -282,6 +282,18 @@ untappable:
 ![Floor plan](images/plan.jpg){.no-preview}
 ```
 
+`{.caption}` turns an image into a figure, with its alt text as the caption below it — the same syntax
+Module Packer uses. The caption can hold Markdown: emphasis, dice and content links all work.
+
+```markdown
+![The camp at *dusk*, seen from the ridge.](images/camp.jpg){.caption width=400}
+```
+
+The image needs a paragraph of its own, with a blank line between it and any text; an image in the
+middle of text stays a plain image. Several captioned images on consecutive lines each become a
+figure. The image's other classes and its id go to the figure, so
+`{.caption .size-cover}` gives an edge-to-edge figure with its caption below.
+
 Wide tables scroll sideways rather than widening the page.
 
 ### The page editor

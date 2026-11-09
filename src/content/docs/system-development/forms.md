@@ -60,10 +60,10 @@ storage:
 ```
 
 Intermediate objects are created as needed — writing `data.hp.maximum` on an entity with no `hp`
-object produces one. Nothing validates the path against a schema, because there is no schema; the
-shape of `data` is whatever your forms write and your views read. Keeping the two in agreement is
-your job, and a spelling mistake in a path shows up as a field that saves into a place nothing
-reads.
+object produces one. Without a [model schema](/system-development/schemas/), nothing validates the
+path; the shape of `data` is whatever your forms write and your views read. Keeping the two in
+agreement is your job, and a spelling mistake in a path shows up as a field that saves into a place
+nothing reads. With a schema, every save is checked against it, and an undeclared key is logged.
 
 Inside a **nested form or a list item** the path is relative to that item, not to the entity —
 `"attribute": "unit"` inside a casting-time subform writes `data.activation.unit`.
@@ -217,7 +217,58 @@ When a nested form or list item points at another entity — a character's speci
 }
 ```
 
-Left side is the path in the referenced entity, right side the destination on the character.
+The left side is where the value goes in the copy on the character; the right side is the path
+in the referenced entity it comes from. A right side with template variables is rendered against
+the referenced entity instead, so `"label": "{{ name }} ({{ data.size }})"` composes a value. The
+copy also gets the entity's `name`, and `descr` and `reference` when the nested form has fields
+for them.
+
+The copy is taken once, when the entity is picked. Editing the library entity afterwards does not
+change characters that already copied it.
+
+#### Looking up entities by name
+
+Library content often lists other entities by name: a kin's abilities, a profession's skills.
+Copied as they are, those stay plain strings. A `custom.map` entry that is an object looks each
+name up in the library and copies the entity it names instead:
+
+```json
+{
+  "type": "form",
+  "attribute": "data.kin",
+  "attributeType": "Kin",
+  "custom": {
+    "map": {
+      "movement": "data.movement",
+      "abilities": {
+        "attribute": "data.abilities",
+        "lookup": "Ability",
+        "map": { "wp": "data.wp", "descr": "descr" }
+      }
+    }
+  },
+  "form": { "title": "Entity.Kin", "partial": "hero-kin" }
+}
+```
+
+| Key | Meaning |
+|---|---|
+| `attribute` | Path in the referenced entity holding a name, or a list of names. |
+| `lookup` | The entity kind the names refer to — the definition's `name`, as in `attributeType`. |
+| `map` | What to copy from each entity found, written the same way, so lookups can nest. |
+
+Each entity found becomes `{ name, reference, …mapped fields }`, the same shape a list's add
+button creates, so the copied abilities can be edited with the same partial as the character's
+own. One name gives one object and a list gives a list. A name with no match is kept as
+`{ name }`, so nothing the referenced entity listed is lost.
+
+Names are matched ignoring case, plain or as `Name|Source` (what pickers store with
+`includeSource`). When several entities share the name, the one in the same module or campaign as
+the referenced entity wins.
+
+Declare the copied shape in the character's [model schema](/system-development/schemas/) — here
+`"abilities": [{ "ref": "Ability", "properties": { "wp": "integer", "descr": "text" } }]` inside
+`kin`. A schema that still declares the names (`"abilities": ["string"]`) refuses the save.
 
 ## Partials
 

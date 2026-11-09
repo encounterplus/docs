@@ -264,9 +264,12 @@ refresh behavior: `load` (once), `reload` (every appearance), `event` (on change
 
 Renderer values are `native` (the default), `html`, `custom` and `sheet`.
 
-Use it when a layout genuinely wants a browser — a full character sheet with interactive
-scripting. Native views are faster, themed automatically and work on the player screen and remote
-clients without extra work, so they are the better default.
+Use it when a layout genuinely wants a browser. Native views are faster, themed automatically and
+work on the player screen and remote clients without extra work, so they are the better default.
+
+For a full character sheet with inputs and rules, use the `sheet` renderer, which opens a
+[sheet](/system-development/sheets/) rather than a template. A template can still follow its entity
+and bind a few values live; see [In a template](/system-development/sheets/#in-a-template).
 
 ## Debugging
 

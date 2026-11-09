@@ -22,12 +22,17 @@ systems/<id>/
 │   ├── <label>.json         # the editor for one entity type
 │   ├── settings.json        # the system's own settings screen
 │   └── partials/*.json      # reusable form fragments
+├── schemas/
+│   ├── <label>.json         # the model schema of one entity type (preview)
+│   └── partials/*.json      # object types shared by every schema
 ├── views/
 │   ├── <label>.json         # the native detail view for one entity type
 │   ├── <label>-compact.json # the compact variant
 │   ├── <label>.html         # optional HTML template instead of a native view
 │   ├── partials/            # reusable view fragments (.json) and text partials (.md)
 │   └── transforms/*.json    # computed-attribute recipes
+├── sheets/
+│   └── <id>/                # a character sheet: a static web app (preview)
 ├── themes/
 │   ├── default.json         # the base theme
 │   └── <name>.json          # additional themes
@@ -104,8 +109,10 @@ because later stages look things up in earlier ones:
    chains are resolved.
 9. **Forms** — `forms/*.json`, then `forms/partials/*.json`.
 10. **Views** — `views/*.json`, then `views/partials/*.json`, then `views/*.html` templates.
-11. **Filters** from `filters.json`.
-12. **Fonts** from `fonts/`, and the template environment, whose partial search path is
+11. **Filters** from `filters.json`, then the data transforms in `views/transforms/`.
+12. **Model schemas** — `schemas/partials/*.json`, then `schemas/*.json`, resolved against the
+    final types and entity names; their generated files are written to `cache/schemas/`.
+13. **Fonts** from `fonts/`, and the template environment, whose partial search path is
     `views/partials`.
 
 The practical consequences:
@@ -124,6 +131,7 @@ entity definition's `label`:
 | Path | Used for |
 | --- | --- |
 | `forms/<label>.json` | the entity's editor |
+| `schemas/<label>.json` | the entity's [model schema](/system-development/schemas/) |
 | `views/<label>.json` | the entity's native detail view |
 | `views/<label>-compact.json` | the compact detail view (panels, small presentations) |
 | `views/<label>.html` | an HTML template, used when the entity is configured for the `html` renderer |
@@ -152,12 +160,14 @@ The template context exposes both roots as `env.systemURL` and `env.dataURL`, an
 ## Live reload while developing
 
 On macOS debug builds, the app watches the system folder and reloads automatically when anything
-under `views/`, `forms/`, `themes/`, `styles/` or `scripts/` changes. On iOS, and in release
+under `views/`, `forms/`, `schemas/`, `themes/`, `styles/` or `scripts/` changes. On iOS, and in release
 builds, use **Reload System** from the game screen's system button.
 
 ## Things not to put in the folder
 
-`cache/` is app-managed. Deleting it is safe; writing to it is not useful.
+`cache/` is app-managed. Deleting it is safe; writing to it is not useful. It holds what loading
+generates — the [schema files](/system-development/schemas/#generated-files) in `cache/schemas/`
+among them — which the app rewrites as needed.
 
 macOS packaging junk — `__MACOSX/` forks and `.DS_Store` files — must be stripped before a
 `.system` archive is shared, because the importer moves the archive's contents wholesale into the

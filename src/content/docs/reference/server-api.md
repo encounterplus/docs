@@ -3,14 +3,23 @@ title: Server API
 description: The HTTP and WebSocket API exposed by the Encounter+ built-in web server — endpoints, payloads and live events.
 ---
 
-:::caution[Experimental — work in progress]
-This API exists to serve the built-in web client and the player display. It is **not a stable
-public interface**: endpoints, payload shapes and event names change between releases without a
-deprecation period, and this page documents only what is currently implemented.
+:::caution[Not a stable public interface yet]
+Nothing on this page is a stable public interface yet. The REST endpoints, the map and game-client
+events, the broadcasts and the payloads that carry the app's own models exist to serve the
+built-in web client and the player display.
 
-Build against it if you like — but expect to adjust when the app updates, and do not rely on
-anything here staying put.
+[Character sheets](/system-development/sheets/) are a **preview**, and so is everything they use:
+the sheet protocol ([entity subscriptions](#entity-subscriptions),
+[listing and picking entries](#listing-entries), [rolling dice](#rolling-dice) and the
+`requestFailed` codes they share), the [sheet SDK](/system-development/sheets/),
+`sheet.json` and [model schemas](/system-development/schemas/). The protocol and the SDK carry a
+version, and the [compatibility rules](#compatibility) are the ones they will keep once sheets
+leave the preview. Until then they can change between releases, without a new version.
+
+All of it can change without a deprecation period, and this page documents only what is currently
+implemented. Build against it if you like, but expect to adjust when the app updates.
 :::
+
 
 Encounter+ runs a small HTTP + WebSocket server inside the app. Its main job is to serve the
 browser [web client](/guides/remote-play/) and push live game state to it, but everything it does
@@ -36,7 +45,9 @@ curl http://192.168.1.42:8080/api
 :::danger[There is no authentication]
 Anyone who can reach the port can read your campaign and write to it. There are no tokens, no
 passwords and no per-client permissions, and `Access-Control-Allow-Origin` is `*`, so any web page
-your browser loads can call the API of a server it can reach.
+your browser loads can read from a server it can reach. The WebSocket refuses pages from elsewhere
+on the internet, see [Who can connect](#who-can-connect), but anything on your network can still
+connect directly.
 
 Run it on a trusted network. If you forward the port to the internet — the app can do this over
 UPnP — understand that you are publishing an unauthenticated read/write interface.
@@ -160,20 +171,33 @@ An unknown collection is a `404` — fetch `/api/system` to discover what the lo
 
 ### `GET /api/{collection}`
 
-Every entity in the collection.
-
-| Query | Default | Returns |
-| --- | --- | --- |
-| `schema=list` | ✓ | Compact list rows, including the data keys the system's filters need |
-| `schema=basic` | | Compact list rows, without the filter data keys |
-| `schema=model` | | The full stored model of each entity |
-| `schema=view` | | The rendering context — computed and formatted values, as the app displays them |
-
-Any other value returns `400`.
+One page of library entries, `{ entries, total }`, filtered and sorted exactly as
+[`queryEntities`](#listing-entries) answers: the collection's kind and the kinds extending it.
 
 ```bash
-curl 'http://192.168.1.42:8080/api/monsters?schema=basic'
+curl 'http://192.168.1.42:8080/api/monsters?keys=list'
 ```
+
+The parameters are those of [`queryEntities`](#listing-entries): `search`, `sort`, `offset`,
+`limit`, `where` as a JSON object, and `keys` and `ids` comma separated — `keys=list` for the
+system's list keys, alone or with paths (`keys=list,data.weight,view.data.evasion`). A parameter
+that can't be read is a `400` saying why. Entries carry only the `data.` and `view.` paths `keys`
+asks for; fetch [one entity](#get-apicollectionid) for its whole model.
+
+```bash
+curl -G 'http://192.168.1.42:8080/api/items' \
+  --data-urlencode 'where={"data.skill": ["axes", "swords"]}' \
+  --data-urlencode 'keys=data.skill,data.weight' \
+  --data-urlencode 'limit=20'
+```
+
+:::caution[`schema` is gone]
+The collection once took `schema=list|basic|model|view|entries` and listed the whole kind. It now
+always answers a page of entries, and a request that still sends `schema` is a `400`, so an old
+client fails at once instead of reading a different shape. `schema=list` is `keys=list`;
+`schema=basic` is no `keys`; for `model`, list the ids, then fetch each entity; for `view`, ask for
+the computed values you show as `view.` keys, or fetch each entity with `schema=view`.
+:::
 
 ### `GET /api/{collection}/{id}`
 
@@ -206,6 +230,11 @@ curl -X PATCH http://192.168.1.42:8080/api/monsters/2f1c… \
 
 Both writes notify the app, so open views redraw, and a unique entity's linked combatant is
 updated to match.
+
+Neither write is checked against the entity type's [model schema](/system-development/schemas/),
+and neither is limited by remote interaction: until there are permissions, every client can change
+every entity. A [sheet](/system-development/sheets/) writes through
+[entity subscriptions](#entity-subscriptions) instead, where every write is checked.
 
 ## Combatants
 
@@ -295,13 +324,40 @@ The server also serves files, which is how the web client and its media reach th
 | `/icon.png` | The app icon |
 | `/modules/`, `/campaigns/` | Imported content — maps, images, handouts |
 | `/systems/` | Game system assets — fonts, icons, images |
+| `/_app/` | The app's own view resources, among them the [sheet SDK](/system-development/sheets/): `/_app/js/ep.js`, `ep-ui.js`, `ep-schema.js` |
 | `/others/` | Temporary images generated during play |
+| `/sheets/{sheet}/` | A sheet of the loaded system; see [`GET /sheets/{sheet}/`](#get-sheetssheet) |
 
 ### `GET /{reference}`
 
 Any other single-segment path is treated as an entity reference URL and answered with that entity
 rendered as HTML — the same markup the app shows in a detail view, using the system's view
-templates and theme. Invalid references return `400`, unknown ones `404`.
+templates and theme. Invalid references return `400`, unknown ones `404`. An entity whose type
+opens as a sheet redirects (`302`) to its sheet.
+
+### `GET /sheets/{sheet}/`
+
+A sheet is a static web app in the system's `sheets/{sheet}/` folder, opened for an entity at
+`/sheets/{sheet}/?id={entity-id}` — the same address the app uses in its own views, so a sheet's
+relative URLs resolve the same way in both. The address serves the sheet's `index.html`; paths
+below it serve the folder's files, and `/sheets/{sheet}` redirects to the address with the
+trailing slash. Sheet files are sent with `Cache-Control: no-cache` and an `ETag`, so a browser asks before using its copy and an unchanged file is an empty `304`. Code and markup under `/systems/`, `/modules/`, `/campaigns/` and `/client/` — `html`, `js`, `mjs`, `css`, `json` — are sent the same way; media can be kept for a year.
+
+A sheet built with its own tooling (a `package.json`, sources, `node_modules`) names the folder of
+its build output in a `sheet.json` beside them, `{"root": "dist"}`: only that folder is served, so
+the address serves `dist/index.html` and nothing outside `dist/` is reached through it. The system's
+folder is served as well, at `/systems/{system}/`, so nothing in it is private. Its other keys are
+`api`, the protocol version the sheet was written for, and `entities`, the entity kinds it can show;
+all three are optional. A sheet serves nothing when its `api` is one this app doesn't speak, its
+`root` isn't a folder inside the sheet, or a value has the wrong type.
+
+The sheet follows the entity through [entity subscriptions](#entity-subscriptions). Entity views
+get the address of their type's sheet as `env.sheetURL`. Writing a sheet is covered in
+[Character Sheets](/system-development/sheets/).
+
+:::caution[Preview]
+Sheets are a preview and may still change between releases; see the note at the top of this page.
+:::
 
 ## WebSocket API
 
@@ -318,43 +374,128 @@ Every message, in both directions, is one JSON envelope:
 | --- | --- |
 | `name` | What the event reports or requests — determines the shape of `data` |
 | `data` | The payload; its type follows from `name` |
-| `requestId` | Set by a client on a request it wants an answer to |
+| `requestId` | Set by a client on a request it wants an answer to; unique on its connection |
 | `responseId` | Echoes the `requestId` of the request being answered |
 
+Every event carrying a `requestId` gets exactly one answer with that `responseId`: the reply its
+name documents, or `requestFailed { code, message }`. An event without a `requestId` is a
+notification and is never answered. An answer can be an ordinary event too: the answer to
+`subscribeEntity` is an `entityUpdated`, which says what the event is with `name` and what it
+answers with `responseId`.
+
+`code` tells a client what happened, and `message` is for people:
+
+| `code` | Meaning |
+| --- | --- |
+| `unknownEvent` | The app doesn't know the event's name |
+| `unsupportedEvent` | The app knows the name, but doesn't take it on this connection |
+| `invalidRequest` | The event's data is missing something or can't be read |
+| `unsupportedApi` | The `api` of a `subscribeEntity` is newer than this app speaks |
+| `noSuchEntity` | No entity has that id |
+| `notSubscribed` | An `updateEntity` for an entity the client doesn't follow |
+| `notAllowed` | Reserved for permissions: nothing is refused with it yet |
+| `noSchema` | The entity type has no [model schema](/system-development/schemas/), or it failed to load |
+| `refused` | A batch of ops was refused; `errors` says why, see [Entity subscriptions](#entity-subscriptions) |
+| `failed` | The app could not complete the request |
+
 Names ending in `Updated`, `Created` or `Deleted` are the app broadcasting a change. Names in the
-imperative — `createMessage`, `updateDoor` — are a client asking for one. The full envelope,
-including the payload type for each name, is documented under
-[WSEvent](/reference/schema/wsevent/).
+imperative — `createMessage`, `updateDoor` — are a client asking for one. The payloads of the
+sheet protocol's events are documented on this page, which is the reference for them. The
+generated [WSEvent](/reference/schema/wsevent/) page describes the envelope and the app's model
+payloads; it is built from the app's source and can lag behind.
+
+A message a client sends can be up to 1 MB, in one frame or in fragments. A larger one closes the
+connection with code `1009`. What the app sends has no limit.
+
+The app turns on TCP keepalive for every connection. Once a connection has been quiet for a
+minute, the system checks it every 10 seconds and closes it after five checks go unanswered. A
+client that vanished is let go within about two minutes, and routers keep a quiet connection open
+through port forwarding. The app sends no WebSocket pings. A client that needs to notice a dead
+connection sooner sends a request and closes the socket when no answer comes.
 
 On connect, the app sends an `app` event carrying its `version` and `build`.
 
-### Events a client can send
+### Compatibility
 
-Anything not listed here is ignored, even when the app knows the name.
-
-| Event | Payload | Effect |
-| --- | --- | --- |
-| `clientUpdated` | `Client` | Registers the client's name, color, device and screen size. Send this first — a client identifying itself with a non-`normal` `runMode` becomes a player display |
-| `mapViewportUpdated` | `Frame` | Reports where this client is looking, so the app can show its viewport |
-| `tokenMoved` | `Movement` | Drags a token. Refused when remote interaction is off |
-| `updateDoor` | `Door` | Opens or closes a door, recomputing line of sight. Refused when remote interaction is off |
-| `pointerUpdated` | `Pointer` | Moves this client's shared pointer. Refused when remote interaction is off |
-| `updateToken` | partial object | Merges changes into a token by `id` |
-| `updateEntity` | partial object | Merges changes into an entity by `id` |
-| `updateCombatant` | partial object | Merges changes into a combatant by `id` |
-| `createMessage` | `Message` | Posts to the shared log, rolling any dice in it |
-| `getAttribute` | `Attribute` | Reads an entity's attributes; answered on `requestId` |
-| `setAttribute` | `Attribute` | Writes an entity's attributes |
-| `trackedObjectCreated` / `trackedObjectUpdated` / `trackedObjectDeleted` / `trackedObjectsUpdated` | `TrackedObject` | Reports physical objects tracked on a table-top display |
-
-:::note[Remote interaction gates the interactive events]
-`tokenMoved`, `updateDoor` and `pointerUpdated` are dropped when the host has remote interaction
-turned off. The direct `updateToken` / `updateEntity` / `updateCombatant` merges are **not** gated
-— they apply regardless.
+:::caution[Preview]
+These are the rules the sheet protocol will keep once sheets leave the preview. Until then a release
+can change version `1` itself.
 :::
 
-`getAttribute` currently echoes the request back rather than resolving attribute values; it is
-unfinished.
+The sheet protocol's version is the `api` a client names in
+[`subscribeEntity`](#entity-subscriptions): `1` today. A subscription runs at the version it asks
+for, or is refused with `unsupportedApi`.
+
+Within a version the app only adds: new keys in states and answers, new events, new error codes,
+new optional fields in requests. A client stays compatible by:
+
+- ignoring keys and events it doesn't know;
+- treating a `requestFailed` code it doesn't know as a refusal;
+- sending only the fields documented here, since a field the app doesn't know yet may mean
+  something later.
+
+A change that would break a client written to this page comes as a new version, and the app keeps
+speaking the old one. The [sheet SDK](/system-development/sheets/#compatibility) follows the same
+rule: `/_app/js/ep.js` speaks version `1`, and a later version ships as a new file.
+
+### Who can connect
+
+Browsers don't apply CORS to WebSockets, so the app checks the `Origin` a browser sends with the
+upgrade and accepts:
+
+| Origin | For |
+| --- | --- |
+| None | Clients that aren't browsers: native apps, scripts, command-line tools |
+| The address the request went to | The app's own pages: the web client, sheets |
+| `localhost`, loopback addresses | A page on the same machine, such as a sheet's dev server |
+| Private and link-local addresses, `.local` names | A page served from another machine on your network |
+
+Any other page is refused, `null` included (a sandboxed frame or a local file), and the upgrade
+gets an ordinary HTTP response instead, so the browser reports a failed connection.
+
+Port forwarding and dynamic DNS names work unchanged: players who open the app's pages at your
+public address connect at that same address, and the browser names it in both `Origin` and `Host`.
+A web client you serve yourself must be on your network (by address or a `.local` name). A page on
+a public server is refused even when it connects to your public address. A reverse proxy must pass
+on the `Host` the browser sent (with nginx, `proxy_set_header Host $host;`), or the app's own pages
+are refused through it.
+
+### Events a client can send
+
+Anything not listed here is ignored, even when the app knows the name — and refused with
+`requestFailed` when it carries a `requestId`. The events marked *both* work the same in the
+app's web views ([below](#in-the-apps-web-views)); the others are for connected game clients only.
+
+| Event | Payload | Where | Effect |
+| --- | --- | --- | --- |
+| `clientUpdated` | `Client` | socket | Registers the client's name, color, device and screen size. Send this first — a client identifying itself with a non-`normal` `runMode` becomes a player display. The name is what the log shows for the client's messages and rolls |
+| `mapViewportUpdated` | `Frame` | socket | Reports where this client is looking, so the app can show its viewport |
+| `tokenMoved` | `Movement` | socket | Drags a token. Refused when remote interaction is off |
+| `updateDoor` | `Door` | socket | Opens or closes a door, recomputing line of sight. Refused when remote interaction is off |
+| `pointerUpdated` | `Pointer` | socket | Moves this client's shared pointer. Refused when remote interaction is off |
+| `updateToken` | partial object | socket | Merges changes into a token by `id` |
+| `subscribeEntity` | `{ id, api, labels? }` | both | Follows an entity; see [Entity subscriptions](#entity-subscriptions) |
+| `unsubscribeEntity` | `{ id }` | both | Stops following an entity |
+| `updateEntity` | `{ id, ops }` | both | Applies a batch of ops to a subscribed entity; see [Entity subscriptions](#entity-subscriptions) |
+| `queryEntities` | `{ entity, search?, where?, sort?, keys?, ids?, offset?, limit? }` | both | Lists a page of library entries; answered with `entitiesQueried { entries, total }`, see [Listing entries](#listing-entries) |
+| `pickEntity` | `{ entity }` | both | Lets the user pick library entries in the app's own list; answered with `entityPicked`. Needs someone at the app, so a socket gets `unsupportedEvent`; see [Listing entries](#listing-entries) |
+| `rollDice` | `{ formula, label?, type?, mode?, creature?, rolls? }` | both | Rolls dice and logs the roll, or logs dice the client threw itself; answered with `diceRolled`, see [Rolling dice](#rolling-dice) |
+| `createMessage` | `Message` | both | Posts to the shared log, rolling a `/roll` command in it; answered with `messageCreated` on `requestId` |
+| `updateCombatant` | partial object | both | Merges changes into a combatant by `id`; answered with `combatantUpdated` on `requestId`, or `noSuchEntity` |
+| `getAttribute` | `Attribute` | socket | **Deprecated.** Answers with the request unchanged; use `subscribeEntity` |
+| `setAttribute` | `Attribute` | socket | **Deprecated.** Writes `data` without the model schema; use `updateEntity` |
+| `trackedObjectCreated` / `trackedObjectUpdated` / `trackedObjectDeleted` / `trackedObjectsUpdated` | `TrackedObject` | socket | Reports physical objects tracked on a table-top display |
+
+:::note[Remote interaction gates the map]
+`tokenMoved`, `updateDoor` and `pointerUpdated` are dropped when the host has remote interaction
+turned off. Nothing else is gated: entities, tokens and combatants can always be changed, over the
+WebSocket as over [REST](#entities). Permissions and authentication are planned for both.
+:::
+
+:::caution[Deprecated]
+`getAttribute` and `setAttribute` are kept for clients that may still send them, and will be
+removed. New clients use [entity subscriptions](#entity-subscriptions).
+:::
 
 ### Events the app broadcasts
 
@@ -366,15 +507,282 @@ unfinished.
 | Map objects | `tokenUpdated`, `tokensUpdated`, `markerUpdated`, `markersUpdated`, `tileUpdated`, `tilesUpdated`, `lightUpdated`, `lightsUpdated`, `areaEffectUpdated`, `areaEffectsUpdated`, `measurementUpdated`, `measurementsUpdated` |
 | Movement | `mapMoved`, `tokenMoved`, `markerMoved`, `tileMoved`, `areaEffectMoved`, `pointerMoved` |
 | Overlays | `fogUpdated`, `drawingsUpdated`, `lineOfSightUpdated`, `pointerUpdated` |
-| Content | `entityCreated`, `entityUpdated`, `entityDeleted`, `combatantCreated`, `combatantUpdated`, `combatantDeleted` |
+| Content | `entityCreated`, `combatantCreated`, `combatantUpdated`, `combatantDeleted` |
 | Log | `messageCreated`, `messagesUpdated`, `messageDeleted` |
 | Clients | `clientConnected`, `clientDisconnected`, `clientUpdated`, `app` |
 | Object tracking | `trackedObjectCreated`, `trackedObjectUpdated`, `trackedObjectDeleted`, `trackedObjectsUpdated` |
 
 Broadcasts go to every connected client, including the one whose action caused them.
+`entityUpdated` and `entityDeleted` are not broadcast: they go only to clients subscribed to the
+entity (see below).
 
 `resourcesUpdated` carries the whole `game.resources` list from [`GET /api`](#get-api) after any
 change, and replaces what the client holds. `gameUpdated` never carries resources.
+
+### Entity subscriptions
+
+A client follows an entity by subscribing to it, and gets the entity's whole state as
+`entityUpdated` then and after every change — whoever made it: this client, another browser, a
+form or the combat bar in the app. Character sheets work this way, in the app and in a browser.
+
+```json
+→ { "name": "subscribeEntity", "requestId": "r1", "data": { "id": "k3x9…", "api": 1 } }
+← { "name": "entityUpdated", "responseId": "r1", "data": { "id": "k3x9…", "client": "browser", "system": { "id": "dragonbane", "version": "1.2.0", "labels": { "…": "…" } }, "env": { "…": "…" }, "model": { "…": "…" }, "derived": { "…": "…" } } }
+```
+
+| Field of `entityUpdated` | Notes |
+| --- | --- |
+| `id` | The entity |
+| `model` | The entity as stored: nothing computed, nothing left out. A link to another object is its id, `combatantId`. The [model schema](/system-development/schemas/) decides what can be written, never what is sent |
+| `derived` | What the app and the system's transforms add to or change in the model (the view): the transforms' values, and `reference`, `location`, `source`, `sourceFormatted`, `locationFormatted` and `footer`. Objects are compared key by key; a changed value or list is sent whole; a key the view removes is `null`. Lay it over `model` to get the view |
+| `client`, `system`, `env`, `schema` | Only in the answer to `subscribeEntity`: where the client runs, `app` or `browser`; the loaded system as `{ id, version, labels }`, with its labels (below); the view environment; and the address of the entity type's runtime schema (`/systems/{system}/cache/schemas/{label}.json?v=…`), which a client can check writes with before sending them — when the type has a schema |
+
+The labels are `{ language, strings, enums }`: the system's strings in its language by key, with
+English for any key the language lacks, and every enum key's label by enum — for sheets, which
+have no template filters to localize with. A client that has them or doesn't need them subscribes
+with `labels: false`, and the first state leaves them out.
+
+`api` is the protocol version the client speaks, `1` when it is left out. A version newer than the
+app's is refused with `unsupportedApi`, and one that isn't a number with `invalidRequest`. The
+answer doesn't repeat it: a subscription runs at the version it asked for, or is refused.
+
+State arrives in order, so the last `entityUpdated` received is the current one. When the entity
+is deleted, subscribers get `entityDeleted { id }` and the subscription ends; it also ends when
+the client disconnects.
+
+#### Starting state
+
+In the app's web views, a sheet gets the entity's first state before it loads, labels included,
+so it can draw the entity at once rather than after the subscription answers:
+`window.encounterplusStartingState`, set at document start to the `data` of the `entityUpdated`
+that answers `subscribeEntity`. Template views get no starting state: they are rendered with the
+entity, and one that follows it subscribes like any other client.
+
+```js
+window.encounterplusStartingState // { id: "k3x9…", client: "app", system: {…}, env: {…}, schema: "…", model: {…}, derived: {…} }
+```
+
+The state the subscription then answers with is the same one unless the entity changed in
+between, so a client can compare the two to tell. A page should check `id` first: the web view
+keeps the state for the entity it last loaded a sheet of. Browsers get no starting state, and
+draw the entity once the subscription answers.
+
+A subscribed client changes the entity with a **batch** of ops, applied whole or not at all. An
+update needs a `requestId`, and the state that includes it answers with that `responseId`:
+
+```json
+→ { "name": "updateEntity", "requestId": "r7", "data": { "id": "k3x9…", "ops": [
+    { "op": "test", "path": "data.weapons[0]", "value": { "name": "Dagger" } },
+    { "op": "set", "path": "data.weapons[0].broken", "value": true }
+  ] } }
+← { "name": "entityUpdated", "responseId": "r7", "data": { "id": "k3x9…", "model": { "…": "…" }, "derived": { "…": "…" } } }
+```
+
+| Op | Fields | Effect |
+| --- | --- | --- |
+| `set` | `path`, `value` | Writes a value, creating missing objects on the way (never list items). `null`, or `""` for anything but text, removes the key |
+| `remove` | `path` | Removes a key (nothing happens when it is missing) or a list item |
+| `insert` | `path`, `value`, `index?` | Inserts an object into a list, at the end without `index`; creates a missing list. In a list with ids the item keeps an id it brings or gets a new one |
+| `move` | `path`, `index` | Moves a list item within its list; `index` is its position afterwards |
+| `test` | `path`, `value` | Checks a value without writing; `null` expects the key to be missing |
+| `embed` | `path`, `ref`, `keys`, `index?` | Adds a copy of a library entry — `ref` is its reference, `/item/axe` — to a list of references, or puts it in a single reference field: the entry's `name`, `ref` as its `reference`, and the listed `keys` of its data (its description as `descr` when the data has none). The entry must be of the kind the schema's `ref` declares, and the keys declared |
+
+Paths start at `data` — only `data` can be written: `data.hp.current`, `data.actions[2].name`
+(a list item by position), `data.items[k3x9].quantity` (by `id`, in a list with ids). Every
+value is checked and converted against the entity type's model schema, and paths it doesn't
+declare are refused; an entity type without a schema refuses every batch. A key the schema doesn't
+declare is still sent in `model`: the schema decides what can be written, never what can be read.
+
+The other subscribers get the same state without a `responseId`. A refused batch is answered with
+`requestFailed`:
+
+```json
+← { "name": "requestFailed", "responseId": "r7", "data": { "code": "refused", "message": "the update was refused", "errors": [
+    { "index": 1, "path": "data.hp.current", "code": "outOfRange", "message": "data.hp.current: must be between 0 and 30" }
+  ] } }
+```
+
+`index` is the failing op; each error's `code` is one of `invalidPath`, `undeclared`, `notWritable`,
+`invalidValue`, `outOfRange`, `invalidKey`, `invalidSelector`, `duplicateId`, `invalidOp`,
+`missingItem`, `notAList`, `invalidIndex`, `testFailed`, `notAReference` and `missingSource`. `requestFailed` without `errors`
+answers a request that could not be handled at all, and its `code` says why: `noSuchEntity`,
+`notSubscribed`, `noSchema`, `notAllowed`, or `invalidRequest` for an update without `ops`. An
+update without a `requestId` is ignored and not applied, since nothing could answer it.
+
+Entries to embed are found with [`queryEntities`](#listing-entries), or picked by the user with
+`pickEntity`.
+
+:::note[`updateEntity` no longer merges]
+Earlier versions took `updateEntity` with a partial entity and merged it in. That form is gone:
+an `updateEntity` without `ops` is refused with `requestFailed`.
+:::
+
+:::note[Preview]
+Entity subscriptions are part of the sheet protocol, version `1`, which is a preview; see
+[Compatibility](#compatibility).
+:::
+
+### Listing entries
+
+A client lists library entries to build its own picker — a dialog, a dropdown, a list of spells
+to learn — with `queryEntities`, and gets one page of them with the number of matches in all:
+
+```json
+→ { "name": "queryEntities", "requestId": "r9", "data": {
+    "entity": "Item", "search": "a", "where": { "type": "weapon", "data.skill": ["axes", "swords"] },
+    "sort": "name", "keys": ["data.skill", "data.weight"], "limit": 20 } }
+← { "name": "entitiesQueried", "responseId": "r9", "data": { "total": 2, "entries": [
+    { "id": "…", "name": "Axe", "kind": "Item", "type": "weapon", "reference": "/module/rules/item/axe", "source": "Core",
+      "image": "/modules/rules/items/axe.webp", "tags": ["metal"], "data": { "skill": "axes", "weight": 2 } },
+    { "id": "…", "name": "Broadsword", "kind": "Item", "type": "weapon", "reference": "/module/rules/item/broadsword", "source": "Core",
+      "data": { "skill": "swords", "weight": 2 } }
+  ] } }
+```
+
+| Field | Notes |
+| --- | --- |
+| `entity` | Required. The entity kind as the system's definitions name it (`Item`, not a label); the loaded system's entries of that kind and of the kinds extending it are listed |
+| `search` | Part of the name, any case |
+| `where` | An object of paths and what their values must be, every one holding: a value to equal, a list to equal one of, or [operators](#where-operators). Paths are `name`, `type`, `kind`, `source`, `tags`, or anything under `data.`. Values are text, numbers and booleans; numbers compare as numbers (`2` matches `2.0`) and never as booleans, text exactly, and a stored list (`tags`) matches when any of its items does. A missing value, `null`, `""` and `[]` are no value, which equals nothing |
+| `sort` | A path, as for `where`, descending with a `-` prefix: `-data.weight`. Numbers sort as numbers and text in Finder order; entries without the value go last. Name order when left out |
+| `keys` | Paths each entry carries, so a picker can show columns without fetching every entry: `data.` paths in its `data`, stored values, and `view.` paths in its `view`, values the app computes through the system's transforms (`view.data.evasion`). `"list"`, alone or in the list, stands for the `data.` paths the system's list of the kind filters, groups and sorts by (its `filters.json`) — what a picker shows without knowing the system; a kind without filters has none. Computed values cost more: the app works them out for the page it answers, never for the whole kind, which is also why `where` and `sort` read stored values only |
+| `ids` | Only these entries — for showing what a sheet already holds |
+| `offset`, `limit` | The page: from `offset` (0), up to `limit` entries (50 when left out, at most 200) |
+
+An entry is `{ id, name, kind, type?, reference, source?, detail?, image?, icon?, tags?, data?, view? }`.
+`reference` is as a copy of the entry holds it — what `embed` takes as `ref`. `detail` is the line
+under the name in the app's library list, the system's `collection.detail` for the kind in
+`config.json`, so a picker can show the same. `image` is an address the page reaches the file at,
+in the app and in a browser alike; `icon` is a game icon (`gi-…`) as it is, or such an address.
+`pickEntity` answers with the same entries.
+
+#### Where operators
+
+A `where` value can be an object of operators instead, which must all hold — so
+`{ "gte": 1, "lte": 3 }` is a range:
+
+```json
+"where": {
+  "data.level": { "gte": 1, "lte": 3 },
+  "data.school": { "nin": ["necromancy", "illusion"] },
+  "data.ritual": { "exists": true }
+}
+```
+
+| Operator | Operand | Keeps an entry when its value… |
+| --- | --- | --- |
+| `ne` | a value | isn't equal to it. No value passes; a stored list passes when no item is equal |
+| `nin` | a list of values | is equal to none of them. No value passes; a stored list passes when no item is equal to one |
+| `lt`, `lte`, `gt`, `gte` | a number | is a number below, at most, above or at least it. Text, booleans and no value never pass; a stored list passes when any item does |
+| `exists` | `true` or `false` | has a value, or has none. `null`, `""` and `[]` count as none, as a cleared form field leaves them |
+
+To keep entries that have a value and aren't one of a list, put `exists` beside `nin`:
+`{ "nin": ["cantrip"], "exists": true }`. There is no OR across paths, no case-insensitive or
+partial match outside `search`, and no "every item of a list" test.
+
+A query is plain data, matched by the app; it never runs code. A value of the wrong type is refused
+with `invalidRequest` naming the problem rather than read as a default — an operand of the wrong
+type, an unknown operator, an empty operator object, or `null` as a value (use
+`{ "exists": false }`). REST lists the same pages with
+[`GET /api/{collection}`](#get-apicollection).
+
+**Picking.** `pickEntity { entity }` shows the app's own library list and is answered with
+`entityPicked { entities }`, the entries the user picked, none when they cancelled. It needs
+someone at the app, so only the app's web views can make it: a socket gets `unsupportedEvent`, and
+lists entries for its own picker instead.
+
+### Rolling dice
+
+`rollDice` rolls dice, logs the roll and answers with it, the same on a socket and in the app's web
+views:
+
+```json
+→ { "name": "rollDice", "requestId": "r13", "data": { "formula": "1d20+2", "label": "Awareness", "type": "check" } }
+← { "name": "diceRolled", "responseId": "r13", "data": { "roll": { "name": "Awareness", "type": "check", "formula": "1d20 + 2", "result": 16, "detail": "(14) + 2",
+    "dice": [{ "formula": "1d20", "faces": 20, "result": 14, "rolls": [{ "value": 14 }] }] } } }
+```
+
+| Field | Notes |
+| --- | --- |
+| `formula` | Required. A formula that can't be rolled is refused with `invalidRequest` |
+| `label` | The roll's name, as the log shows it |
+| `type` | `attack`, `damage`, `heal`, `check` or `save`; an unknown type is left out |
+| `mode` | `public` or `private`. In the app's web views it overrides the app's roll mode setting, which applies when it is left out; a socket's rolls are always public for now |
+| `creature` | Who the roll is for, as the log shows it. In the app's web views it defaults to the entity the view shows |
+| `rolls` | Dice the client threw itself — see below |
+
+**Who throws the dice.** Without `rolls`, the app does:
+
+- In the app's web views the dice roller shows, and the answer is the first roll to finish. `roll`
+  is left out when the user closed the roller first, or the view was already showing something.
+- On a socket the app rolls without showing anything — the app's screen belongs to the GM, and a
+  player's roll must not interrupt it — and the roll appears in the log under the client's name.
+
+With `rolls`, the client threw its own dice — 3D dice in its page, physical dice read off a table —
+and the app only checks them and computes the result:
+
+```json
+→ { "name": "rollDice", "requestId": "r14", "data": { "formula": "2d20kh1 + 1d6", "label": "Longsword", "type": "attack", "rolls": [[4, 17], [3]] } }
+← { "name": "diceRolled", "responseId": "r14", "data": { "roll": { "name": "Longsword", "type": "attack", "formula": "2d20kh1 + 1d6", "result": 20, "clientThrown": true,
+    "dice": [{ "formula": "2d20kh1", "faces": 20, "result": 17, "rolls": [{ "value": 4, "dropped": true }, { "value": 17 }] },
+             { "formula": "1d6", "faces": 6, "result": 3, "rolls": [{ "value": 3 }] }] } } }
+```
+
+`rolls` has one list of faces per dice term, in the formula's order, each holding every die
+thrown for the term in the order thrown. A term's own dice come first; dice its modifiers add — an
+explosion (`!`), a reroll (`r`) — are taken from the rest, so a client that throws exploding dice
+sends the extra dice too. The total is always the app's, computed from the faces with the formula's
+modifiers and arithmetic, never taken from the client. Faces that don't fit — a list per term
+missing or extra, a face the die doesn't have, too few or too many dice — are refused with
+`invalidRequest` saying which. The roll is logged marked as thrown by the client, and the answer
+carries `clientThrown: true`.
+
+**The answer.** A roll carries its dice as `dice`, one group per dice term in the formula's order:
+`{ formula, faces, result, rolls }`, with every die thrown in `rolls` as `{ value }` and
+`dropped: true` on one that doesn't count — kept out by `kh` or `kl`, rerolled, or a failure.
+`detail` is the same dice as text, for people; don't read values out of it.
+
+Every client gets the logged roll as `messageCreated` too, the roller included, with `content`
+holding the roll and its `dice` — so a client with 3D dice can replay another client's throw to the
+same faces. A private roll is answered but not logged.
+
+**From the chat.** A `/roll` command (or `/r`) posted with `createMessage` is still rolled and
+logged, and a request is answered with the logged message:
+
+```json
+→ { "name": "createMessage", "requestId": "r12", "data": { "type": "command", "content": "/roll 1d20 [Awareness]", "creature": "Brin" } }
+← { "name": "messageCreated", "responseId": "r12", "data": { "id": "…", "type": "roll", "creature": "Brin", "created": "…",
+    "content": { "name": "Awareness", "formula": "1d20", "result": 14, "detail": "(14)", "dice": [{ "…": "…" }] } } }
+```
+
+The text in brackets names the roll, optionally with a type after a colon — `[Longsword: attack]`;
+the name can be left out, `[: attack]`. A command the app can't read is still logged, as a `chat`
+message saying so (`"Invalid expression"`, `"Invalid command"`), and that message is the answer, so
+check `type` before reading a result. This is for chat; a sheet rolls with `rollDice`.
+
+### In the app's web views
+
+A page in the app speaks the same protocol without a socket: the events are the same, and only how
+they travel differs. It sends each event as JSON text to the `API` message handler, and gets every
+answer back as an `encounterplus:message` event on its `window`, with the app's event as `detail`:
+
+```js
+window.addEventListener('encounterplus:message', (event) => {
+  const { name, responseId, data } = event.detail
+})
+window.webkit.messageHandlers.API.postMessage(JSON.stringify({ name: 'subscribeEntity', requestId: 'r1', data: { id } }))
+```
+
+Events arrive in order, as on a socket. The app takes every event marked *both* in
+[Events a client can send](#events-a-client-can-send) — entity subscriptions, `queryEntities`,
+`pickEntity`, `rollDice`, `createMessage` and `updateCombatant` — and handles each exactly as it
+does for a socket; the difference is that a web view has someone at the app, so `pickEntity` shows
+the library list and `rollDice` shows the dice roller. Map and client events are answered with
+`unsupportedEvent`, and the page gets no broadcasts: it isn't a connected game client. Its rolls
+and messages are the GM's in the log.
+
+A plain link to a content address — `<a href="/item/axe">` — opens the entry's card over the view
+in the app; in a browser it is an ordinary link to the rendered entry.
 
 ### Dragging
 
@@ -392,11 +800,11 @@ A client sending a drag should expect `block` and be ready to snap back.
 
 ## Known gaps
 
-- No authentication, and no per-client permissions.
+- No authentication, and no per-client permissions: every client can read and change every
+  entity. Both are planned, for the REST API and the WebSocket alike.
 - No `DELETE` over HTTP — content can be created and changed, but not removed.
 - Nothing creates or deletes an entity or a combatant. `createEntity`, `createCombatant`,
   `deleteEntity` and `deleteCombatant` are accepted and parsed by the WebSocket, but no handler
   acts on them yet.
-- No pagination on collection listings; `GET /api/{collection}` returns everything.
 - CORS advertises only `GET, OPTIONS`, so cross-origin writes from a browser fail preflight.
-- `getAttribute` does not yet resolve values.
+- `getAttribute` and `setAttribute` are deprecated and will be removed.

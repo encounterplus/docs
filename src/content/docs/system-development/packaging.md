@@ -24,6 +24,10 @@ Finder produces both; strip them every time.
 
 Leave `cache/` and any `backup/` folders out too.
 
+A [sheet](/system-development/sheets/) with a build step ships its `sheet.json` and `dist/`; its
+sources can stay out. Import drops `node_modules`, `.git` and `.env*` at any depth, but leave them
+out anyway to keep the archive small.
+
 The archive is installed by opening it — **Settings → Import**, or tapping the file anywhere iOS
 or macOS offers to hand it to the app. Import decodes `system.json`, registers the system, merges
 the files into place and makes it primary.
@@ -127,6 +131,7 @@ identically and the difference is only visible afterwards.
 - [ ] `__MACOSX/` and `.DS_Store` stripped; `cache/` and `backup/` excluded.
 - [ ] `manifest.json` published, `id` and `version` matching, `download` reachable.
 - [ ] `compatibility.minimum` set to a version you have tested.
+- [ ] Every sheet with a build step built, with its `dist/` in the archive.
 - [ ] Installed from the archive on a clean device and the library checked.
 
 ## Where to go next
