@@ -479,9 +479,12 @@ app's web views ([below](#in-the-apps-web-views)); the others are for connected 
 | `updateEntity` | `{ id, ops }` | both | Applies a batch of ops to a subscribed entity; see [Entity subscriptions](#entity-subscriptions) |
 | `queryEntities` | `{ entity, search?, where?, sort?, keys?, ids?, offset?, limit? }` | both | Lists a page of library entries; answered with `entitiesQueried { entries, total }`, see [Listing entries](#listing-entries) |
 | `pickEntity` | `{ entity }` | both | Lets the user pick library entries in the app's own list; answered with `entityPicked`. Needs someone at the app, so a socket gets `unsupportedEvent`; see [Listing entries](#listing-entries) |
-| `rollDice` | `{ formula, label?, type?, mode?, creature?, rolls? }` | both | Rolls dice and logs the roll, or logs dice the client threw itself; answered with `diceRolled`, see [Rolling dice](#rolling-dice) |
+| `rollDice` | `{ formula, label?, type?, mode?, creature?, rolls?, customize? }` | both | Rolls dice and logs the roll, or logs dice the client threw itself; answered with `diceRolled`, see [Rolling dice](#rolling-dice) |
 | `createMessage` | `Message` | both | Posts to the shared log, rolling a `/roll` command in it; answered with `messageCreated` on `requestId` |
 | `updateCombatant` | partial object | both | Merges changes into a combatant by `id`; answered with `combatantUpdated` on `requestId`, or `noSuchEntity` |
+| `listRollOptions` | `{ formula, label?, type? }` | both | Lists what a roll link's menu offers; answered with `rollOptionsListed`, see [Roll menus](#roll-menus) |
+| `updateResource` | `{ id, add }` or `{ id, value }` | both | Changes a [game resource](/system-development/config/#game-resources) of the campaign being played; answered with `resourcesUpdated`, see [Game resources](#game-resources) |
+| `subscribeResources` | `{}` | both | Asks for the game resources the client may see; answered with `resourcesUpdated`, and a web view gets it after every change from then on, see [Game resources](#game-resources) |
 | `getAttribute` | `Attribute` | socket | **Deprecated.** Answers with the request unchanged; use `subscribeEntity` |
 | `setAttribute` | `Attribute` | socket | **Deprecated.** Writes `data` without the model schema; use `updateEntity` |
 | `trackedObjectCreated` / `trackedObjectUpdated` / `trackedObjectDeleted` / `trackedObjectsUpdated` | `TrackedObject` | socket | Reports physical objects tracked on a table-top display |
@@ -517,7 +520,58 @@ Broadcasts go to every connected client, including the one whose action caused t
 entity (see below).
 
 `resourcesUpdated` carries the whole `game.resources` list from [`GET /api`](#get-api) after any
-change, and replaces what the client holds. `gameUpdated` never carries resources.
+change, and replaces what the client holds; see [Game resources](#game-resources). `gameUpdated`
+never carries resources.
+
+### Game resources
+
+One event carries the system's [game resources](/system-development/config/#game-resources),
+whatever the reason: `resourcesUpdated`, with the whole list the client may see, each entry in the
+shape of `game.resources`. It is the broadcast after every change, the answer to
+`subscribeResources`, and the answer to `updateResource`, and it always replaces what the client
+holds.
+
+A socket sees the resources the players see; a countdown at `0` is not running yet and is left out.
+The app's web views run on the GM's device and see them all.
+
+`subscribeResources` asks for the list:
+
+```json
+→ { "name": "subscribeResources", "requestId": "r19", "data": {} }
+← { "name": "resourcesUpdated", "responseId": "r19", "data": [{ "id": "fear", "type": "counter", "label": "Fear", "min": 0, "max": 12, "value": 4 }] }
+```
+
+A socket gets the broadcast after every change whether it asked or not, so for it this is only a
+read. A web view gets no broadcasts, and follows the resources once it has sent this: the same
+`resourcesUpdated` arrives after every change, without a `responseId`, until its page goes. With
+no campaign being played the list is empty.
+
+`updateResource` changes one resource in the campaign being played — a sheet giving the GM a Fear
+when a roll goes with Fear:
+
+```json
+→ { "name": "updateResource", "requestId": "r20", "data": { "id": "fear", "add": 1 } }
+← { "name": "resourcesUpdated", "responseId": "r20", "data": [{ "id": "fear", "type": "counter", "label": "Fear", "min": 0, "max": 12, "value": 5 }] }
+```
+
+| Field | Notes |
+| --- | --- |
+| `id` | Required. The resource's `id` in the system's `config.json` |
+| `add` | A whole number to change the value by, negative to lower it |
+| `value` | A whole number to set the value to |
+
+Send exactly one of `add` and `value`. The value is kept within the resource's `min` and `max`, so
+Fear at 12 stays at 12, and `add` is applied by the app to the value it holds, so two clients
+adding at once both count. The answer is the list as it is now, the changed resource in it — unless
+it is a countdown a socket no longer sees, at `0`; everyone else learns of the change from the
+`resourcesUpdated` broadcast, the bottom bar and the player display included.
+
+Like `updateEntity`, a request needs a `requestId`: one without is ignored and not applied. Both,
+neither, a value that isn't a whole number, or another key is `invalidRequest`. A socket can
+change only resources the players see; any other `id`, GM-only ones included, is refused as
+unknown (`invalidRequest`, `no such resource`), so a player can't learn that a GM-only resource
+exists. The app's web views run on the GM's device and can change them all. With no campaign being
+played the request fails with `failed`.
 
 ### Entity subscriptions
 
@@ -585,12 +639,18 @@ update needs a `requestId`, and the state that includes it answers with that `re
 | `insert` | `path`, `value`, `index?` | Inserts an object into a list, at the end without `index`; creates a missing list. In a list with ids the item keeps an id it brings or gets a new one |
 | `move` | `path`, `index` | Moves a list item within its list; `index` is its position afterwards |
 | `test` | `path`, `value` | Checks a value without writing; `null` expects the key to be missing |
+| `increment` | `path`, `value` | Changes a number by `value`, negative to lower it, counting from the value stored now — so two clients' changes both count — and from 0 when there is none. The result is kept within the declared `min` and `max` rather than refused. Only `integer` and `number` fields; a whole-number field takes whole numbers |
 | `embed` | `path`, `ref`, `keys`, `index?` | Adds a copy of a library entry — `ref` is its reference, `/item/axe` — to a list of references, or puts it in a single reference field: the entry's `name`, `ref` as its `reference`, and the listed `keys` of its data (its description as `descr` when the data has none). The entry must be of the kind the schema's `ref` declares, and the keys declared |
 
-Paths start at `data` — only `data` can be written: `data.hp.current`, `data.actions[2].name`
-(a list item by position), `data.items[k3x9].quantity` (by `id`, in a list with ids). Every
-value is checked and converted against the entity type's model schema, and paths it doesn't
-declare are refused; an entity type without a schema refuses every batch. A key the schema doesn't
+Paths start at `data`: `data.hp.current`, `data.actions[2].name` (a list item by position),
+`data.items[k3x9].quantity` (by `id`, in a list with ids). Every value is checked and converted
+against the entity type's model schema, and paths it doesn't declare are refused; an entity type
+without a schema refuses every batch.
+
+Beside `data`, two of the entity's own fields can be written, with `set` and `test` only: `name`,
+text that isn't empty (it is trimmed), and `notes`, text, removed by `null` or `""`. A rename leaves
+the entity's `slug`, and so its address, as it is. They go in the same batch as `data` ops, applied
+whole or not at all. Any other path outside `data` is `invalidPath`. A key the schema doesn't
 declare is still sent in `model`: the schema decides what can be written, never what can be read.
 
 The other subscribers get the same state without a `responseId`. A refused batch is answered with
@@ -710,6 +770,7 @@ views:
 | `mode` | `public` or `private`. In the app's web views it overrides the app's roll mode setting, which applies when it is left out; a socket's rolls are always public for now |
 | `creature` | Who the roll is for, as the log shows it. In the app's web views it defaults to the entity the view shows |
 | `rolls` | Dice the client threw itself — see below |
+| `customize` | `true` opens the app's advanced dice roller with the formula, for the GM to change and roll — the roll menu's *Customize…* item. The answer carries no roll: what is rolled there is the GM's own, logged by the roller. Only the app's web views can, a socket gets `unsupportedEvent` |
 
 **Who throws the dice.** Without `rolls`, the app does:
 
@@ -738,13 +799,44 @@ missing or extra, a face the die doesn't have, too few or too many dice — are 
 carries `clientThrown: true`.
 
 **The answer.** A roll carries its dice as `dice`, one group per dice term in the formula's order:
-`{ formula, faces, result, rolls }`, with every die thrown in `rolls` as `{ value }` and
+`{ formula, label?, faces, result, rolls }`, with every die thrown in `rolls` as `{ value }` and
 `dropped: true` on one that doesn't count — kept out by `kh` or `kl`, rerolled, or a failure.
-`detail` is the same dice as text, for people; don't read values out of it.
+`label` is the term's [label](/reference/dice-expressions/#labelled-terms), `Hope` for
+`1d12[Hope]`, and `formula` the term without it. `detail` is the same dice as text, for people;
+don't read values out of it.
+
+When the game system reads an outcome from the labelled dice ([`dice.outcomes`](/system-development/config/#dice)),
+the roll carries it as `outcome: { id, label, color? }` — Daggerheart's
+`{ "id": "hope", "label": "With Hope", "color": "#e8b931" }`. Branch on `id`; `label` is localized
+text to show. A roll the system reads no outcome from has none.
 
 Every client gets the logged roll as `messageCreated` too, the roller included, with `content`
 holding the roll and its `dice` — so a client with 3D dice can replay another client's throw to the
 same faces. A private roll is answered but not logged.
+
+### Roll menus
+
+`listRollOptions` asks what a roll link's menu offers — the menu `ep-ui.js` draws on a right-click
+or a long press:
+
+```json
+→ { "name": "listRollOptions", "requestId": "r15", "data": { "formula": "1d12[Hope] + 1d12[Fear] + 2", "label": "Agility" } }
+← { "name": "rollOptionsListed", "responseId": "r15", "data": { "options": [
+    { "id": "roll", "label": "Roll", "formula": "1d12[Hope] + 1d12[Fear] + 2" },
+    { "id": "advantage", "label": "Advantage", "formula": "1d12[Hope] + 1d12[Fear] + 2 + 1d6[Advantage]" },
+    { "id": "private", "label": "Roll Privately", "formula": "1d12[Hope] + 1d12[Fear] + 2", "mode": "private", "group": "gm" },
+    { "id": "customize", "label": "Customize…", "formula": "1d12[Hope] + 1d12[Fear] + 2", "customize": true, "group": "gm" } ] } }
+```
+
+The plain roll comes first, with the formula as sent, then the system's
+[`dice.options`](/system-development/config/#dice) that apply to the roll, each with the formula it
+rolls. In the app's own web views the GM's items come last, `group: "gm"`: the plain roll in the
+other roll mode, with that `mode`, and *Customize…*, `customize: true`, which opens the advanced
+dice roller with the formula. A socket's rolls are always public and it has no roller, so it gets
+none. A formula that can't be rolled is refused with `invalidRequest`.
+
+Choosing an item is a `rollDice` with its `formula`, and its `mode` or `customize` when it has one:
+the options change only what is rolled.
 
 **From the chat.** A `/roll` command (or `/r`) posted with `createMessage` is still rolled and
 logged, and a request is answered with the logged message:

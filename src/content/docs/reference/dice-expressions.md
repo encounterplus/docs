@@ -172,6 +172,30 @@ In the web client chat, the label goes in brackets, optionally with the type aft
 Under D&D 5E the app also guesses the type when none is given — a leading `+` reads as an attack, a
 `d20` as a check, and a formula near the word *damage* as damage.
 
+## Labelled terms
+
+A term can carry a label of its own, in brackets right after it, with no space between:
+
+```
+1d12[Hope] + 1d12[Fear] + 2
+2d20kh1[Advantage] + 5
+1d20 + 2[Agility]
+```
+
+The label names the term's dice in the roll's detail — `Hope (7) + Fear (3) + 2` — and stays in the
+formula, so the logged roll reads the same way again. A label keeps its case, may hold spaces, and
+can be up to 64 characters; it cannot contain brackets. Labels don't change the result.
+
+What a label is for is up to the game system: its `config.json` can colour labelled dice in the 3D
+roller and read an outcome from them, such as Daggerheart's *with Hope* — see
+[Dice](/system-development/config/#dice). Without that, a label only names the dice.
+
+In chat, brackets after a space are the roll's name, not a label, and only at the end:
+
+```
+/roll 1d12[Hope] + 1d12[Fear] + 2 [Agility: check]
+```
+
 ## Limits and edge cases
 
 - **Dice count and faces** are each capped at 1,000,000.

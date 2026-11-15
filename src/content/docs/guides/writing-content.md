@@ -294,7 +294,21 @@ middle of text stays a plain image. Several captioned images on consecutive line
 figure. The image's other classes and its id go to the figure, so
 `{.caption .size-cover}` gives an edge-to-edge figure with its caption below.
 
-Wide tables scroll sideways rather than widening the page.
+Wide tables scroll sideways rather than widening the page. To give a table a class, put the attributes
+on a line of their own after it, with a blank line between — directly under the last row they would
+start a new row:
+
+```markdown
+| Roll | Result |
+|------|--------|
+| 1    | Ambush |
+
+{.encounters}
+```
+
+A floated table doesn't scroll, so text can flow around it: `{.float-left}`, `{.float-right}`,
+`{.float-start}` and `{.float-end}` leave it as written. If your own CSS floats a table under another
+class name, add `.no-scroll` beside it.
 
 ### The page editor
 
@@ -312,7 +326,9 @@ two menus for what is fiddly to type:
 Pages written before Markdown support, and pages from older modules, are HTML. They still display
 as they always have, and open in the same editor as HTML source, without the formatting toolbar.
 In an HTML page, dice in ordinary text are not picked up — a roll has to be a link, such as
-`<a href="/roll/2d6+3">2d6+3</a>`.
+`<a href="/roll/2d6+3">2d6+3</a>`. Images open in the image viewer when tapped, as in Markdown: an image
+inside a link follows the link, and `class="no-preview"` leaves it untappable. The page's markup is
+left as written.
 
 To switch a page to Markdown, tap the page's title in the editor and choose **Format**. **Convert**
 rewrites the HTML as Markdown, keeping as HTML whatever Markdown cannot express; **Keep Text** changes

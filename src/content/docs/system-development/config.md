@@ -81,6 +81,26 @@ The **first** bar is the primary one: it backs the defeated and bloodied states 
 tracker shows most prominently. A system with more than one pool — stamina, stress, sanity — adds
 further entries.
 
+A bar's `type` says what `current` holds. The default, `pool`, is what is **left**: a combatant
+starts at `maximum`, damage subtracts, and it is defeated at `minimum` (0). A system whose rules
+mark slots instead — Daggerheart's Hit Points and Stress — sets `marked`, and `current` becomes what
+is **marked**:
+
+```json
+"bars": [
+  { "attribute": "data.hp", "title": "Common.HitPoints", "label": "Common.HP", "type": "marked" }
+]
+```
+
+| `type` | `current` is | Starts at | Damage | Defeated at |
+| --- | --- | --- | --- | --- |
+| `pool` (default) | what is left | `maximum` | subtracts | `minimum` |
+| `marked` | what is marked | `minimum` (0) | adds, kept within `minimum`–`maximum` | `maximum` |
+
+A marked bar draws the marks: empty at the start and filling as the combatant is hurt, in the same
+colours as a pool — red once bloodied, which here means half or more marked. Sheets and templates read and write the same marked
+count. An unknown `type` is read as `pool`, with a warning in the log when the system loads.
+
 #### States
 
 `combatant.states` maps a state name to a condition template. `defeated` is the one the app acts
@@ -302,8 +322,107 @@ Values belong to the campaign. They persist across sessions and never reset on t
 when combat ends. A resource the GM has not changed reads as its `initial` value, and a value is
 always kept within `min` and `max`, even after a system update narrows them.
 
+Besides the GM's bottom bar, a sheet can change a resource — Daggerheart's sheet gives the GM a
+Fear when a roll goes with Fear — with [`EP.adjustResource`](/system-development/sheets/#game-resources);
+in a browser only resources with `players` visibility.
+
 An entry without an `id`, a repeated `id`, or a `type` the app does not know is skipped, so a
 system written for a newer app still loads.
+
+### Dice
+
+How labelled dice look in the 3D roller, what outcome a roll's labelled dice give, and what a roll
+link's menu offers besides the plain roll. A label is
+written after a dice term in a formula, `1d12[Hope]` (see
+[Labelled terms](/reference/dice-expressions/#labelled-terms)); this is Daggerheart's duality roll:
+
+```json
+"dice": {
+  "labels": {
+    "Hope": { "color": "#e8b931" },
+    "Fear": { "color": "#5b2a86", "textColor": "#ffffff" }
+  },
+  "outcomes": [
+    { "id": "critical", "label": "Roll.Critical", "color": "#e8b931", "when": { "equal": ["Hope", "Fear"] } },
+    { "id": "hope", "label": "Roll.WithHope", "color": "#e8b931", "when": { "greater": ["Hope", "Fear"] } },
+    { "id": "fear", "label": "Roll.WithFear", "color": "#5b2a86", "when": { "greater": ["Fear", "Hope"] } }
+  ],
+  "options": [
+    { "id": "advantage", "label": "Roll.Advantage", "when": { "labels": ["Hope", "Fear"] }, "add": "1d6[Advantage]" },
+    { "id": "disadvantage", "label": "Roll.Disadvantage", "when": { "labels": ["Hope", "Fear"] }, "add": "-1d6[Disadvantage]" }
+  ]
+}
+```
+
+A sheet then rolls `1d12[Hope] + 1d12[Fear] + 2`, and the log shows the roll as
+`Hope (7) + Fear (3) + 2` marked **With Hope**. Every part is optional, and a system without them
+rolls as before.
+
+**`labels`** gives the dice of a label their colours, matched without regard to case:
+
+| Key | Values |
+| --- | --- |
+| `color` | The dice's colour, `#rrggbb`, tinting the material the user picked in the dice roller settings |
+| `textColor` | The colour of the numbers, `#rrggbb` |
+
+**`outcomes`** is a list of rules, tried in order after every roll; the first that matches is the
+roll's outcome:
+
+| Key | Values |
+| --- | --- |
+| `id` | Required. What sheets branch on: a roll carries it as `outcome.id` |
+| `label` | The name the log shows; a localization key works here. Defaults to the `id`, capitalized |
+| `color` | The colour the log shows the name in, `#rrggbb` |
+| `when` | Required. One comparison of two labels' results: `equal` (the same) or `greater` (the first is higher) |
+
+A comparison uses the results of the dice with those labels — other dice and the modifier don't
+count, so an advantage die changes the total but not the outcome. Should more than one term carry a
+label, their results are added. A roll missing either label matches no rule, so a plain `2d12` or a
+damage roll gets no outcome. An entry without an `id`, or with a `when` the app can't read, is
+skipped.
+
+The outcome is worked out wherever the roll is — the dice roller, a roll from chat, a sheet's
+`EP.roll` — and stored with the roll, so the log keeps it, the web client shows it, and a sheet gets
+it as `roll.outcome`. It only names the result: what follows from it, such as gaining Hope or giving
+the GM Fear, is the sheet's to apply, since only the sheet knows whether the roll was one that
+counts.
+
+**`options`** lists what a roll link's menu offers after the plain roll — a right-click, or a long
+press on a touch screen, wherever `ep-ui.js` is loaded (see [Roll menus](/system-development/sheets/#roll-menus)).
+Each option that applies to the link's roll is listed, in order, with the formula it rolls
+instead:
+
+| Key | Values |
+| --- | --- |
+| `id` | Required. What a view's `ep-roll` handler sees as `option`. `roll`, `public`, `private` and `customize` are the app's own |
+| `label` | The name the menu shows; a localization key works here. Defaults to the `id`, capitalized |
+| `add` | A term added at the end of the formula, subtracted with a leading `-`: `-1d6[Disadvantage]` |
+| `transform` | What changes in the roll's dice: `advantage` (each d20 becomes `2d20kh1`), `disadvantage` (`2d20kl1`) or `critical` (every dice term rolls twice the dice) |
+| `when` | Which rolls the option applies to; every key given must hold, and an option without `when` applies to every roll |
+
+An option has one of `add` and `transform`. `when` tests the roll:
+
+| Key | Holds when |
+| --- | --- |
+| `labels` | Every label named is on one of the roll's dice terms: `["Hope", "Fear"]` |
+| `faces` | The roll has dice, and every dice term has one of these faces: `[20]` |
+| `types` | The roll's type is one of these: `["damage"]`. A link without a type has none |
+
+D&D 5e's, which the app's older menu had built in:
+
+```json
+"options": [
+  { "id": "advantage", "label": "Roll.Advantage", "when": { "faces": [20] }, "transform": "advantage" },
+  { "id": "disadvantage", "label": "Roll.Disadvantage", "when": { "faces": [20] }, "transform": "disadvantage" },
+  { "id": "critical", "label": "Roll.Critical", "when": { "faces": [4, 6, 8, 10, 12] }, "transform": "critical" }
+]
+```
+
+An option changes only what is rolled: the result is logged as any roll is, with its outcome. In
+the app's own views the menu also offers the GM a roll in the other roll mode — *Roll Privately*
+when rolls are public — and *Customize…*, which opens the advanced dice roller with the roll's
+formula. An entry without an `id`, with a reserved or repeated one, or with anything
+the app can't read is skipped.
 
 ### View themes
 

@@ -264,6 +264,20 @@ refresh behavior: `load` (once), `reload` (every appearance), `event` (on change
 
 Renderer values are `native` (the default), `html`, `custom` and `sheet`.
 
+Write `{{ runtime }}` after the content and before your own scripts. It is the app's own plumbing,
+the same in every template and kept up to date by the app: today it loads the
+[sheet SDK](/system-development/sheets/) with `ep-ui.js`, which gives every roll link a menu — a
+right-click, or a long press on a touch screen — with the system's
+[roll options](/system-development/config/#dice), and rolls the links in a browser. Table and
+status-effect templates take it too; page templates already do. A template that loads `ep.js`
+itself keeps working: the second copy does nothing.
+
+```html
+<main>…</main>
+{{ runtime }}
+{% for src in env.scripts %}<script src="{{ src }}"></script>{% endfor %}
+```
+
 Use it when a layout genuinely wants a browser. Native views are faster, themed automatically and
 work on the player screen and remote clients without extra work, so they are the better default.
 

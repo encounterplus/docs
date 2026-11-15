@@ -234,16 +234,19 @@ What is computed is in `view` only: your transforms' values, and a few the app a
 
 ## Writing
 
-Only `data.…` paths can be written, and of those only what the
+A sheet writes under `data.…`, and there only what the
 [model schema](/system-development/schemas/) declares. A key the schema doesn't declare can still be
-read, but a write to it is refused, even though the entity's form saves it. Each write returns a
+read, but a write to it is refused, even though the entity's form saves it. Beside `data`, two of
+the app's own fields can be set: `name`, which can't be empty, and `notes`. Each write returns a
 promise that resolves when the app has applied it, and rejects when it fails.
 
 ```js
 await hero.set('data.hp.current', 7)
+await hero.increment('data.hp.current', -3)
 await hero.remove('data.conditions.dazed')
 await hero.insert('data.notes', { text: 'Owes the guild' })
 await hero.move('data.weapons[2]', 0)
+await hero.set('name', 'Brin the Bold')
 
 // several changes at once, applied whole or not at all
 await hero.update((data) => {
@@ -255,6 +258,16 @@ await hero.update((data) => {
 `update` gives you a copy of `data` to change, and sends what you changed. A batch is applied whole
 or not at all, so use it whenever two values must change together.
 
+`increment` changes a number by an amount, and is the one to use for anything counted up or down —
+hit points, ammunition, coins. `set` writes the value your sheet worked out from what it last saw,
+so when two people change the same number at once, one change is lost; `increment` is applied by the
+app to the value it holds, so both count. The result stays within the schema's `min` and `max`
+rather than being refused, and a value that isn't there counts from 0. Until the app answers, the
+sheet shows the plain sum.
+
+Renaming changes the entity's name only. Its address (`/hero/brin`) stays as it is, so links to it,
+copies of it and its tokens keep working.
+
 **Any write can be refused** — by the schema today, and by permissions once the app has them — so a
 sheet handles refusals once. The sheet shows a write at once, before the app answers. If the app
 refuses it, the value goes back and the store reports why. Listening once, at the top of your
@@ -265,6 +278,10 @@ hero.addEventListener('error', (event) => {
   showMessage(event.detail.errors.map((error) => error.message).join('; '))
 })
 ```
+
+With that listener in place, a write needs no `catch` of its own: a refused write nobody awaits is
+reported there and nowhere else. `await` a write, or chain `.catch`, only where your code has
+something to do when that one write fails.
 
 Each error has a `message`, a `code`, and the failing op's `index` and `path`; the codes are listed
 under [Entity subscriptions](/reference/server-api/#entity-subscriptions). The store also dispatches
@@ -444,12 +461,18 @@ Markdown already has such links. The optional last part is the roll's type: `att
 When the sheet needs the result, call `EP.roll`:
 
 ```js
-const roll = await EP.roll('1d12+1d12+2', { label: 'Action', type: 'check' })
+const roll = await EP.roll('1d12[Hope] + 1d12[Fear] + 2', { label: 'Action', type: 'check' })
 if (roll) {
-  const [hope, fear] = roll.dice.map((group) => group.result)
-  console.log(roll.result, hope, fear)   // 17, 9, 6
+  const hope = roll.dice.find((group) => group.label === 'Hope')
+  console.log(roll.result, hope.result, roll.outcome?.id)   // 17, 9, 'hope'
 }
 ```
+
+Each dice term is a group of its own in `roll.dice`, and a [label](/reference/dice-expressions/#labelled-terms)
+finds it whatever the formula's order. When the system declares outcomes for labelled dice
+([`dice.outcomes`](/system-development/config/#dice)), the roll carries the one it gave as
+`roll.outcome`, which the log shows too: branch on its `id`, and apply what follows from it — the
+app only names it.
 
 It rejects when the formula can't be rolled, and the roll reaches the shared log unless it is
 private. In the app, the dice roller shows the roll and `roll` is the first result to finish;
@@ -461,6 +484,76 @@ result. In a browser the app rolls without showing anything on its screen, and t
 `mode: 'private'` (or `'public'`) overrides the app's roll mode in the app; a browser's rolls are
 always public for now. In the app the roll is for the entity the view shows, as its combatant is
 named when it has one.
+
+#### Roll menus
+
+With `ep-ui.js` loaded, a roll link (`/roll/…`) has a menu: a right-click, or a long press on a
+touch screen, the same in the app and in a browser. Templates that write `{{ runtime }}` get it
+without a script tag (see [The HTML renderer](/system-development/views/#the-html-renderer)). The app says what it lists: the plain roll,
+then the system's [roll options](/system-development/config/#dice) that apply to the link's roll —
+Daggerheart's advantage and disadvantage, D&D's advantage and critical damage — and in the app's own
+views the GM's roll in the other roll mode and *Customize…*. Each item rolls a formula of its own,
+so a sheet needs no code for them. *Customize…* opens the app's advanced dice roller and never
+reaches the sheet: what the GM rolls there is theirs.
+
+A choice reaches the link as a cancelable `ep-roll` event, `detail: { formula, label, type, option,
+mode? }`, `formula` being what the item rolls. A link the sheet rolls itself — to apply what the
+roll's outcome gives — cancels it and rolls that formula:
+
+```js
+link.addEventListener('ep-roll', (event) => {
+  event.preventDefault()
+  rollAction(event.detail.formula, event.detail.mode)
+})
+```
+
+Left alone, the item is `EP.roll` of its formula. A sheet can add items of its own after the app's
+with `rollItems`, which it then handles in `ep-roll` (left alone, they do nothing):
+
+```js
+EP.configure({
+  rollItems: (link, roll) => link.closest('[data-action]') ? [{ id: 'spend-hope', label: 'Spend Hope' }] : []
+})
+```
+
+A view with a menu of its own leaves `ep-ui.js` out and uses `EP.rollOptions(link)` and
+`EP.rollLink(link, item)`.
+
+#### Game resources
+
+A sheet changes the campaign's [game resources](/system-development/config/#game-resources) — the
+GM's Fear in Daggerheart — with `EP.adjustResource` and `EP.setResource`:
+
+```js
+const roll = await EP.roll('1d12[Hope] + 1d12[Fear] + 2', { label: 'Agility' })
+if (roll?.outcome?.id === 'fear') {
+  await EP.adjustResource('fear', 1)   // { id: 'fear', label: 'Fear', min: 0, max: 12, value: 5, … }
+}
+```
+
+`adjustResource` changes the value by a whole number and `setResource` sets it; both keep it within
+the resource's range and resolve with the resource as it is now. The app applies the change to the
+value it holds, so two players adding at once both count. In a browser only resources the players
+see can be changed; any other id rejects, as does a call with no campaign being played. A call
+without a connection rejects with `disconnected` and is never sent later.
+
+To show them, read `EP.resources`, a store of the resources the view may see: the players' in a
+browser, all of them in the app. It starts following when something subscribes, and the app sends
+the list again after every change, whoever made it — the GM's bottom bar, another sheet, this one.
+
+```js
+EP.resources.subscribe((list) => {
+  // called at once — with an empty list until the app answers — and after every change
+  const fear = list.find((resource) => resource.id === 'fear')
+  fearCounter.textContent = fear ? `${fear.value} / ${fear.max}` : ''
+})
+
+EP.resources.get('fear')?.value   // the last value received
+```
+
+It follows the store contract, so in Svelte `const resources = EP.resources` reads as `$resources`.
+The list is empty when no campaign is being played. A countdown the players don't see yet, at 0, is
+left out of a browser's list, so `adjustResource` resolves with `null` when it takes one there.
 
 #### Your own dice
 
@@ -816,6 +909,21 @@ The same sheet runs in both, with a few differences:
 A browser that can't reach the app when the page loads gets a rejected `connect()`, so give the user
 a message and let them reload. Once a sheet is open, it reconnects by itself, and `status` says what
 is happening.
+
+## Where rules go
+
+A sheet is one of several ways an entity changes: the entity's form, the combat bar, the REST API
+and other sheets change it too, and none of them runs your sheet's code. So put each rule where
+everything that needs it will meet it:
+
+| A rule that | Belongs in | Because |
+| --- | --- | --- |
+| Computes a value from others — a maximum, a bonus, a total | A [transform](/system-development/views/#computed-attributes) | Templates, cards, lists and every sheet read the same `view`, and nothing stores a value that can go stale |
+| Limits what can be stored — a type, a range, an enum | The [model schema](/system-development/schemas/) | The app checks every write against it, a sheet's and a form's alike |
+| Happens when the player does something — a rest, a level up, what a roll's outcome gives | The sheet | It is an action, taken once, by whoever pressed the button |
+
+Don't store what a transform can compute, and don't rely on the sheet to keep stored values
+consistent: a value changed in the form never passes through it.
 
 ## Keeping it fast
 
