@@ -362,8 +362,11 @@ rolls as before.
 
 | Key | Values |
 | --- | --- |
-| `color` | The dice's colour, `#rrggbb`, tinting the material the user picked in the dice roller settings |
-| `textColor` | The colour of the numbers, `#rrggbb` |
+| `color` | The dice's colour, `#rrggbb`. The dice are solid dice in this colour whatever material the user picked in the dice roller settings, so they look the same at every table |
+| `textColor` | The colour of the numbers, `#rrggbb`. Without one, the numbers keep the colour of the user's dice theme |
+
+Pick a `textColor` that contrasts with `color`: the user's number colour is chosen for their own
+material and may not show on yours.
 
 **`outcomes`** is a list of rules, tried in order after every roll; the first that matches is the
 roll's outcome:
